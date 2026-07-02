@@ -1,10 +1,10 @@
 # API流程验证设计
 
 - 来源: https://chatgpt.com/c/6a30db25-a6bc-83e8-ba19-4bc5fc0a5e28
-- 导出时间: 2026-07-02T13:38:06+09:00
-- 分片: 2/2
-- 总消息数: 210
-- 总轮数: 91
+- 导出时间: 2026-07-02T19:57:43+09:00
+- 分片: 2/3
+- 总消息数: 286
+- 总轮数: 139
 
 ## 第 51 轮
 
@@ -878,25 +878,6 @@ src/
 
 ```text
 这个系统 = Markdown设计资产 + AI自动生成 + Java确定执行 + Snapshot比较 + 日次总结报告。
-```
-
-### ChatGPT
-
-```json
-{
-  "content_type": "thoughts",
-  "thoughts": [],
-  "source_analysis_msg_id": "27ee791c-d1ad-4e18-8284-c0884f1b9ad0"
-}
-```
-
-### ChatGPT
-
-```json
-{
-  "content_type": "reasoning_recap",
-  "content": "思考時間: 数秒"
-}
 ```
 
 ## 第 54 轮
@@ -9836,25 +9817,6 @@ jar + json spec + config + output directory
 
 **runtime 是程序，outputs 是运行数据。本番 Linux 上两者分开放：程序放 `/app`，结果放 `/data`。**
 
-### ChatGPT
-
-```json
-{
-  "content_type": "thoughts",
-  "thoughts": [],
-  "source_analysis_msg_id": "2c3cef0a-8919-4f29-858a-9f6af1795b5f"
-}
-```
-
-### ChatGPT
-
-```json
-{
-  "content_type": "reasoning_recap",
-  "content": "思考時間: 2 ～ 3 秒"
-}
-```
-
 ## 第 78 轮
 
 ### 你
@@ -13273,25 +13235,6 @@ Architecture Freeze V1
 5. 1个端到端POC
 ```
 
-### ChatGPT
-
-```json
-{
-  "content_type": "thoughts",
-  "thoughts": [],
-  "source_analysis_msg_id": "4cdacd98-1fe1-4dbf-8023-c124b95f22cb"
-}
-```
-
-### ChatGPT
-
-```json
-{
-  "content_type": "reasoning_recap",
-  "content": "思考時間: 数秒"
-}
-```
-
 ## 第 91 轮
 
 ### 你
@@ -13573,3 +13516,4041 @@ UseCase設計書
 > **先定义业务契约，再定义数据流，最后实现平台能力。**
 
 我认为这也是目前最符合我们这个 E6 API Verification Platform 项目节奏的推进方式。
+
+## 第 92 轮
+
+### 你
+
+現行業務分析書.md 这个是什么样 有什么模版吗
+
+### ChatGPT
+
+有，而且**我认为这是我们目前还没有真正设计，但实际上非常重要的一份文档。**
+
+不过，它**不是传统日本项目里的「現行調査資料」**。
+
+因为我们的目标不是开发业务系统，而是：
+
+> **设计一个 E6 API Verification Tool。**
+
+所以它的目的应该重新定义。
+
+---
+
+# 我认为它的真正目的
+
+一句话：
+
+> **把业务系统转换成 Verification Tool 能理解的业务。**
+
+不是：
+
+```text
+业务系统怎么实现？
+```
+
+而是：
+
+```text
+Verification Tool
+
+需要知道什么？
+```
+
+所以：
+
+**不要写业务实现。**
+
+只写：
+
+Verification：
+
+需要：
+
+知道。
+
+---
+
+# 我建议模板
+
+---
+
+# ① 基本信息
+
+例如：
+
+```text
+系统名称：
+
+业务名称：
+
+负责人：
+
+版本：
+
+日期：
+```
+
+---
+
+# ② 文档来源
+
+例如：
+
+```text
+来源：
+
+E6 API设计书
+
+业务Flow
+
+基本设计书
+
+详细设计书
+
+现行业务系统
+```
+
+以后：
+
+Traceability。
+
+---
+
+# ③ 业务目的
+
+例如：
+
+```text
+这个业务
+
+解决什么问题？
+```
+
+例如：
+
+```text
+客户登录
+
+↓
+
+取得客户资料
+
+↓
+
+更新客户状态
+```
+
+这里只写：
+
+业务。
+
+不要：
+
+Java。
+
+---
+
+# ④ 业务范围
+
+例如：
+
+```text
+包含：
+
+API001
+
+API002
+
+API003
+```
+
+不包含：
+
+```text
+DB更新
+
+画面控制
+
+Batch
+```
+
+因为：
+
+我们：
+
+不用。
+
+---
+
+# ⑤ 业务Flow
+
+这是：
+
+最重要。
+
+例如：
+
+```text
+User
+
+↓
+
+API001
+
+↓
+
+取得Customer
+
+↓
+
+API002
+
+↓
+
+取得Account
+
+↓
+
+API003
+
+↓
+
+更新Status
+```
+
+这里只：
+
+画：
+
+API。
+
+不要：
+
+业务：
+
+内部。
+
+---
+
+# ⑥ API分析
+
+例如：
+
+| Step | API | 用途 |
+|-------|-----|------|
+|1|API001|登录|
+|2|API002|取得Customer|
+|3|API003|更新Status|
+
+以后：
+
+直接：
+
+生成：
+
+UseCase。
+
+---
+
+# ⑦ Context分析
+
+例如：
+
+| API | 输出 | 下一API |
+|------|------|---------|
+|API001|Customer.id|API002|
+|API002|Account.id|API003|
+
+以后：
+
+直接：
+
+生成：
+
+Context Design。
+
+---
+
+# ⑧ Verification范围
+
+例如：
+
+验证：
+
+```text
+Status Code
+
+Request
+
+Response
+
+Enum
+
+Context
+
+Business Result
+```
+
+不验证：
+
+```text
+DB
+
+画面
+
+业务内部处理
+```
+
+这里：
+
+非常：
+
+重要。
+
+---
+
+# ⑨ 注意事项
+
+例如：
+
+```text
+日期：
+
+每天：
+
+不同
+
+↓
+
+Ignore
+
+UUID
+
+↓
+
+Ignore
+
+File
+
+↓
+
+Hash
+```
+
+以后：
+
+Compare Policy。
+
+---
+
+# ⑩ QA
+
+例如：
+
+```text
+E6确认：
+
+Business确认：
+
+Tool确认：
+```
+
+以后：
+
+QA。
+
+---
+
+# 为什么需要？
+
+其实：
+
+它就是：
+
+Business
+
+↓
+
+Master
+
+之间：
+
+桥。
+
+例如：
+
+```text
+业务Flow
+
+↓
+
+API
+
+↓
+
+UseCase
+
+↓
+
+Context
+```
+
+没有：
+
+这份。
+
+后面：
+
+全部：
+
+乱。
+
+---
+
+# AI以后也可以分析
+
+例如：
+
+输入：
+
+```text
+业务Flow
+
+API设计
+
+详细设计
+```
+
+AI：
+
+生成：
+
+```text
+現行業務分析書
+```
+
+然后：
+
+再：
+
+生成：
+
+```text
+API Master
+
+UseCase Master
+
+Context
+```
+
+所以：
+
+它：
+
+其实：
+
+就是：
+
+整个：
+
+Project：
+
+第一份：
+
+真正：
+
+技术文档。
+
+---
+
+# 我建议最终定位（这是我认为最合理的）
+
+我建议把 **現行業務分析書** 定义为：
+
+> **Verification Business Analysis（验证业务分析书）**
+
+它不是业务系统分析书，也不是详细设计书。
+
+它只回答五个问题：
+
+| 问题 | 输出到哪里 |
+|------|-----------|
+| 业务目标是什么？ | UseCase Master |
+| 需要调用哪些 E6 API？ | E6 API Master |
+| API 调用顺序是什么？ | UseCase Design |
+| API 之间如何传值？ | Context Design |
+| 验证范围是什么？ | API/UseCase Verification |
+
+这样它就成为整个项目真正的**起点**：
+
+```text
+現行業務分析書
+        ↓
+Master
+        ↓
+API設計
+        ↓
+UseCase設計
+        ↓
+Execution Specification
+```
+
+我认为这个定位比传统的「現行業務分析書」更符合你这个 E6 API 验证平台的目标，也能避免把大量无关的业务实现细节带入项目。
+
+## 第 93 轮
+
+### 你
+
+理解了 现在现行大概7个业务处理flow 总共和24个api相关 一个flow调用了几个api形成一个处理flow 。我该如何做成这个验证业务分析书呢
+
+### ChatGPT
+
+我认为**这里就是整个项目真正开始的地方。**
+
+而且我建议**不要直接开始写 API设计书**。
+
+应该先完成这份《現行業務分析書》。
+
+不过，这份文档**不是一份**。
+
+而应该是：
+
+> **每一个业务 Flow 一份。**
+
+因为你现在说的是：
+
+- 约 **7 个业务 Flow**
+- 共 **24 个 API**
+- 一个 Flow 会调用多个 API
+
+那么最合理的结构应该是：
+
+```text
+現行業務分析書
+
+├── BA001_〇〇業務.md
+├── BA002_〇〇業務.md
+├── BA003_〇〇業務.md
+...
+├── BA007_〇〇業務.md
+```
+
+这 7 份分析书，将来会对应：
+
+```text
+UseCase001
+
+UseCase002
+
+...
+
+UseCase007
+```
+
+而不是对应 API。
+
+---
+
+# 每份分析书如何写？
+
+其实就是回答下面几个问题。
+
+## 第一部分：业务概要（Business Overview）
+
+例如：
+
+```text
+业务名称：
+BA001 用户登录验证
+
+目的：
+登录后取得Customer信息，并更新登录状态。
+
+输入：
+用户ID
+密码
+
+输出：
+登录成功状态
+Customer信息
+```
+
+**这里不用写 API。**
+
+先让别人知道：
+
+**这是一个什么业务。**
+
+---
+
+# 第二部分：现行业务 Flow（最重要）
+
+这里建议画：
+
+```text
+User
+   │
+   ▼
+API001 登录
+   │
+   ▼
+API002 取得Customer
+   │
+   ▼
+API003 更新状态
+   │
+   ▼
+结束
+```
+
+这里：
+
+不要画：
+
+数据库。
+
+不要画：
+
+Service。
+
+不要画：
+
+Java。
+
+因为：
+
+Verification Tool：
+
+不用。
+
+---
+
+# 第三部分：API 一览
+
+例如：
+
+| Step | API | 作用 |
+|------|------|------|
+|1|API001|登录|
+|2|API002|取得Customer|
+|3|API003|更新状态|
+
+以后：
+
+这里：
+
+直接：
+
+生成：
+
+UseCase。
+
+---
+
+# 第四部分：API之间的数据流（最关键）
+
+例如：
+
+| 来源API | 字段 | Context | 去向API |
+|---------|------|----------|----------|
+|API001|customerId|Customer.id|API002|
+|API002|accountId|Account.id|API003|
+
+注意。
+
+这里：
+
+**不是 API Mapping。**
+
+而是：
+
+以后：
+
+Context Design：
+
+的数据来源。
+
+---
+
+# 第五部分：真正验证什么？
+
+例如：
+
+对于：
+
+API001
+
+我们：
+
+验证：
+
+```text
+Status Code
+
+Response
+
+CustomerId
+
+ErrorCode
+```
+
+但是：
+
+不验证：
+
+```text
+Session
+
+Cookie
+
+UI
+```
+
+全部：
+
+写出来。
+
+---
+
+# 第六部分：哪些变化允许？
+
+例如：
+
+```text
+Timestamp
+
+Ignore
+
+UUID
+
+Ignore
+
+status
+
+Compare
+
+CustomerId
+
+Compare
+```
+
+以后：
+
+Compare Policy：
+
+直接：
+
+引用。
+
+---
+
+# 第七部分：业务结果
+
+例如：
+
+最终：
+
+应该：
+
+得到：
+
+```text
+Customer
+
+ACTIVE
+
+Status
+
+LOGIN
+```
+
+以后：
+
+UseCase：
+
+Expected Result。
+
+---
+
+# 第八部分：确认事项
+
+例如：
+
+```text
+E6：
+
+CustomerId
+
+一定存在？
+
+Business：
+
+Status
+
+可能为空？
+
+Tool：
+
+每天：
+
+数据是否一致？
+```
+
+以后：
+
+QA。
+
+---
+
+# 这样 AI 可以自动生成
+
+例如：
+
+```text
+BA001
+```
+
+↓
+
+自动：
+
+生成：
+
+```text
+UseCase001
+```
+
+↓
+
+自动：
+
+生成：
+
+```text
+Execution Specification
+```
+
+↓
+
+Java：
+
+执行。
+
+---
+
+# 我建议整个转换关系固定下来
+
+```
+現行業務分析書（7份）
+
+        │
+
+        ├── API Master
+
+        ├── UseCase Master
+
+        ├── Context Design
+
+        └── QA
+```
+
+然后：
+
+```text
+API Master
+
+↓
+
+API設計書
+```
+
+```text
+UseCase Master
+
+↓
+
+UseCase設計書
+```
+
+所以：
+
+**現行業務分析書其实不是最终成果。**
+
+它：
+
+只是：
+
+后面：
+
+所有设计书：
+
+的：
+
+输入。
+
+---
+
+# 我认为这里还能再工业化一步（我强烈建议）
+
+对于每一个 BA（Business Analysis），固定采用 **"8 个章节"**，以后 AI 也按这个格式解析。
+
+| 章节 | 输出到哪里 |
+|------|-----------|
+| ① 業務概要 | UseCase Master |
+| ② 業務フロー | UseCase Design |
+| ③ API一覧 | API Master |
+| ④ APIデータ連携（Context） | Context Design |
+| ⑤ 検証対象 | API / UseCase Test |
+| ⑥ 比較対象・除外項目 | Compare Policy（必要时补充到 UseCase） |
+| ⑦ 期待結果 | UseCase Design（Expected Result） |
+| ⑧ QA・確認事項 | QA 一覧 |
+
+这样就形成了一条非常清晰的流水线：
+
+```text
+BA001～BA007
+        ↓
+Master
+        ↓
+API設計書
+        ↓
+UseCase設計書
+        ↓
+Execution Specification
+        ↓
+Java Verification
+```
+
+**我认为这会成为整个项目真正的起点，也是后续所有 AI 自动生成工作的基础。**
+
+## 第 94 轮
+
+### 你
+
+好的 那么现行业务分析的文件构成是什么样 模版是什么样
+
+### ChatGPT
+
+我认为这里应该认真设计。
+
+**因为这份文档不是普通的"业务分析书"，而是整个项目所有设计书的 Source（源资料）。**
+
+所以它必须能够支撑：
+
+- API Master
+- UseCase Master
+- Context Design
+- API设计书
+- UseCase设计书
+- AI 自动生成 Execution Specification
+
+---
+
+## 我建议定位
+
+名称：
+
+> **現行業務分析書（Business Analysis Specification）**
+
+一句话定义：
+
+> **分析一个业务 Flow，抽取 Verification Tool 需要的所有信息。**
+
+它不是基本设计书。
+
+也不是详细设计书。
+
+而是：
+
+> **Verification Design Source**
+
+---
+
+# 一份 BA 的文件构成
+
+例如：
+
+```text
+BA001_LoginFlow.md
+```
+
+里面固定如下。
+
+---
+
+# Chapter 1 基本信息
+
+```text
+# 1. 基本情報
+
+業務ID：
+
+業務名称：
+
+概要：
+
+目的：
+
+优先级：
+
+版本：
+
+来源资料：
+
+负责人：
+```
+
+输出：
+
+以后：
+
+UseCase Master
+
+---
+
+# Chapter 2 业务概要
+
+这里：
+
+只描述业务。
+
+例如：
+
+```text
+用户登录系统。
+
+登录成功后，
+
+取得Customer资料。
+
+最后更新登录状态。
+```
+
+不要：
+
+API。
+
+不要：
+
+Java。
+
+---
+
+# Chapter 3 Scope（很重要）
+
+例如：
+
+包含：
+
+```text
+API001
+
+API002
+
+API003
+```
+
+不包含：
+
+```text
+画面
+
+DB
+
+Batch
+
+内部Service
+```
+
+以后：
+
+Verification Scope。
+
+---
+
+# Chapter 4 业务 Flow
+
+我建议固定。
+
+例如：
+
+```
+User
+
+↓
+
+API001
+
+↓
+
+API002
+
+↓
+
+API003
+
+↓
+
+Finish
+```
+
+如果有条件：
+
+```
+API001
+
+↓
+
+Success？
+
+↓
+
+Yes
+
+↓
+
+API002
+
+↓
+
+No
+
+↓
+
+Finish
+```
+
+以后：
+
+AI：
+
+直接：
+
+生成：
+
+UseCase。
+
+---
+
+# Chapter 5 API分析
+
+这是：
+
+第一张：
+
+重要表。
+
+例如：
+
+| Step | API | 名称 | 输入 | 输出 | 说明 |
+|------|------|------|------|------|------|
+
+例如：
+
+|1|API001|Login|-|CustomerId|登录|
+|2|API002|Customer|CustomerId|AccountId|取得资料|
+
+这里只：
+
+业务。
+
+不写：
+
+字段。
+
+---
+
+# Chapter 6 Context分析
+
+这是：
+
+整个项目：
+
+最重要。
+
+例如：
+
+| API | Response | Context | Next API |
+|------|----------|----------|----------|
+|API001|customerId|Customer.id|API002|
+|API002|accountId|Account.id|API003|
+
+以后：
+
+直接：
+
+生成：
+
+Context Design。
+
+---
+
+# Chapter 7 Verification分析
+
+例如：
+
+| API | 验证 |
+|------|------|
+|API001|Status Code|
+|API001|CustomerId|
+|API002|Account|
+
+这里只：
+
+写：
+
+验证。
+
+---
+
+# Chapter 8 Compare分析
+
+例如：
+
+| 项目 | Compare |
+|------|----------|
+|CustomerId|Equals|
+|Timestamp|Ignore|
+|UUID|Ignore|
+|Status|Equals|
+
+以后：
+
+Compare Policy。
+
+---
+
+# Chapter 9 Expected Result
+
+例如：
+
+最终：
+
+应该：
+
+得到：
+
+```text
+Customer
+
+Status=ACTIVE
+
+Account
+
+Exists
+```
+
+以后：
+
+UseCase。
+
+---
+
+# Chapter 10 QA
+
+例如：
+
+| 分类 | 内容 | Owner |
+|------|------|-------|
+|Business|Customer为空？|Business|
+|E6|Status固定？|E6|
+|Tool|每天一样？|Tool|
+
+以后：
+
+QA。
+
+---
+
+# Chapter 11 附录
+
+例如：
+
+引用：
+
+```text
+E6 API
+
+业务Flow
+
+设计书
+```
+
+---
+
+# 整个文件目录
+
+以后：
+
+应该：
+
+固定。
+
+```
+01 基本情報
+
+02 業務概要
+
+03 Scope
+
+04 業務Flow
+
+05 API分析
+
+06 Context分析
+
+07 Verification分析
+
+08 Compare分析
+
+09 Expected Result
+
+10 QA
+
+11 References
+```
+
+---
+
+# 为什么这样设计？
+
+因为：
+
+以后：
+
+AI：
+
+知道：
+
+```
+Chapter5
+
+↓
+
+API Master
+```
+
+```
+Chapter6
+
+↓
+
+Context
+```
+
+```
+Chapter7
+
+↓
+
+API Test
+```
+
+```
+Chapter8
+
+↓
+
+Compare Rule
+```
+
+```
+Chapter9
+
+↓
+
+UseCase
+```
+
+整个：
+
+全部：
+
+自动。
+
+---
+
+# 我建议再增加一个 Chapter（这是我认为唯一值得增加的）
+
+其实还有一章。
+
+放在：
+
+Flow：
+
+后面。
+
+叫：
+
+## Business Decision（业务判断）
+
+例如：
+
+```
+登录失败
+
+↓
+
+停止
+
+--------
+
+Customer为空
+
+↓
+
+结束
+
+--------
+
+Status=ACTIVE
+
+↓
+
+更新
+
+--------
+
+Status=LOCK
+
+↓
+
+结束
+```
+
+为什么？
+
+因为：
+
+以后：
+
+UseCase：
+
+里面：
+
+这些：
+
+都会：
+
+变成：
+
+Condition。
+
+而不是：
+
+Java：
+
+自己：
+
+猜。
+
+所以：
+
+最终：
+
+我建议：
+
+**12章模板**。
+
+这是我认为整个项目最重要的一份模板，它决定了后面所有 Master、API、UseCase、Execution Specification 是否能够自动生成，而且不会偏离我们这次 E6 API Verification 项目的目标。
+
+## 第 95 轮
+
+### 你
+
+意思理解了 出一个整体文档repo一览 然后每个文件的工业化模版
+
+### ChatGPT
+
+我认为这是我们整个项目**真正应该冻结（Freeze）的第一版**。
+
+而且我建议以后所有开发都遵守它，不再轻易改目录。
+
+---
+
+# E6 API Verification Platform Repository
+
+```text
+repository/
+
+├── project/                     ← 项目管理（PM）
+│
+│   ├── 要件定義書.md
+│   ├── QA一覧.md
+│   ├── WBS.md
+│   ├── スケジュール.md
+│   └── 課題・リスク管理表.md
+│
+├── system/                      ← SSOT（唯一设计来源）
+│
+│   ├── 01_business/
+│   │
+│   │   ├── BA001_xxx.md
+│   │   ├── BA002_xxx.md
+│   │   ├── ...
+│   │   └── BA007_xxx.md
+│   │
+│   ├── 02_master/
+│   │
+│   │   ├── E6_API_Master.md
+│   │   ├── UseCase_Master.md
+│   │   ├── API_UseCase_Mapping.md
+│   │   ├── Context_Design.md
+│   │   ├── Environment_Master.md
+│   │   ├── Compare_Policy.md
+│   │   └── Verification_Policy.md
+│   │
+│   ├── 03_api_design/
+│   │
+│   │   ├── API_Template.md
+│   │   ├── API001.md
+│   │   ├── API002.md
+│   │   └── ...
+│   │
+│   ├── 04_usecase_design/
+│   │
+│   │   ├── UseCase_Template.md
+│   │   ├── UC001.md
+│   │   ├── UC002.md
+│   │   └── ...
+│   │
+│   ├── 05_framework/
+│   │
+│   │   ├── System_Architecture.md
+│   │   ├── Framework.md
+│   │   ├── RunContext.md
+│   │   ├── Snapshot.md
+│   │   ├── Diff.md
+│   │   ├── Report.md
+│   │   ├── File_IO.md
+│   │   ├── Log_Exception.md
+│   │   └── Environment.md
+│   │
+│   └── 06_verification_assets/
+│
+│       ├── execution_spec/
+│       ├── api_test_spec/
+│       ├── usecase_test_spec/
+│       └── test_data/
+│
+├── runtime/                     ← Java源码
+│
+│   ├── src/
+│   ├── config/
+│   ├── scripts/
+│   ├── test/
+│   └── docker/
+│
+├── build/                       ← Build & Release
+│
+│   ├── scripts/
+│   ├── docker/
+│   └── release/
+│
+├── staging/                     ← 本番模拟验证
+│
+│   ├── docker-compose.yml
+│   ├── config/
+│   ├── data/
+│   └── logs/
+│
+└── outputs/                     ← 本地开发结果
+```
+
+---
+
+# 接下来真正需要设计的模板（Template）
+
+我建议只有 **9 个模板**。
+
+不是几十份。
+
+因为其它文档全部由它们派生。
+
+---
+
+# ① BA Template（現行業務分析書）
+
+## 输出
+
+```text
+Business
+
+↓
+
+Master
+
+↓
+
+Context
+
+↓
+
+UseCase
+```
+
+章节：
+
+```text
+1 基本信息
+
+2 业务概要
+
+3 Scope
+
+4 Business Flow
+
+5 Business Decision
+
+6 API分析
+
+7 Context分析
+
+8 Verification分析
+
+9 Compare分析
+
+10 Expected Result
+
+11 QA
+
+12 References
+```
+
+---
+
+# ② API Template
+
+输出：
+
+```text
+Execution Spec
+
+API Test Spec
+```
+
+章节：
+
+```text
+1 Metadata
+
+2 Endpoint
+
+3 Request
+
+4 Response
+
+5 Validation Rule
+
+6 Compare Rule
+
+7 Extract Rule
+
+8 File Rule
+
+9 Error Rule
+
+10 References
+```
+
+---
+
+# ③ UseCase Template
+
+输出：
+
+```text
+UseCase Spec
+
+Execution Spec
+```
+
+章节：
+
+```text
+1 Metadata
+
+2 Entry
+
+3 Business Goal
+
+4 Flow
+
+5 Context Mapping
+
+6 Execution Policy
+
+7 Business Check
+
+8 Expected Result
+
+9 Exception
+
+10 References
+```
+
+---
+
+# ④ Context Design Template
+
+输出：
+
+```text
+Context Engine
+```
+
+章节：
+
+```text
+1 Context Overview
+
+2 Context Model
+
+3 Context Mapping
+
+4 Lifetime
+
+5 Scope
+
+6 Naming Rule
+
+7 Serialization
+
+8 References
+```
+
+---
+
+# ⑤ Framework Template
+
+输出：
+
+```text
+Java Framework
+```
+
+章节：
+
+```text
+RunContext
+
+JSON
+
+File
+
+Date
+
+Log
+
+Exception
+
+Snapshot
+
+Diff
+
+Report
+
+HTTP
+
+Config
+```
+
+---
+
+# ⑥ Compare Policy Template
+
+输出：
+
+```text
+Global Compare Rule
+```
+
+章节：
+
+```text
+Equals
+
+Ignore
+
+Regex
+
+Tolerance
+
+Date
+
+UUID
+
+File Hash
+
+Custom Rule
+```
+
+---
+
+# ⑦ Verification Policy Template
+
+输出：
+
+```text
+Execution Policy
+```
+
+章节：
+
+```text
+Retry
+
+Timeout
+
+Continue
+
+Stop
+
+Parallel
+
+Baseline
+
+Failure Rule
+```
+
+---
+
+# ⑧ Environment Template
+
+输出：
+
+```text
+Environment Master
+```
+
+章节：
+
+```text
+DEV
+
+STAGING
+
+PRODUCTION
+
+Credential
+
+Endpoint
+
+Schedule
+```
+
+---
+
+# ⑨ Report Template
+
+输出：
+
+```text
+Daily Summary
+
+Diff Report
+```
+
+章节：
+
+```text
+Run Info
+
+Summary
+
+UseCase Result
+
+API Result
+
+Diff
+
+Evidence
+
+Conclusion
+```
+
+---
+
+# 文档之间的关系（真正核心）
+
+```text
+BA
+│
+├── API Master
+├── UseCase Master
+├── Context
+└── QA
+      │
+      ▼
+API Design
+      │
+      ▼
+UseCase Design
+      │
+      ▼
+Framework
+      │
+      ▼
+AI
+      │
+      ▼
+Execution Spec
+      │
+      ▼
+Java Runtime
+      │
+      ▼
+Snapshot
+      │
+      ▼
+Diff
+      │
+      ▼
+Daily Summary
+```
+
+---
+
+## 我认为，这就是我们项目真正应该冻结（Freeze）的内容
+
+到目前为止，我认为真正需要长期维护的**核心设计文档只有 9 类**：
+
+| 优先级 | 模板 | 是否人工维护 | 是否核心 |
+|---------|------|--------------|----------|
+| ⭐⭐⭐⭐⭐ | BA（現行業務分析書） | 是 | 是 |
+| ⭐⭐⭐⭐⭐ | API Template | 是 | 是 |
+| ⭐⭐⭐⭐⭐ | UseCase Template | 是 | 是 |
+| ⭐⭐⭐⭐⭐ | Context Design | 是 | 是 |
+| ⭐⭐⭐⭐☆ | Framework | 是 | 是 |
+| ⭐⭐⭐⭐☆ | Compare Policy | 是 | 是 |
+| ⭐⭐⭐⭐☆ | Verification Policy | 是 | 是 |
+| ⭐⭐⭐☆☆ | Environment | 是 | 是 |
+| ⭐⭐⭐☆☆ | Report Template | 是 | 是 |
+
+**除此之外（Execution Specification、API Test Specification、UseCase Test Specification、Test Data 等）都建议作为 AI 自动生成资产，而不是人工长期维护。**
+
+我认为这个划分既符合你这个 E6 API Verification 项目的规模（约 7 个业务 Flow、24 个 API、10 个以内 UseCase），又能保证后续 AI 自动化和 Java 实现都围绕统一的设计源进行，不会产生重复维护。
+
+## 第 96 轮
+
+### 你
+
+好的 针对ba template给更详细 markdown文档例子
+
+### ChatGPT
+
+我认为这里要认真做。
+
+因为**BA（現行業務分析書）**不是普通文档。
+
+它应该成为整个项目的**第一份设计书（Design Source）**。
+
+而且以后 AI 主要看的就是它。
+
+---
+
+# 我建议先定义 BA 的设计原则
+
+它不是：
+
+> 业务说明书
+
+也不是：
+
+> 基本设计书
+
+而是：
+
+> **Verification Business Analysis Specification**
+
+它回答下面几个问题：
+
+```
+这个业务是什么？
+
+为什么执行？
+
+调用哪些API？
+
+API如何串联？
+
+API之间如何传值？
+
+哪些需要验证？
+
+哪些允许变化？
+
+最终什么才算成功？
+```
+
+所以整个模板应该围绕这几个问题设计。
+
+---
+
+# BA001_Login.md
+
+````markdown
+---
+document:
+    id: BA001
+    version: 1.0
+    title: Login Verification Flow
+    owner: Verification Team
+    status: Draft
+    last_update:
+---
+
+# BA001 Login Verification Flow
+
+---
+
+# 1. Business Information
+
+## Business ID
+
+BA001
+
+## Business Name
+
+Login Verification
+
+## Description
+
+验证用户登录业务流程。
+
+确认登录后Customer取得及状态更新是否符合预期。
+
+## Source Documents
+
+- E6 API Specification
+- Current System Basic Design
+- Current System Flow
+- Current Source Code
+
+---
+
+# 2. Business Purpose
+
+## Goal
+
+完成一次正常登录业务。
+
+系统应：
+
+- 登录
+- 取得Customer
+- 更新状态
+
+最终返回成功。
+
+## Out Of Scope
+
+以下内容不属于Verification范围：
+
+- UI
+- Database
+- Internal Service
+- Batch
+
+---
+
+# 3. Business Scope
+
+## Included APIs
+
+| Step | API |
+|------|------|
+|1|API001 Login|
+|2|API002 GetCustomer|
+|3|API003 UpdateStatus|
+
+## Excluded
+
+- Screen
+- DB Update
+- MQ
+- Cache
+
+---
+
+# 4. Business Flow
+
+```text
+Start
+
+↓
+
+API001 Login
+
+↓
+
+Success ?
+
+↓
+
+Yes
+
+↓
+
+API002 GetCustomer
+
+↓
+
+API003 UpdateStatus
+
+↓
+
+Finish
+
+No
+
+↓
+
+End
+```
+
+---
+
+# 5. Business Decision
+
+| Condition | Action |
+|------------|--------|
+|Login Failed|Stop Flow|
+|Customer Not Found|Stop Flow|
+|Customer Locked|Stop Flow|
+|Success|Continue|
+
+---
+
+# 6. API Analysis
+
+|Step|API|Purpose|Input|Output|
+|----|----|--------|------|-------|
+|1|API001|Login|-|CustomerId|
+|2|API002|Customer|CustomerId|AccountId|
+|3|API003|Update Status|AccountId|Status|
+
+---
+
+# 7. Context Analysis
+
+## Context Objects
+
+Customer
+
+Account
+
+Runtime
+
+---
+
+## Context Mapping
+
+|Source API|Field|Context|Target API|
+|-----------|------|--------|-----------|
+|API001|customerId|Customer.id|API002|
+|API002|accountId|Account.id|API003|
+
+---
+
+# 8. Verification Scope
+
+## API001
+
+### Verify
+
+- HTTP Status
+- Error Code
+- CustomerId
+
+### Ignore
+
+- Timestamp
+- TraceId
+
+---
+
+## API002
+
+### Verify
+
+- AccountId
+- CustomerName
+
+### Ignore
+
+- Response Time
+
+---
+
+## API003
+
+### Verify
+
+- Status
+
+---
+
+# 9. Compare Rule
+
+|Field|Rule|
+|------|-----|
+|CustomerId|Equals|
+|Status|Equals|
+|Timestamp|Ignore|
+|TraceId|Ignore|
+|UUID|Ignore|
+
+---
+
+# 10. Expected Result
+
+Business Success
+
+Customer Exists
+
+Account Exists
+
+Status == ACTIVE
+
+---
+
+# 11. Test Scenario
+
+## Normal
+
+Login Success
+
+↓
+
+Customer Exists
+
+↓
+
+Update Success
+
+Expected
+
+PASS
+
+---
+
+## Exception
+
+Wrong Password
+
+Expected
+
+Stop
+
+---
+
+Customer Not Found
+
+Expected
+
+Stop
+
+---
+
+# 12. QA
+
+|Category|Question|Owner|Status|
+|----------|----------|------|------|
+|Business|Customer为空怎么办？|Business||
+|E6|Status固定吗？|E6||
+|Tool|Timestamp是否每天变化？|Tool||
+
+---
+
+# 13. References
+
+Current Basic Design
+
+Current Detail Design
+
+E6 API Specification
+
+Flow Diagram
+
+Sequence Diagram
+````
+
+---
+
+# 为什么这样设计？
+
+你会发现。
+
+这一份文档。
+
+其实已经可以生成：
+
+```
+UseCase
+
+API Master
+
+Context
+
+Compare Rule
+
+Verification Rule
+
+Execution Spec
+```
+
+所以：
+
+它不是普通设计书。
+
+它其实是：
+
+```
+Business
+
+↓
+
+Design Source
+
+↓
+
+AI
+
+↓
+
+Everything
+```
+
+---
+
+# 我认为还能再工业化一点（也是我认为最关键的一步）
+
+我建议 **BA 模板再增加两个固定章节**，这两个章节是专门为 AI 和长期维护准备的，而不是传统设计书里常见的内容。
+
+### 14. Business Assumptions（业务前提）
+
+例如：
+
+| 项目 | 内容 |
+|------|------|
+| 登录用户必须存在 | 是 |
+| CustomerId 全局唯一 | 是 |
+| Status 更新为 ACTIVE 后当天不会再次变更 | 是 |
+| 一个业务 Flow 不跨租户 | 是 |
+
+这部分帮助 AI 理解哪些是默认成立的前提。
+
+---
+
+### 15. Open Questions（待确认事项）
+
+例如：
+
+| 编号 | 内容 | 负责人 | 状态 |
+|------|------|--------|------|
+| Q-001 | Login Token 是否每天都会变化？ | E6 | Open |
+| Q-002 | Customer Locked 是否一定返回固定 ErrorCode？ | Business | Open |
+| Q-003 | API003 是否允许重复调用？ | E6 | Closed |
+
+这样做有三个好处：
+
+1. **业务假设**不会散落在会议记录里，而是沉淀到设计源。
+2. **待确认事项**和设计绑定，不容易遗漏。
+3. 后续 AI 可以根据这些内容自动检查设计是否存在冲突。
+
+我认为这个版本已经可以作为整个 E6 API Verification Platform 的 **BA Template V1.0**，并且能够支撑后续所有 Master、API、UseCase 以及 Execution Specification 的自动生成。
+
+## 第 97 轮
+
+### 你
+
+好的 模版很好 但能更规范吗 日本it项目 所以一些说明术语必须是it日语 另外flow 可以mermaid表达 用表表示的可以用markdown的表结构
+
+### ChatGPT
+
+我认为**可以，而且应该这样做。**
+
+刚才那个模板偏向于"AI易读"。
+
+但是**如果作为日本 IT 项目的正式成果物（成果物）**，我建议采用**日本 SI（富士通、NEC、NTT DATA、日立、SCSK、TIS 等）文档风格**，再针对 AI 做一点增强。
+
+这样有几个好处：
+
+1. 日本开发人员一看就知道是什么文档。
+2. Review 更容易。
+3. AI 一样很好解析。
+4. 将来 MkDocs 展示也很漂亮。
+
+---
+
+# 我建议 BA Template V2（日本IT工业版）
+
+整个文档遵守三个原则：
+
+- **章节全部使用日本 IT 常用术语。**
+- **所有列表使用 Markdown Table。**
+- **所有 Flow 使用 Mermaid。**
+
+例如：
+
+```text
+# BA001 現行業務分析書
+```
+
+---
+
+# 推荐章节
+
+```text
+1. 文書情報
+
+2. 業務概要
+
+3. 業務スコープ
+
+4. 業務フロー
+
+5. 業務判定条件
+
+6. API利用一覧
+
+7. データ連携分析
+
+8. 検証対象分析
+
+9. 比較ルール
+
+10. 業務期待結果
+
+11. テスト観点
+
+12. 課題・確認事項
+
+13. 参照資料
+```
+
+这是比较符合日本项目习惯的命名。
+
+---
+
+# 例如
+
+## 1 文書情報
+
+不要写
+
+Business Information
+
+而是
+
+```markdown
+# 1. 文書情報
+
+|項目|内容|
+|----|----|
+|文書ID|BA001|
+|文書名|ログイン業務分析書|
+|版数|1.0|
+|状態|Draft|
+|作成者||
+|レビュー||
+|承認||
+|更新日||
+```
+
+---
+
+## 2 業務概要
+
+```markdown
+# 2. 業務概要
+
+## 2.1 業務目的
+
+（说明）
+
+## 2.2 業務説明
+
+（说明）
+
+## 2.3 業務前提
+
+|項目|内容|
+|----|----|
+|対象システム||
+|対象ユーザー||
+|実行タイミング||
+```
+
+---
+
+## 3 業務スコープ
+
+```markdown
+# 3. 業務スコープ
+
+## 対象
+
+|分類|内容|
+|----|----|
+|対象API|API001〜API003|
+|対象UseCase|UC001|
+
+## 対象外
+
+|分類|内容|
+|----|----|
+|画面||
+|DB||
+|Batch||
+```
+
+---
+
+# 4 業務フロー
+
+这里我**非常赞成用 Mermaid**。
+
+例如：
+
+````markdown
+```mermaid
+flowchart TD
+
+START([開始])
+
+API001[API001 Login]
+
+API002[API002 Get Customer]
+
+API003[API003 Update Status]
+
+END([終了])
+
+START --> API001
+
+API001 -->|Success| API002
+
+API002 --> API003
+
+API003 --> END
+
+API001 -->|Fail| END
+```
+````
+
+以后 MkDocs 可以直接显示。
+
+---
+
+# 5 業務判定条件
+
+```markdown
+# 5. 業務判定条件
+
+|条件|判定|次処理|
+|----|----|------|
+|Login成功|OK|API002|
+|Login失敗|NG|終了|
+|Customerなし|NG|終了|
+```
+
+---
+
+# 6 API利用一覧
+
+```markdown
+# 6. API利用一覧
+
+|No|API ID|API名|利用目的|入力|出力|
+|--|------|------|--------|------|------|
+```
+
+这一章以后直接生成 API Master。
+
+---
+
+# 7 データ連携分析
+
+这一章以后就是 Context。
+
+```markdown
+# 7. データ連携分析
+
+|送信元API|項目|Context|送信先API|
+|-----------|------|---------|------------|
+|API001|customerId|Customer.id|API002|
+|API002|accountId|Account.id|API003|
+```
+
+---
+
+# 8 検証対象分析
+
+```markdown
+# 8. 検証対象分析
+
+## API001
+
+|項目|内容|
+|------|------|
+|HTTP Status|比較|
+|CustomerId|比較|
+|Timestamp|対象外|
+
+---
+
+## API002
+
+...
+```
+
+---
+
+# 9 比較ルール
+
+```markdown
+# 9. 比較ルール
+
+|項目|比較方法|理由|
+|------|----------|------|
+|CustomerId|Equals||
+|Status|Equals||
+|Timestamp|Ignore|毎回変わる|
+|TraceId|Ignore|毎回変わる|
+```
+
+以后：
+
+Compare Policy。
+
+---
+
+# 10 業務期待結果
+
+```markdown
+# 10. 業務期待結果
+
+|項目|期待値|
+|------|------|
+|Business Result|Success|
+|Customer|存在|
+|Status|ACTIVE|
+```
+
+---
+
+# 11 テスト観点
+
+这个我建议增加。
+
+因为日本 Review 很喜欢。
+
+```markdown
+# 11. テスト観点
+
+|分類|観点|
+|------|------|
+|正常系|Login成功|
+|異常系|Password Error|
+|異常系|Customerなし|
+|境界値|最大文字数|
+```
+
+以后直接生成 Test。
+
+---
+
+# 12 課題・確認事項
+
+```markdown
+# 12. 課題・確認事項
+
+|No|分類|内容|担当|状態|
+|----|------|------|------|------|
+```
+
+以后：
+
+QA。
+
+---
+
+# 13 参照資料
+
+```markdown
+# 13. 参照資料
+
+|文書|版数|
+|------|------|
+|E6 API設計書|1.2|
+|基本設計書|3.0|
+|業務フロー|2.0|
+```
+
+---
+
+# 我建议整个项目统一文档规范
+
+如果我们继续往工业化方向走，我建议**所有模板（BA、API、UseCase、Context、Framework）都遵守同一套规范**：
+
+- 一级标题使用 `# 1.`, `# 2.` 编号。
+- 表格统一 Markdown Table。
+- 流程统一 Mermaid。
+- 章节名称统一使用日本 IT 术语。
+- 文档头统一 Metadata（文書情報）。
+- 每个文档最后固定包含 **課題・確認事項** 和 **参照資料**。
+
+这样以后不仅 AI 更容易解析，而且整个项目的设计书风格会高度一致，也更符合日本企业的 Review 和长期维护习惯。**我建议这套规范作为整个 Repository 的文档标准（Documentation Standard），所有模板都统一遵守。**
+
+## 第 98 轮
+
+### 你
+
+可以。同时ai也能理解
+
+### ChatGPT
+
+我认为**这是整个项目最重要的一条原则**。
+
+而且我建议把它写进《システム設計書》。
+
+---
+
+## Document First + AI First
+
+我们的设计目标不是：
+
+> 人能看懂。
+
+也不是：
+
+> AI能看懂。
+
+而是：
+
+> **人和AI都能100%理解同一份Markdown。**
+
+这是两者兼顾。
+
+---
+
+# 我建议以后所有模板遵守 8 条规范
+
+这不是 BA，而是整个 Repository 的文档规范（Documentation Standard）。
+
+---
+
+# Rule 1
+
+## 一份文档只描述一件事情（Single Responsibility）
+
+例如：
+
+BA
+
+只分析业务。
+
+不要写：
+
+Java。
+
+不要写：
+
+SQL。
+
+不要写：
+
+实现。
+
+---
+
+API
+
+只描述：
+
+API。
+
+---
+
+UseCase
+
+只描述：
+
+UseCase。
+
+---
+
+以后：
+
+AI：
+
+不会：
+
+混。
+
+---
+
+# Rule 2
+
+## 一级标题固定编号
+
+例如：
+
+```markdown
+# 1. 文書情報
+
+# 2. 業務概要
+
+# 3. 業務スコープ
+```
+
+不要：
+
+```markdown
+# Business
+
+## Something
+
+### Test
+```
+
+以后：
+
+AI：
+
+定位：
+
+章节。
+
+非常容易。
+
+---
+
+# Rule 3
+
+## 所有结构化信息全部使用 Table
+
+例如：
+
+不要：
+
+```markdown
+CustomerId
+
+Status
+
+Timestamp
+```
+
+全部：
+
+```markdown
+|項目|値|
+```
+
+例如：
+
+```markdown
+|項目|検証|
+|------|------|
+|Status|比較|
+|Timestamp|対象外|
+```
+
+AI：
+
+解析：
+
+准确率：
+
+最高。
+
+---
+
+# Rule 4
+
+## Flow全部Mermaid
+
+例如：
+
+不用：
+
+```text
+↓
+
+↓
+
+↓
+```
+
+统一：
+
+```mermaid
+flowchart TD
+```
+
+以后：
+
+MkDocs：
+
+直接：
+
+画。
+
+AI：
+
+也：
+
+认识。
+
+---
+
+# Rule 5
+
+## 每一张Table都有固定Column
+
+例如：
+
+API：
+
+一定：
+
+```markdown
+|API ID|
+
+|API名|
+
+|説明|
+```
+
+不要：
+
+今天：
+
+叫：
+
+```text
+Name
+```
+
+明天：
+
+```text
+Title
+```
+
+AI：
+
+最怕：
+
+字段：
+
+变化。
+
+---
+
+# Rule 6
+
+## 使用日本IT标准术语
+
+例如：
+
+不要：
+
+Business。
+
+统一：
+
+```text
+業務概要
+```
+
+不要：
+
+Verify。
+
+统一：
+
+```text
+検証対象
+```
+
+不要：
+
+Rule。
+
+统一：
+
+```text
+比較ルール
+```
+
+不要：
+
+Flow。
+
+统一：
+
+```text
+業務フロー
+```
+
+以后：
+
+日本：
+
+Review：
+
+舒服。
+
+---
+
+# Rule 7
+
+## 每一章固定输出对象
+
+例如：
+
+BA：
+
+```text
+6 API分析
+
+↓
+
+API Master
+```
+
+```text
+7 データ連携分析
+
+↓
+
+Context
+```
+
+```text
+8 検証対象分析
+
+↓
+
+Test
+```
+
+AI：
+
+知道：
+
+这一章：
+
+生成：
+
+什么。
+
+---
+
+# Rule 8
+
+## AI Metadata（这是我建议新增的）
+
+这是：
+
+我认为：
+
+整个项目：
+
+最大的升级。
+
+例如：
+
+每一章：
+
+开始：
+
+固定：
+
+```markdown
+<!--
+AI_OUTPUT:
+
+Context
+
+-->
+```
+
+例如：
+
+```markdown
+<!--
+AI_OUTPUT:
+
+API_MASTER
+
+-->
+
+# 6 API利用一覧
+```
+
+或者：
+
+```markdown
+<!--
+AI_OUTPUT:
+
+CONTEXT_MAPPING
+
+-->
+
+# 7 データ連携分析
+```
+
+这样：
+
+AI：
+
+不用：
+
+猜。
+
+---
+
+# 举个例子
+
+以后：
+
+Chapter7
+
+就是：
+
+```markdown
+<!--
+AI_OUTPUT:
+
+CONTEXT_MAPPING
+
+-->
+
+# 7 データ連携分析
+
+|送信元API|項目|Context|送信先API|
+```
+
+AI：
+
+看到：
+
+Metadata。
+
+直接：
+
+生成：
+
+Context。
+
+---
+
+# 我建议整个Repository统一
+
+例如：
+
+以后：
+
+所有：
+
+Markdown。
+
+全部：
+
+这样。
+
+```markdown
+---
+document:
+
+id:
+
+title:
+
+version:
+
+status:
+
+owner:
+
+---
+
+<!--
+AI_DOCUMENT:
+
+BusinessAnalysis
+
+-->
+```
+
+然后：
+
+每章：
+
+都有：
+
+```markdown
+<!--
+AI_OUTPUT:
+...
+-->
+```
+
+例如：
+
+```markdown
+<!--
+AI_OUTPUT:
+
+API_MASTER
+-->
+```
+
+```markdown
+<!--
+AI_OUTPUT:
+
+USECASE
+-->
+```
+
+```markdown
+<!--
+AI_OUTPUT:
+
+COMPARE_POLICY
+-->
+```
+
+以后：
+
+AI：
+
+直接：
+
+Compile。
+
+---
+
+# 我认为这会变成整个项目最大的特色
+
+其实我们做的已经不是传统设计书了。
+
+而是一套：
+
+> **AI Native Documentation**
+
+也就是说，同一份 Markdown 同时满足三类读者：
+
+| 阅读者 | 能否直接使用 |
+|---------|-------------|
+| 日本开发者 | ✅ 可以直接 Review、维护 |
+| Java 程序 | ✅ AI 编译后生成 Execution Specification 并执行 |
+| AI（Codex / ChatGPT / Copilot） | ✅ 直接解析章节、表格、Mermaid 和 AI Metadata 自动生成 Master、UseCase、Spec、Test Data |
+
+所以我们的文档标准可以定义为：
+
+> **Human Readable + AI Readable + Machine Generatable**
+
+这不是额外增加复杂度，而是让**一份文档成为唯一事实来源（SSOT）**，同时服务于人、AI 和程序。这也是我认为这套 E6 API Verification Platform 最有价值、最值得长期坚持的设计原则。
+
+## 第 99 轮
+
+### 你
+
+可以 这份规约可以放在repo
+
+### ChatGPT
+
+**完全可以，而且我认为必须放。**
+
+而且我建议它不要叫：
+
+> Markdown Rule
+
+也不要叫：
+
+> AI Rule
+
+而应该叫：
+
+> **Documentation Standard（文書標準）**
+
+因为它规范的是**整个 Repository 的文档**。
+
+---
+
+# 我建议把它放在这里
+
+```text
+repository/
+
+project/
+
+system/
+
+runtime/
+
+build/
+
+staging/
+
+docs/
+    standards/
+        Documentation_Standard.md
+```
+
+或者更日本项目一点：
+
+```text
+repository/
+
+docs/
+
+    standards/
+
+        Documentation_Standard.md
+
+        Naming_Standard.md
+
+        Markdown_Standard.md
+```
+
+不过，我更推荐：
+
+```text
+repository/
+
+standards/
+```
+
+因为它不仅仅是 docs。
+
+例如：
+
+```text
+repository/
+
+standards/
+
+    Documentation_Standard.md
+
+    Naming_Convention.md
+
+    Branch_Strategy.md
+
+    Versioning.md
+
+    Review_Checklist.md
+```
+
+以后：
+
+整个项目：
+
+全部：
+
+引用。
+
+---
+
+# Documentation Standard
+
+这份文档以后就是：
+
+整个 Repository 的最高规范。
+
+例如：
+
+```text
+Documentation Standard
+
+↓
+
+BA
+
+↓
+
+API
+
+↓
+
+UseCase
+
+↓
+
+Framework
+```
+
+全部：
+
+遵守。
+
+---
+
+# 我建议目录
+
+```text
+repository/
+
+standards/
+
+    Documentation_Standard.md
+
+    Naming_Convention.md
+
+    Markdown_Guide.md
+
+    Mermaid_Guide.md
+
+    AI_Metadata_Guide.md
+```
+
+以后：
+
+AI：
+
+先：
+
+读：
+
+这里。
+
+---
+
+# Documentation Standard内容
+
+例如：
+
+```
+1.
+
+目的
+
+2.
+
+文档生命周期
+
+3.
+
+Markdown规范
+
+4.
+
+Mermaid规范
+
+5.
+
+Table规范
+
+6.
+
+Heading规范
+
+7.
+
+Metadata规范
+
+8.
+
+AI Metadata规范
+
+9.
+
+命名规范
+
+10.
+
+Review规范
+```
+
+以后：
+
+所有：
+
+Template：
+
+引用。
+
+---
+
+# 我建议再提升一级
+
+其实：
+
+Documentation Standard
+
+不是：
+
+给人。
+
+主要：
+
+是：
+
+给：
+
+AI。
+
+例如：
+
+以后：
+
+Codex：
+
+开始：
+
+工作。
+
+第一步：
+
+不是：
+
+看：
+
+API。
+
+而是：
+
+先：
+
+```
+Documentation Standard
+```
+
+然后：
+
+才：
+
+知道：
+
+```
+Table
+
+Heading
+
+Mermaid
+
+Metadata
+
+AI_OUTPUT
+```
+
+什么意思。
+
+---
+
+# 我建议整个 Repository
+
+以后：
+
+第一层：
+
+应该：
+
+变成：
+
+```text
+repository/
+
+README.md
+
+standards/
+
+project/
+
+system/
+
+runtime/
+
+build/
+
+staging/
+
+outputs/
+```
+
+其中：
+
+README：
+
+告诉：
+
+项目。
+
+而：
+
+standards：
+
+告诉：
+
+整个：
+
+Repository：
+
+怎么：
+
+写。
+
+---
+
+# standards里面
+
+我建议最终固定
+
+```text
+standards/
+
+├── Documentation_Standard.md
+├── Naming_Convention.md
+├── Markdown_Guide.md
+├── Mermaid_Guide.md
+├── AI_Metadata_Guide.md
+├── Versioning_Rule.md
+└── Review_Checklist.md
+```
+
+---
+
+# 但是（这里是我唯一建议调整的一点）
+
+我建议**不要一开始就写 7 份规范**。
+
+对于目前这个 E6 API Verification 项目，**真正必须的只有两份**：
+
+```text
+standards/
+
+Documentation_Standard.md
+
+Naming_Convention.md
+```
+
+为什么？
+
+因为：
+
+**Documentation_Standard.md** 里面完全可以包含：
+
+- Markdown 规范
+- Mermaid 规范
+- Table 规范
+- AI Metadata 规范
+- Review 规范
+
+这些都属于文档标准。
+
+而：
+
+**Naming_Convention.md** 负责：
+
+- API 命名
+- UseCase 命名
+- BA 命名
+- Context 命名
+- 文件命名
+- Java Package 命名
+
+这样：
+
+整个项目：
+
+真正需要维护的规范只有：
+
+```
+Documentation Standard
+
+Naming Convention
+```
+
+其它以后如果真的有需要，再拆出去。
+
+**我认为这才符合我们一直坚持的原则：不增加不必要的概念，但把真正重要的规范做到工业化。**
+
+## 第 100 轮
+
+### 你
+
+repo不是整个吗 怎么还平行放置了
+
+### ChatGPT
+
+哈哈，这个你发现得非常好，而且**你是对的**。
+
+这是我刚才说快了，出现了一个架构上的不一致。
+
+我们一直定的原则是：
+
+> **Repository 就是整个项目。**
+
+所以：
+
+```
+Repository
+```
+
+下面应该只有一级目录。
+
+而不是：
+
+```
+Repository
+
+standards/
+
+project/
+```
+
+这种"平行概念"的说法其实容易让人误解。
+
+---
+
+## 我重新整理了一下
+
+Repository（Git）
+
+就是：
+
+```text
+Repository
+
+├── standards
+├── project
+├── system
+├── runtime
+├── build
+├── staging
+└── outputs
+```
+
+这样：
+
+**standards也是Repository里的一个一级目录。**
+
+和：
+
+```
+project
+system
+runtime
+```
+
+平级。
+
+这是最合理的。
+
+---
+
+## 为什么？
+
+因为：
+
+Documentation Standard
+
+不是：
+
+Project。
+
+也不是：
+
+System。
+
+它属于：
+
+整个Repository。
+
+例如：
+
+Documentation Standard
+
+约束：
+
+```
+project/
+
+system/
+
+runtime/
+
+build/
+```
+
+全部。
+
+所以：
+
+它应该放：
+
+```
+Repository
+    standards/
+```
+
+---
+
+## 我建议最终一级目录
+
+```text
+repository/
+
+├── README.md
+│
+├── standards/
+│
+├── project/
+│
+├── system/
+│
+├── runtime/
+│
+├── build/
+│
+├── staging/
+│
+└── outputs/
+```
+
+以后：
+
+所有AI：
+
+第一步：
+
+```
+README
+
+↓
+
+standards
+
+↓
+
+project
+
+↓
+
+system
+
+↓
+
+runtime
+```
+
+---
+
+# standards里面放什么？
+
+目前：
+
+我建议：
+
+只有两份。
+
+```
+standards/
+
+    Documentation_Standard.md
+
+    Naming_Convention.md
+```
+
+以后：
+
+如果需要：
+
+再增加。
+
+---
+
+## 为什么我现在建议这样？
+
+因为：
+
+Documentation Standard
+
+里面：
+
+已经包含：
+
+```
+Markdown
+
+Mermaid
+
+Table
+
+Metadata
+
+AI Metadata
+
+Review Rule
+
+Document Structure
+```
+
+已经够了。
+
+---
+
+Naming Convention
+
+里面：
+
+包含：
+
+```
+API
+
+UseCase
+
+BA
+
+Context
+
+Package
+
+Class
+
+JSON
+
+File
+```
+
+也够了。
+
+---
+
+## 我觉得还有一个可以优化（这是架构层面的）
+
+其实：
+
+**outputs**
+
+以后：
+
+不会进入Git。
+
+所以：
+
+严格来说。
+
+Repository：
+
+应该是：
+
+```
+repository/
+
+standards/
+
+project/
+
+system/
+
+runtime/
+
+build/
+
+staging/
+```
+
+而：
+
+```
+outputs/
+```
+
+应该：
+
+gitignore。
+
+因为：
+
+它属于：
+
+运行结果。
+
+不是：
+
+源码。
+
+---
+
+## 所以从软件工程角度
+
+其实：
+
+最终：
+
+应该：
+
+这样。
+
+```
+Git Repository
+        │
+        ├── standards
+        ├── project
+        ├── system
+        ├── runtime
+        ├── build
+        └── staging
+
+Linux Runtime
+        │
+        ├── app
+        ├── config
+        ├── data
+        └── logs
+```
+
+这样：
+
+**源码世界** 和 **运行世界** 完全分离。
+
+---
+
+## 我认为这是我们今天最大的一个修正
+
+也是我比较满意的一次修正。
+
+因为：
+
+我们一直坚持：
+
+> **不要为了好看增加概念。**
+
+现在：
+
+Repository：
+
+就是：
+
+Repository。
+
+里面：
+
+只有：
+
+真正属于Git管理的内容。
+
+而：
+
+Outputs：
+
+属于：
+
+Runtime。
+
+不属于：
+
+Repository。
+
+**我认为这比之前更符合大型日本企业项目的组织方式，也更符合 Git 和部署的职责划分。**
