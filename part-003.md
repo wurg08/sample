@@ -1,10 +1,10 @@
 # API流程验证设计
 
-- 来源: https://chatgpt.com/c/6a30db25-a6bc-83e8-ba19-4bc5fc0a5e28
-- 导出时间: 2026-07-02T19:57:43+09:00
-- 分片: 3/3
-- 总消息数: 286
-- 总轮数: 139
+- 来源: https://chatgpt.com/c/6a30db25-a6bc-83e8-ba19-4bc5fc0a5e28?mweb_fallback=1
+- 导出时间: 2026-07-04T10:37:12+09:00
+- 分片: 3/4
+- 总消息数: 364
+- 总轮数: 178
 
 ## 第 101 轮
 
@@ -13783,3 +13783,3045 @@ API002 --> API003
 这版固定为 **`BA_Template.md v1.0`**。后续不再改结构，只在必要时补字段说明或示例细节。
 
 下一份建议做 **`API_Template.md`**，因为 BA 里已经把 API ID、Flow、Context、Verification 的入口都整理出来了，接下来 API 模板负责承接这些内容，详细定义 Request、Response、参数、错误、文件流和字段级验证。
+
+## 第 140 轮
+
+### 你
+
+好的
+
+### ChatGPT
+
+好。`BA_Template.md v1.0` 先冻结。
+
+下一步做：
+
+```text
+system/api/API_Template.md
+```
+
+它负责承接 BA 里的：
+
+```text
+API ID
+Flow ID
+Context ID
+Verification ID
+```
+
+并详细定义：
+
+```text
+Endpoint
+Request
+Response
+Header
+Auth
+Error
+File Upload/Download
+字段级 Verification
+Extract
+API単体テスト観点
+```
+
+我下一条直接给你 **API_Template.md 完整版**。
+
+## 第 141 轮
+
+### 你
+
+好
+
+### ChatGPT
+
+好的。
+
+这一份我会比 BA 做得更严格。
+
+因为**API Design 是整个系统的核心**。
+
+你的项目不是普通 Web 开发，而是：
+
+> **API Verification Platform**
+
+所以 API Design 不能只是 Swagger 的翻版。
+
+它必须同时服务：
+
+- 日本开发人员
+- AI Agent
+- Verification Engine
+- Test Data Generator
+- Compare Engine
+- Runtime
+
+因此，我会采用**"一份 API 设计书 = 一个 API 的唯一事实来源（SSOT）"**。
+
+---
+
+# API Template 设计原则（Freeze）
+
+一个 API 文档负责：
+
+✅ API 的定义
+
+✅ Request / Response
+
+✅ Context 输入输出
+
+✅ 字段语义
+
+✅ Error
+
+✅ Verification 入口
+
+但是**不负责**：
+
+❌ Business Flow（BA）
+
+❌ UseCase（UC）
+
+❌ TestCase（Verification）
+
+❌ Compare Policy（Verification）
+
+职责保持单一。
+
+---
+
+# 我准备采用的章节（Freeze）
+
+这是我认为最适合日本企业和 AI 的结构。
+
+|No|章节|说明|
+|---|------|------|
+|1|文書情報|文档管理|
+|2|API概要|API定位、用途|
+|3|Interface|URL、Method、Auth、Header|
+|4|Request Specification|Request 全定义|
+|5|Response Specification|Response 全定义|
+|6|Business Rule|API 自身规则|
+|7|Error Specification|错误定义|
+|8|Context Mapping|输入输出 Context|
+|9|Verification Information|供 Verification 使用的信息|
+|10|Performance & Security|性能、安全、限制|
+|11|Traceability|BA、UC、Verification 关联|
+|Appendix|完整 JSON 示例|
+
+---
+
+## 这一版相比普通 API 设计最大的不同
+
+它不会只写：
+
+```json
+{
+  "customerId": "1001"
+}
+```
+
+而是每一个字段都会有：
+
+|字段|说明|
+|----|----|
+|业务意义（Business Meaning）|
+|来源（Source）|
+|去向（Target）|
+|是否 Context|
+|是否 Verification Target|
+|是否 Compare Target|
+|是否 Test Data Seed|
+
+这样后面：
+
+- AI 自动生成 TestCase
+- AI 自动生成 TestData
+- AI 自动生成 Verification
+
+都会直接利用这份设计书。
+
+---
+
+## 我准备把 API Template 做到什么程度？
+
+不是一般日本项目的 15～20 页。
+
+而是**工业版**，大约：
+
+- **60～80 页 / API 模板**
+- 每个章节都有企业级示例
+- 每个字段都有语义说明
+- 每张表都有固定格式
+- AI 可直接解析
+
+---
+
+**从下一条开始，我直接编写《API_Template.md》正式文档，不再讨论架构，不再增加概念。**这份文档会和已经冻结的 `BA_Template.md` 完整衔接，作为后续 UseCase 和 Verification 的唯一 API 规范来源。
+
+## 第 142 轮
+
+### 你
+
+比如对api调用成功，失败，各个字段必须，最大最小，输入项目类型等检查是api放在测试书里吧
+
+### ChatGPT
+
+对，这里要严格区分。
+
+**你的项目是工业级项目，所以千万不要把"定义"和"验证"混在一起。**
+
+我建议按照日本大型项目的职责划分，而且这是我认为后面 AI 最容易工作的方式。
+
+| 内容 | API设计书 | Verification（测试书） |
+|------|----------|-------------------------|
+| URL | ✅ | 引用 |
+| Method | ✅ | 引用 |
+| Request字段 | ✅ | 引用 |
+| Response字段 | ✅ | 引用 |
+| 字段类型(String、Integer...) | ✅ | 引用 |
+| 必须/可选 | ✅ | 引用 |
+| Min/Max Length | ✅ | 引用 |
+| Pattern(正则) | ✅ | 引用 |
+| Enum | ✅ | 引用 |
+| Default Value | ✅ | 引用 |
+| Header | ✅ | 引用 |
+| HTTP Status定义 | ✅ | 引用 |
+| Error Code定义 | ✅ | 引用 |
+| API调用成功测试 | ❌ | ✅ |
+| API调用失败测试 | ❌ | ✅ |
+| Boundary Test(最大最小) | ❌ | ✅ |
+| 必须项未输入 | ❌ | ✅ |
+| 类型错误(String→Number) | ❌ | ✅ |
+| Null测试 | ❌ | ✅ |
+| 空字符串测试 | ❌ | ✅ |
+| 特殊字符测试 | ❌ | ✅ |
+| SQL Injection测试 | ❌ | ✅（如果项目要求） |
+| 权限错误测试 | ❌ | ✅ |
+| Compare Rule | ❌ | ✅ |
+| Test Data | ❌ | ✅ |
+| Expected Result | ❌ | ✅ |
+
+---
+
+## 举个例子
+
+API设计书只负责定义。
+
+例如：
+
+### customerId
+
+|属性|值|
+|----|----|
+|Type|String|
+|Required|Yes|
+|Min Length|1|
+|Max Length|20|
+|Pattern|^[0-9]+$|
+|Description|顧客番号|
+
+**到这里结束。**
+
+API设计书绝不能写：
+
+> 输入 21 位应该失败。
+
+因为那已经是测试。
+
+---
+
+然后 Verification Specification 写：
+
+### TC-001
+
+```
+目的：
+正常调用
+
+Input：
+customerId=100001
+
+Expected：
+HTTP200
+
+customerId返回一致
+
+Result：
+PASS
+```
+
+---
+
+### TC-002
+
+```
+目的：
+未输入customerId
+
+Input：
+customerId=null
+
+Expected：
+HTTP400
+
+ErrorCode=E1001
+```
+
+---
+
+### TC-003
+
+```
+目的：
+长度超过20
+
+Input：
+customerId=123456789012345678901
+
+Expected：
+HTTP400
+
+ErrorCode=E1002
+```
+
+---
+
+### TC-004
+
+```
+目的：
+特殊字符
+
+Input：
+customerId=ABC#@
+
+Expected：
+HTTP400
+```
+
+---
+
+## 但是，我建议再工业化一步
+
+你的项目不是普通测试。
+
+你是要做：
+
+> **API Verification Platform**
+
+所以我建议**API设计书增加一列"Verification Metadata"**。
+
+例如：
+
+|字段|Type|Required|Min|Max|Verification Target|
+|----|----|---------|----|----|------------------|
+|customerId|String|Yes|1|20|Yes|
+|customerName|String|Yes|1|100|Yes|
+|updateTime|Datetime|No|-|-|No（Dynamic）|
+
+注意，这里不是测试。
+
+只是告诉后面的 Verification Engine：
+
+- 哪些字段需要验证；
+- 哪些字段是动态字段；
+- 哪些字段可以忽略。
+
+这样 Verification Specification 就不用再人工分析字段了，而是**AI 可以自动生成测试和比较规则**。
+
+---
+
+### 我建议我们的最终分工如下（冻结）
+
+**BA（业务事实）**
+
+> 为什么调用 API。
+
+↓
+
+**API Design（接口事实）**
+
+> API 长什么样，字段如何定义。
+
+↓
+
+**Verification Specification（验证事实）**
+
+> 如何验证 API 是否符合 API Design。
+
+↓
+
+**Execution（执行事实）**
+
+> 真正执行测试。
+
+这样每一层职责都非常清晰，而且不会出现重复维护的问题。
+
+**这是我建议冻结的设计，不再调整。**
+
+## 第 143 轮
+
+### 你
+
+不光输入参数 输出参数是否有固定值等 都要从既存api那里拿过来做输出check
+
+### ChatGPT
+
+对。这里应该这样分：
+
+**API設計書** 不只写输入，也要写输出字段的“契约”。
+**Verification仕様書** 根据这些契约生成实际检查。
+
+也就是说：
+
+```text
+API設計書 = 入出力仕様・期待契約
+Verification仕様書 = 如何执行检查
+```
+
+例如 API 设计书里的 Response 字段要这样写：
+
+| JSONPath | 項目名 | Type | Required | 固定値 | Enum | Min | Max | Dynamic | Verification Target | 備考 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| $.resultCode | resultCode | String | Yes | 0 | 0,1 | - | - | No | Yes | 正常時は0 |
+| $.status | status | String | Yes | ACTIVE | ACTIVE,INACTIVE | - | - | No | Yes | 顧客状態 |
+| $.customerId | customerId | String | Yes | - | - | 1 | 20 | No | Yes | 入力値と一致 |
+| $.updatedAt | updatedAt | DateTime | Yes | - | - | - | - | Yes | No | 実行毎に変化 |
+| $.traceId | traceId | String | No | - | - | - | - | Yes | No | 実行毎に採番 |
+
+然后 Verification 自动生成：
+
+| Test/Check | 内容 |
+|---|---|
+| Response Required Check | 必須項目是否存在 |
+| Response Type Check | 型是否一致 |
+| Response Fixed Value Check | 固定値是否一致 |
+| Response Enum Check | Enum 范围是否变化 |
+| Response Length Check | 长度是否在范围内 |
+| Response Dynamic Ignore | updatedAt、traceId 等不做一致比较 |
+| Baseline Diff Check | 和前回/承认済 Baseline 比较 |
+
+所以你的理解是对的：
+
+> 既存 API 的 Response 规格、固定值、Enum、字段类型、字段长度，都要进入 API設計書；
+> 实际每天怎么比、怎么生成 FAIL/WARN、怎么出报告，放到 Verification仕様書。
+
+下一步 API_Template 里必须加入两块：
+
+```text
+Request Specification
+Response Specification
+```
+
+并且 Response 里面必须支持：
+
+```text
+固定値
+Enum
+入力値との一致
+前API Contextとの一致
+Dynamic項目
+Baseline比較対象
+```
+
+这才符合你的 E6 API 变更检测目标。
+
+## 第 144 轮
+
+### 你
+
+好的
+
+### ChatGPT
+
+好的。下面直接进入第二份正式成果物：
+
+```text
+system/api/API_Template.md
+```
+
+:::writing{variant="document" id="73918"}
+---
+title: API設計書テンプレート
+document_id: API-TEMPLATE
+version: 1.0.0
+status: Template
+system_name: E6 API 検証対象システム
+document_type: API Design
+author:
+reviewer:
+approver:
+created:
+updated:
+---
+
+# API設計書
+
+---
+
+# 1. 文書情報
+
+## 1.1 文書管理
+
+|項目|内容|
+|----|----|
+|文書ID|API-XXX|
+|文書名称|〇〇 API設計書|
+|API ID|API-XXX|
+|API名称|（記載）|
+|対象システム|E6 API 検証対象システム|
+|対象業務|（記載）|
+|関連Business ID|BUS-XXX|
+|関連Flow ID|BF-XXX|
+|関連UseCase ID|UC-XXX|
+|版数|1.0.0|
+|状態|Draft / Review / Approved / Released|
+|作成者|（記載）|
+|レビューア|（記載）|
+|承認者|（記載）|
+|作成日|YYYY-MM-DD|
+|更新日|YYYY-MM-DD|
+
+---
+
+## 1.2 改訂履歴
+
+|版数|日付|担当|変更内容|
+|----|----|----|--------|
+|1.0.0|YYYY-MM-DD|（記載）|初版作成|
+
+---
+
+## 1.3 関連成果物
+
+|成果物分類|成果物ID|成果物名称|版数|備考|
+|----------|--------|----------|----|----|
+|現行業務分析|BA-XXX|（記載）|（記載）|（記載）|
+|UseCase|UC-XXX|（記載）|（記載）|（記載）|
+|Verification|VER-XXX|（記載）|（記載）|（記載）|
+|API仕様元資料|EXT-API-XXX|（記載）|（記載）|既存API仕様|
+|E6 API一覧|API-LIST-XXX|（記載）|（記載）|（記載）|
+
+---
+
+# 2. API概要
+
+## 2.1 API目的
+
+（APIの目的を記載）
+
+例：
+
+顧客番号を指定し、E6側に顧客が存在するかを確認する。
+
+---
+
+## 2.2 API概要
+
+（APIの概要を記載）
+
+例：
+
+本APIは顧客番号をRequestとして受け取り、顧客存在有無をResponseとして返却する。顧客が存在する場合は `exists=true` を返却し、存在しない場合は `exists=false` を返却する。
+
+---
+
+## 2.3 API利用位置
+
+|項目|内容|
+|----|----|
+|利用業務|（記載）|
+|利用Flow|BF-XXX|
+|呼出契機|（記載）|
+|前提API|API-XXX / なし|
+|後続API|API-XXX / なし|
+|利用結果|（記載）|
+
+---
+
+## 2.4 API分類
+
+|分類|内容|
+|----|----|
+|API種別|参照 / 登録 / 更新 / 削除 / ファイルアップロード / ファイルダウンロード / その他|
+|同期方式|同期 / 非同期|
+|冪等性|あり / なし|
+|認証要否|要 / 不要|
+|業務重要度|Critical / High / Medium / Low|
+|日次検証対象|Yes / No|
+
+---
+
+# 3. Interface Specification
+
+## 3.1 Endpoint
+
+|項目|内容|
+|----|----|
+|Base URL|（環境別設定を参照）|
+|Path|/xxx/xxx|
+|HTTP Method|GET / POST / PUT / DELETE|
+|Protocol|HTTPS|
+|Content-Type|application/json|
+|Accept|application/json|
+|Timeout|（記載）秒|
+|Retry対象|Yes / No|
+
+---
+
+## 3.2 Environment Endpoint
+
+|環境|Base URL|用途|備考|
+|----|--------|----|----|
+|DEV|（記載）|開発検証|（記載）|
+|STG|（記載）|結合検証|（記載）|
+|PROD-LIKE|（記載）|日次検証|（記載）|
+
+---
+
+## 3.3 Header
+
+|Header名|必須|設定値|設定元|備考|
+|--------|----|------|------|----|
+|Content-Type|○|application/json|固定|JSON API|
+|Accept|○|application/json|固定|JSON Response|
+|Authorization|○|Bearer token|Auth Context|認証情報|
+|X-Request-Id|－|UUID|Runtime Context|実行単位識別子|
+
+---
+
+## 3.4 Authentication
+
+|項目|内容|
+|----|----|
+|認証方式|Bearer Token / API Key / Basic / mTLS / その他|
+|Token取得方法|（記載）|
+|Token有効期限|（記載）|
+|権限条件|（記載）|
+|認証失敗時|401 / 403 / その他|
+
+---
+
+# 4. Request Specification
+
+## 4.1 Request概要
+
+|項目|内容|
+|----|----|
+|Request形式|JSON / Query Parameter / Path Parameter / Form Data / Multipart|
+|文字コード|UTF-8|
+|必須項目数|（記載）|
+|任意項目数|（記載）|
+|ファイル有無|あり / なし|
+
+---
+
+## 4.2 Path Parameter
+
+|No|Parameter|論理名|Type|必須|Min|Max|Pattern|Enum|固定値|設定元|Context ID|備考|
+|--|---------|------|----|----|---|---|-------|----|------|------|----------|----|
+|1|（記載）|（記載）|String|○|1|20|（記載）|－|－|Input / Context|CTX-XXX|（記載）|
+
+---
+
+## 4.3 Query Parameter
+
+|No|Parameter|論理名|Type|必須|Min|Max|Pattern|Enum|固定値|設定元|Context ID|備考|
+|--|---------|------|----|----|---|---|-------|----|------|------|----------|----|
+|1|（記載）|（記載）|String|－|0|50|（記載）|－|－|Input / Context|CTX-XXX|（記載）|
+
+---
+
+## 4.4 Request Header Parameter
+
+|No|Header|論理名|Type|必須|固定値|設定元|Context ID|Verification Target|備考|
+|--|------|------|----|----|------|------|----------|-------------------|----|
+|1|Authorization|認証Token|String|○|－|Auth Context|CTX-AUTH-001|No|秘匿対象|
+|2|X-Request-Id|Request ID|String|－|－|Runtime|CTX-RUN-001|No|Dynamic項目|
+
+---
+
+## 4.5 Request Body Field
+
+|No|JSONPath|項目名|論理名|Type|必須|Null許可|空文字許可|Min|Max|Pattern|Enum|固定値|Default|設定元|Context ID|Verification Metadata|備考|
+|--|--------|------|------|----|----|--------|----------|---|---|-------|----|------|-------|------|----------|---------------------|----|
+|1|$.customerId|customerId|顧客番号|String|○|不可|不可|1|20|^[0-9]+$|－|－|－|Input|CTX-001|Input Check Target|検索キー|
+|2|$.requestType|requestType|要求種別|String|○|不可|不可|1|20|－|NORMAL,DETAIL|NORMAL|NORMAL|Fixed|－|Fixed Value Target|固定値|
+|3|$.requestDate|requestDate|要求日付|Date|－|可|不可|－|－|yyyy-MM-dd|－|－|当日日付|Runtime|CTX-RUN-002|Dynamic Input|実行日|
+
+---
+
+## 4.6 Request Field Semantics
+
+|JSONPath|業務意味|利用目的|後続利用|備考|
+|--------|--------|--------|--------|----|
+|$.customerId|顧客を一意に識別する番号|顧客検索|Response customerId と一致確認|重要項目|
+|$.requestType|API処理種別|API制御|なし|通常はNORMAL|
+|$.requestDate|要求日付|API実行日管理|なし|Runtime生成|
+
+---
+
+## 4.7 Request Validation Definition
+
+この表はAPI仕様としての入力制約を定義する。実際の正常系・異常系テストケースは Verification Specification で定義する。
+
+|Validation ID|対象JSONPath|Validation種別|条件|API仕様上の期待|備考|
+|-------------|------------|--------------|----|---------------|----|
+|REQ-VAL-001|$.customerId|Required|必須|未設定不可|テストケースはVerification側|
+|REQ-VAL-002|$.customerId|Length|1〜20|範囲内のみ許可|テストケースはVerification側|
+|REQ-VAL-003|$.customerId|Pattern|^[0-9]+$|数字のみ許可|テストケースはVerification側|
+|REQ-VAL-004|$.requestType|Fixed Value|NORMAL|通常時NORMAL|固定値|
+
+---
+
+# 5. Response Specification
+
+## 5.1 Response概要
+
+|項目|内容|
+|----|----|
+|Response形式|JSON / File / Binary / XML / その他|
+|文字コード|UTF-8|
+|正常時HTTP Status|200|
+|異常時HTTP Status|400 / 401 / 403 / 404 / 500 / その他|
+|固定値チェック対象|あり / なし|
+|Enumチェック対象|あり / なし|
+|Baseline比較対象|あり / なし|
+|Dynamic項目|あり / なし|
+
+---
+
+## 5.2 HTTP Status Definition
+
+|Status|分類|意味|API仕様上の期待|Verification対象|
+|------|----|----|----------------|----------------|
+|200|正常|正常終了|正常Responseを返却|Yes|
+|400|異常|Request不正|Error Responseを返却|Yes|
+|401|異常|認証エラー|Error Responseを返却|Yes|
+|403|異常|権限エラー|Error Responseを返却|Yes|
+|404|異常|対象なし|Error Responseまたは業務結果を返却|Yes|
+|500|異常|サーバエラー|Error Responseを返却|Yes|
+
+---
+
+## 5.3 Response Body Field
+
+|No|JSONPath|項目名|論理名|Type|必須|Null許可|Min|Max|Pattern|Enum|固定値|入力値一致|Context一致|Dynamic|Baseline比較|Verification Target|備考|
+|--|--------|------|------|----|----|--------|---|---|-------|----|------|----------|-----------|-------|-------------|-------------------|----|
+|1|$.resultCode|resultCode|結果コード|String|○|不可|1|10|－|0,1|0|－|－|No|Yes|Yes|正常時は0|
+|2|$.message|message|結果メッセージ|String|－|可|0|200|－|－|－|－|－|No|No|No|文言変動あり|
+|3|$.customer.customerId|customerId|顧客番号|String|○|不可|1|20|^[0-9]+$|－|－|$.customerId|CTX-001|No|Yes|Yes|入力値と一致|
+|4|$.customer.customerName|customerName|顧客氏名|String|○|不可|1|100|－|－|－|－|－|No|Yes|Yes|取得必須|
+|5|$.customer.status|status|顧客状態|String|○|不可|1|20|－|ACTIVE,INACTIVE|ACTIVE|－|－|No|Yes|Yes|有効顧客|
+|6|$.customer.updatedAt|updatedAt|更新日時|DateTime|－|可|－|－|yyyy-MM-dd'T'HH:mm:ss|－|－|－|－|Yes|No|No|実行毎に変動|
+|7|$.traceId|traceId|Trace ID|String|－|可|－|64|－|－|－|－|－|Yes|No|No|実行毎に採番|
+
+---
+
+## 5.4 Response Fixed Value Definition
+
+|Fixed ID|JSONPath|固定値|適用条件|重要度|備考|
+|--------|--------|------|--------|------|----|
+|FIX-001|$.resultCode|0|正常終了時|High|正常時固定|
+|FIX-002|$.customer.status|ACTIVE|有効顧客データ利用時|Medium|Test Data条件に依存|
+
+---
+
+## 5.5 Response Enum Definition
+
+|Enum ID|JSONPath|許容値|適用条件|重要度|備考|
+|-------|--------|------|--------|------|----|
+|ENUM-001|$.resultCode|0,1|全Response|High|0:正常、1:業務エラー|
+|ENUM-002|$.customer.status|ACTIVE,INACTIVE,SUSPENDED|顧客情報取得時|High|既存API仕様に準拠|
+
+---
+
+## 5.6 Response Input Match Definition
+
+|Match ID|Response JSONPath|一致対象|一致対象種別|適用条件|重要度|備考|
+|--------|-----------------|--------|------------|--------|------|----|
+|MATCH-001|$.customer.customerId|$.customerId|Request Field|正常終了時|High|入力顧客番号と一致|
+|MATCH-002|$.customer.customerId|CTX-001|Context|正常終了時|High|Context値と一致|
+
+---
+
+## 5.7 Response Context Output Definition
+
+|Context ID|Context名|Response JSONPath|Type|必須|後続利用|Consumer|備考|
+|----------|---------|-----------------|----|----|--------|--------|----|
+|CTX-002|Customer.id|$.customer.customerId|String|○|Yes|API-XXX / UC-XXX|顧客番号|
+|CTX-003|Customer.name|$.customer.customerName|String|○|Yes|Report / Verification|顧客氏名|
+|CTX-004|Customer.status|$.customer.status|String|○|Yes|Verification|顧客状態|
+
+---
+
+## 5.8 Dynamic Field Definition
+
+|Dynamic ID|JSONPath|項目名|変動理由|比較方針|Verification Target|備考|
+|----------|--------|------|--------|--------|-------------------|----|
+|DYN-001|$.customer.updatedAt|更新日時|データ更新により変動|Baseline比較対象外|No|存在・型のみ確認可|
+|DYN-002|$.traceId|Trace ID|実行毎に採番|比較対象外|No|ログ追跡用|
+
+---
+
+## 5.9 Baseline Compare Candidate
+
+この表はBaseline比較候補を定義する。最終的な比較ルール、許容差、Ignore条件は Verification Specification で定義する。
+
+|Compare Candidate ID|JSONPath|比較候補|理由|重要度|備考|
+|--------------------|--------|--------|----|------|----|
+|CMP-CAND-001|$.resultCode|Yes|API結果判定に利用|High|固定値0|
+|CMP-CAND-002|$.customer.customerId|Yes|顧客同一性確認|High|入力値一致|
+|CMP-CAND-003|$.customer.customerName|Yes|表示項目|High|値変更検知対象|
+|CMP-CAND-004|$.customer.status|Yes|業務状態|High|Enum対象|
+|CMP-CAND-005|$.customer.updatedAt|No|Dynamic項目|Low|比較除外|
+
+---
+
+# 6. Business Rule
+
+## 6.1 API業務ルール
+
+|Rule ID|対象|ルール内容|重要度|備考|
+|-------|----|----------|------|----|
+|API-BR-001|Request|customerId は必須である|High|入力制約|
+|API-BR-002|Response|正常終了時 resultCode は 0 である|High|固定値|
+|API-BR-003|Response|正常終了時 customerId はRequestと一致する|High|入力値一致|
+|API-BR-004|Response|traceId は実行毎に変動する|Low|Dynamic|
+
+---
+
+## 6.2 API呼出前提
+
+|No|前提|内容|備考|
+|--|----|----|----|
+|1|認証|有効なTokenを保持していること|Authorization Header|
+|2|入力|customerId が指定されていること|必須|
+|3|環境|E6 API接続先が利用可能であること|環境依存|
+
+---
+
+## 6.3 API呼出後条件
+
+|No|条件|内容|備考|
+|--|----|----|----|
+|1|正常終了|HTTP Status 200 を返却する|正常系|
+|2|業務結果|resultCode を返却する|正常/業務エラー共通|
+|3|Context出力|後続処理で必要なContextを抽出できる|UseCase連携|
+
+---
+
+# 7. Error Specification
+
+## 7.1 Error Response Format
+
+|JSONPath|項目名|Type|必須|説明|備考|
+|--------|------|----|----|----|----|
+|$.error.code|errorCode|String|○|エラーコード|固定体系|
+|$.error.message|errorMessage|String|○|エラーメッセージ|文言変更可能性あり|
+|$.error.detail|errorDetail|String|－|詳細情報|任意|
+|$.traceId|traceId|String|－|Trace ID|Dynamic|
+
+---
+
+## 7.2 Error Code Definition
+
+|Error ID|HTTP Status|Error Code|発生条件|API仕様上の期待|Verification対象|備考|
+|--------|------------|----------|--------|----------------|----------------|----|
+|ERR-001|400|E400001|必須項目未設定|Error Response返却|Yes|Request不正|
+|ERR-002|400|E400002|型不正|Error Response返却|Yes|Request不正|
+|ERR-003|401|E401001|認証不正|Error Response返却|Yes|認証エラー|
+|ERR-004|403|E403001|権限不足|Error Response返却|Yes|権限エラー|
+|ERR-005|404|E404001|対象データなし|Error Responseまたは業務エラー|Yes|仕様確認対象|
+|ERR-006|500|E500001|内部エラー|Error Response返却|Yes|サーバエラー|
+
+---
+
+## 7.3 Error Field Verification Candidate
+
+|No|JSONPath|検証候補|理由|備考|
+|--|--------|--------|----|----|
+|1|$.error.code|Yes|エラー種別判定に必要|固定値/Enum候補|
+|2|$.error.message|Conditional|文言変動の可能性あり|Contains / Regex候補|
+|3|$.error.detail|No|環境差分が出やすい|必要時のみ|
+|4|$.traceId|No|Dynamic項目|比較除外|
+
+---
+
+# 8. File Specification
+
+## 8.1 File Upload
+
+|項目|内容|
+|----|----|
+|ファイルアップロード有無|あり / なし|
+|Field名|（記載）|
+|許可拡張子|csv / pdf / xlsx / txt / その他|
+|最大サイズ|（記載）MB|
+|Content-Type|（記載）|
+|文字コード|UTF-8 / Shift_JIS / その他|
+|複数ファイル|可 / 不可|
+
+---
+
+## 8.2 File Download
+
+|項目|内容|
+|----|----|
+|ファイルダウンロード有無|あり / なし|
+|ファイル種別|csv / pdf / xlsx / zip / その他|
+|Content-Type|（記載）|
+|ファイル名形式|（記載）|
+|サイズ上限|（記載）MB|
+|Hash確認対象|Yes / No|
+|内容比較対象|Yes / No|
+
+---
+
+## 8.3 File Verification Candidate
+
+|File ID|対象|検証候補|内容|備考|
+|-------|----|--------|----|----|
+|FILE-001|Upload|Yes|拡張子、サイズ、Content-Type|Verification側でTestCase化|
+|FILE-002|Download|Yes|ファイル存在、サイズ、Hash|Baseline比較候補|
+|FILE-003|Download Content|Conditional|CSV/PDF内容比較|仕様に応じて判断|
+
+---
+
+# 9. Context Mapping
+
+## 9.1 Input Context
+
+|Context ID|Context名|利用箇所|設定先|必須|備考|
+|----------|---------|--------|------|----|----|
+|CTX-001|Customer.id|Request|$.customerId|○|顧客番号|
+|CTX-AUTH-001|Auth.token|Header|Authorization|○|認証Token|
+|CTX-RUN-001|Runtime.requestId|Header|X-Request-Id|－|実行ID|
+
+---
+
+## 9.2 Output Context
+
+|Context ID|Context名|取得元|Type|必須|後続利用|備考|
+|----------|---------|------|----|----|--------|----|
+|CTX-002|Customer.id|$.customer.customerId|String|○|後続API|顧客番号|
+|CTX-003|Customer.name|$.customer.customerName|String|○|Report|顧客氏名|
+|CTX-004|Customer.status|$.customer.status|String|○|Verification|顧客状態|
+
+---
+
+## 9.3 Context Lifecycle
+
+|Context ID|生成元|更新可否|利用先|有効範囲|備考|
+|----------|------|--------|------|--------|----|
+|CTX-001|Input / BA|不可|API-001, API-002, API-003|UseCase内|検索キー|
+|CTX-002|API Response|不可|後続API / Report|UseCase内|Response由来|
+|CTX-RUN-001|Runtime|不可|全API|Run内|実行単位|
+
+---
+
+# 10. Verification Information
+
+この章はVerification Specificationを作成するための入力情報である。実際のTestCase、Expected Result、Compare Rule、Pass/Fail判定はVerification Specificationで定義する。
+
+## 10.1 Verification Target Summary
+
+|Verification ID|対象分類|対象|検証理由|重要度|備考|
+|---------------|--------|----|--------|------|----|
+|VF-API-001|HTTP|HTTP Status|API正常性確認|High|200/4xx/5xx|
+|VF-API-002|Request|Required / Type / Length|入力仕様確認|High|仕様由来|
+|VF-API-003|Response|Required / Type / Fixed / Enum|出力仕様確認|High|仕様由来|
+|VF-API-004|Context|Input/Output Mapping|後続API連携確認|High|UseCase連携|
+|VF-API-005|Dynamic|Dynamic Field除外|誤検知防止|Medium|updatedAt等|
+
+---
+
+## 10.2 Request Check Candidate
+
+|Check Candidate ID|対象|Check種別|仕様根拠|TestCase化|備考|
+|------------------|----|---------|--------|----------|----|
+|REQ-CHK-001|$.customerId|Required|Request Field定義|Yes|未設定テスト|
+|REQ-CHK-002|$.customerId|Type|String|Yes|型不正テスト|
+|REQ-CHK-003|$.customerId|Length|1〜20|Yes|境界値テスト|
+|REQ-CHK-004|$.customerId|Pattern|数字のみ|Yes|形式不正テスト|
+
+---
+
+## 10.3 Response Check Candidate
+
+|Check Candidate ID|対象|Check種別|仕様根拠|TestCase化|備考|
+|------------------|----|---------|--------|----------|----|
+|RES-CHK-001|$.resultCode|Fixed Value|0|Yes|正常時固定値|
+|RES-CHK-002|$.customer.customerId|Input Match|Request customerId|Yes|入力値一致|
+|RES-CHK-003|$.customer.status|Enum|ACTIVE等|Yes|許容値|
+|RES-CHK-004|$.customer.customerName|Required / Not Empty|必須|Yes|表示項目|
+|RES-CHK-005|$.traceId|Dynamic Ignore|実行毎に変動|No|比較除外|
+
+---
+
+## 10.4 Baseline Diff Candidate
+
+|Diff Candidate ID|対象|Diff対象|理由|除外条件|備考|
+|-----------------|----|--------|----|--------|----|
+|DIFF-001|$.resultCode|Yes|結果変化検知|なし|High|
+|DIFF-002|$.customer.customerId|Yes|対象データ変化検知|なし|High|
+|DIFF-003|$.customer.customerName|Yes|名称変化検知|なし|High|
+|DIFF-004|$.customer.updatedAt|No|Dynamic項目|常時除外|Low|
+|DIFF-005|$.traceId|No|Dynamic項目|常時除外|Low|
+
+---
+
+# 11. Performance & Security
+
+## 11.1 Performance
+
+|項目|内容|
+|----|----|
+|目標応答時間|（記載）秒以内|
+|Timeout|（記載）秒|
+|Retry回数|（記載）回|
+|Retry間隔|（記載）秒|
+|日次実行許容時間|（記載）分以内|
+|大量データ条件|（記載）|
+
+---
+
+## 11.2 Security
+
+|項目|内容|
+|----|----|
+|認証方式|（記載）|
+|認可条件|（記載）|
+|秘匿項目|Authorization, Token, Password 等|
+|ログ出力禁止項目|（記載）|
+|Mask対象|（記載）|
+|個人情報有無|あり / なし|
+|暗号化要否|あり / なし|
+
+---
+
+## 11.3 Logging Policy Candidate
+
+|項目|ログ出力|Mask|備考|
+|----|--------|----|----|
+|Request Header Authorization|No|Yes|出力禁止|
+|Request Body customerId|Yes|Conditional|個人情報扱い確認|
+|Response customerName|Conditional|Conditional|個人情報扱い確認|
+|traceId|Yes|No|調査用|
+
+---
+
+# 12. Traceability
+
+## 12.1 Business / API / Verification Trace
+
+|Business ID|Flow ID|API ID|Context ID|Verification ID|UseCase ID|TestCase ID|
+|-----------|-------|------|----------|---------------|----------|-----------|
+|BUS-XXX|BF-XXX|API-XXX|CTX-XXX|VF-XXX|UC-XXX|TC-XXX|
+
+---
+
+## 12.2 API Field Trace
+
+|API ID|JSONPath|Context ID|Verification Candidate ID|Diff Candidate ID|備考|
+|------|--------|----------|-------------------------|-----------------|----|
+|API-XXX|$.customerId|CTX-001|REQ-CHK-001|－|Request|
+|API-XXX|$.resultCode|－|RES-CHK-001|DIFF-001|Response|
+|API-XXX|$.customer.customerId|CTX-002|RES-CHK-002|DIFF-002|Response|
+
+---
+
+# Appendix A. Request Example
+
+## A.1 Normal Request
+
+```json
+{
+  "customerId": "100001",
+  "requestType": "NORMAL",
+  "requestDate": "2026-07-03"
+}
+```
+
+---
+
+## A.2 Header Example
+
+```text
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer ********
+X-Request-Id: 550e8400-e29b-41d4-a716-446655440000
+```
+
+---
+
+# Appendix B. Response Example
+
+## B.1 Normal Response
+
+```json
+{
+  "resultCode": "0",
+  "message": "OK",
+  "customer": {
+    "customerId": "100001",
+    "customerName": "山田 太郎",
+    "status": "ACTIVE",
+    "updatedAt": "2026-07-03T10:15:30"
+  },
+  "traceId": "abc123456789"
+}
+```
+
+---
+
+## B.2 Error Response
+
+```json
+{
+  "error": {
+    "code": "E400001",
+    "message": "必須項目が未設定です。",
+    "detail": "customerId is required."
+  },
+  "traceId": "abc123456789"
+}
+```
+
+---
+
+# Appendix C. 記入例
+
+## C.1 文書管理
+
+|項目|内容|
+|----|----|
+|文書ID|API-001|
+|文書名称|Customer Exists API設計書|
+|API ID|API-001|
+|API名称|Customer Exists API|
+|対象システム|CRMシステム|
+|対象業務|顧客情報照会業務|
+|関連Business ID|BUS-001|
+|関連Flow ID|BF-002|
+|関連UseCase ID|UC-001|
+|版数|1.0.0|
+|状態|Approved|
+|作成者|API設計担当|
+|レビューア|アーキテクト|
+|承認者|プロジェクト責任者|
+|作成日|2026-07-03|
+|更新日|2026-07-03|
+
+---
+
+## C.2 API概要
+
+### API目的
+
+顧客番号を指定し、E6側に顧客が存在するかを確認する。
+
+---
+
+### API概要
+
+本APIは顧客番号をRequestとして受け取り、顧客存在有無をResponseとして返却する。顧客が存在する場合は `exists=true` を返却し、存在しない場合は `exists=false` を返却する。
+
+---
+
+## C.3 Endpoint
+
+|項目|内容|
+|----|----|
+|Base URL|Environment Master参照|
+|Path|/v1/customers/exists|
+|HTTP Method|POST|
+|Protocol|HTTPS|
+|Content-Type|application/json|
+|Accept|application/json|
+|Timeout|10秒|
+|Retry対象|Yes|
+
+---
+
+## C.4 Request Body Field
+
+|No|JSONPath|項目名|論理名|Type|必須|Null許可|空文字許可|Min|Max|Pattern|Enum|固定値|Default|設定元|Context ID|Verification Metadata|備考|
+|--|--------|------|------|----|----|--------|----------|---|---|-------|----|------|-------|------|----------|---------------------|----|
+|1|$.customerId|customerId|顧客番号|String|○|不可|不可|1|20|^[0-9]+$|－|－|－|Input|CTX-001|Input Check Target|検索キー|
+
+---
+
+## C.5 Response Body Field
+
+|No|JSONPath|項目名|論理名|Type|必須|Null許可|Min|Max|Pattern|Enum|固定値|入力値一致|Context一致|Dynamic|Baseline比較|Verification Target|備考|
+|--|--------|------|------|----|----|--------|---|---|-------|----|------|----------|-----------|-------|-------------|-------------------|----|
+|1|$.resultCode|resultCode|結果コード|String|○|不可|1|10|－|0,1|0|－|－|No|Yes|Yes|正常時は0|
+|2|$.exists|exists|顧客存在有無|Boolean|○|不可|－|－|－|true,false|－|－|－|No|Yes|Yes|業務判定対象|
+|3|$.customerId|customerId|顧客番号|String|○|不可|1|20|^[0-9]+$|－|－|$.customerId|CTX-001|No|Yes|Yes|入力値一致|
+|4|$.traceId|traceId|Trace ID|String|－|可|－|64|－|－|－|－|－|Yes|No|No|Dynamic項目|
+
+---
+
+## C.6 Response Check Candidate
+
+|Check Candidate ID|対象|Check種別|仕様根拠|TestCase化|備考|
+|------------------|----|---------|--------|----------|----|
+|RES-CHK-001|$.resultCode|Fixed Value|0|Yes|正常時固定値|
+|RES-CHK-002|$.exists|Required / Type / Enum|Boolean|Yes|業務判定|
+|RES-CHK-003|$.customerId|Input Match|Request customerId|Yes|入力値一致|
+|RES-CHK-004|$.traceId|Dynamic Ignore|実行毎に変動|No|比較除外|
+
+---
+
+## C.7 Traceability
+
+|Business ID|Flow ID|API ID|Context ID|Verification ID|UseCase ID|TestCase ID|
+|-----------|-------|------|----------|---------------|----------|-----------|
+|BUS-001|BF-002|API-001|CTX-001|VF-001|UC-001|TC-001|
+:::
+
+这版固定为 **`API_Template.md v1.0`**。
+
+它已经包含你刚才强调的重点：
+
+```text
+输入参数：
+必須、型、Min、Max、Pattern、Enum、固定値、Default、Context
+
+输出参数：
+必須、型、Min、Max、Pattern、Enum、固定値、入力値一致、Context一致、Dynamic、Baseline比較候補
+
+Verification：
+不直接写测试用例，但提供测试书生成所需的 Check Candidate
+```
+
+下一份应该做：
+
+```text
+system/usecase/UseCase_Template.md
+```
+
+它负责把 BA 的业务 Flow 和 API 的 Context 串成一个完整执行链。
+
+## 第 145 轮
+
+### 你
+
+继续
+
+### ChatGPT
+
+下面是第三份正式成果物：`system/usecase/UseCase_Template.md`。
+
+:::writing{variant="document" id="91362"}
+---
+title: UseCase設計書テンプレート
+document_id: UC-TEMPLATE
+version: 1.0.0
+status: Template
+document_type: UseCase Design
+system_name: E6 API 検証対象システム
+author:
+reviewer:
+approver:
+created:
+updated:
+---
+
+# UseCase設計書
+
+---
+
+# 1. 文書情報
+
+## 1.1 文書管理
+
+|項目|内容|
+|----|----|
+|文書ID|UC-XXX|
+|文書名称|〇〇 UseCase設計書|
+|UseCase ID|UC-XXX|
+|UseCase名称|（記載）|
+|対象システム|E6 API 検証対象システム|
+|対象業務|（記載）|
+|関連Business ID|BUS-XXX|
+|関連BA ID|BA-XXX|
+|関連API|API-XXX, API-XXX|
+|版数|1.0.0|
+|状態|Draft / Review / Approved / Released|
+|作成者|（記載）|
+|レビューア|（記載）|
+|承認者|（記載）|
+|作成日|YYYY-MM-DD|
+|更新日|YYYY-MM-DD|
+
+---
+
+## 1.2 改訂履歴
+
+|版数|日付|担当|変更内容|
+|----|----|----|--------|
+|1.0.0|YYYY-MM-DD|（記載）|初版作成|
+
+---
+
+## 1.3 関連成果物
+
+|成果物分類|成果物ID|成果物名称|版数|備考|
+|----------|--------|----------|----|----|
+|現行業務分析|BA-XXX|（記載）|（記載）|（記載）|
+|API設計|API-XXX|（記載）|（記載）|（記載）|
+|Verification|VER-XXX|（記載）|（記載）|（記載）|
+|TestCase|TC-XXX|（記載）|（記載）|（記載）|
+
+---
+
+# 2. UseCase概要
+
+## 2.1 UseCase目的
+
+（UseCaseの目的を記載）
+
+例：
+
+顧客番号を入力し、顧客存在確認、顧客基本情報取得、契約情報取得を順に実行し、顧客情報照会業務が正常に成立することを確認する。
+
+---
+
+## 2.2 UseCase概要
+
+（UseCaseの概要を記載）
+
+例：
+
+本UseCaseは、顧客情報照会業務の正常系検証を対象とする。Entry Inputとして顧客番号を指定し、後続APIは前段APIの結果およびContextを利用して自動的に実行する。
+
+---
+
+## 2.3 UseCase分類
+
+|項目|内容|
+|----|----|
+|UseCase種別|正常系 / 異常系 / 境界値 / 日次回帰 / 障害確認|
+|実行頻度|Daily / Weekly / Manual|
+|実行対象環境|DEV / STG / PROD-LIKE|
+|重要度|Critical / High / Medium / Low|
+|Baseline比較|Yes / No|
+|自動実行対象|Yes / No|
+
+---
+
+# 3. Actor / Trigger / Condition
+
+## 3.1 Actor
+
+|Actor ID|Actor名称|役割|備考|
+|--------|---------|----|----|
+|ACT-001|（記載）|（記載）|（記載）|
+
+---
+
+## 3.2 Trigger
+
+|Trigger ID|Trigger内容|起動方式|備考|
+|----------|------------|--------|----|
+|TRG-001|（記載）|Manual / Batch / Schedule / API|（記載）|
+
+---
+
+## 3.3 PreCondition
+
+|Condition ID|条件|必須|備考|
+|------------|----|----|----|
+|PRE-001|（記載）|○|（記載）|
+
+---
+
+## 3.4 PostCondition
+
+|Condition ID|条件|必須|備考|
+|------------|----|----|----|
+|POST-001|（記載）|○|（記載）|
+
+---
+
+# 4. Entry Input
+
+## 4.1 Entry Input一覧
+
+|Input ID|項目名|論理名|Type|必須|設定値例|設定元|Context ID|備考|
+|--------|------|------|----|----|--------|------|----------|----|
+|IN-001|customerId|顧客番号|String|○|100001|Test Data|CTX-001|Entry API入力|
+
+---
+
+## 4.2 Test Data参照
+
+|TestData ID|用途|ファイル|備考|
+|-----------|----|--------|----|
+|TD-001|正常系|test_data/UC-XXX/normal.json|（記載）|
+|TD-002|異常系|test_data/UC-XXX/error.json|（記載）|
+
+---
+
+# 5. Main Flow
+
+## 5.1 UseCase Flow図
+
+```mermaid id="96xzp7"
+flowchart TD
+
+START([開始])
+
+UC001[UC-STEP-001<br/>Entry API実行]
+UC002[UC-STEP-002<br/>Context抽出]
+UC003[UC-STEP-003<br/>後続API実行]
+UC004[UC-STEP-004<br/>結果確認]
+END([終了])
+
+START --> UC001
+UC001 --> UC002
+UC002 --> UC003
+UC003 --> UC004
+UC004 --> END
+```
+
+---
+
+## 5.2 Main Flow一覧
+
+|Step ID|Flow ID|API ID|処理名|入力|出力|次Step|備考|
+|-------|-------|------|------|----|----|------|----|
+|UC-STEP-001|BF-XXX|API-XXX|（記載）|Entry Input|Response|UC-STEP-002|（記載）|
+|UC-STEP-002|BF-XXX|API-XXX|（記載）|Context|Response|UC-STEP-003|（記載）|
+|UC-STEP-003|BF-XXX|API-XXX|（記載）|Context|Response|UC-STEP-004|（記載）|
+|UC-STEP-004|BF-XXX|－|（記載）|Response / Context|Result|END|（記載）|
+
+---
+
+# 6. API Execution Chain
+
+## 6.1 API実行順序
+
+```mermaid id="n96kmg"
+sequenceDiagram
+
+participant Runner
+participant API001
+participant API002
+participant API003
+
+Runner->>API001: Request
+API001-->>Runner: Response
+Runner->>API002: Request
+API002-->>Runner: Response
+Runner->>API003: Request
+API003-->>Runner: Response
+```
+
+---
+
+## 6.2 API実行一覧
+
+|Order|API ID|実行条件|Request生成元|Response利用|失敗時処理|
+|-----|------|--------|-------------|-------------|----------|
+|1|API-XXX|（記載）|Entry Input|Context抽出|Stop / Continue|
+|2|API-XXX|（記載）|Context|Context抽出|Stop / Continue|
+|3|API-XXX|（記載）|Context|業務期待結果確認|Stop / Continue|
+
+---
+
+# 7. Context Mapping
+
+## 7.1 Context一覧
+
+|Context ID|Context名|Type|Scope|Producer|Consumer|必須|備考|
+|----------|---------|----|-----|--------|--------|----|----|
+|CTX-001|Customer.id|String|UseCase|Entry Input|API-001, API-002, API-003|○|顧客番号|
+|CTX-002|Customer|Object|UseCase|API-002|Verification / Report|○|顧客情報|
+
+---
+
+## 7.2 Extract Mapping
+
+|Mapping ID|Step ID|API ID|Response JSONPath|Context ID|Context名|必須|未取得時処理|
+|----------|-------|------|-----------------|----------|---------|----|------------|
+|MAP-001|UC-STEP-001|API-XXX|$.customerId|CTX-001|Customer.id|○|Fail|
+|MAP-002|UC-STEP-002|API-XXX|$.customer|CTX-002|Customer|○|Fail|
+
+---
+
+## 7.3 Request Binding
+
+|Binding ID|Step ID|API ID|Request JSONPath|Context ID|Context名|必須|備考|
+|----------|-------|------|----------------|----------|---------|----|----|
+|BIND-001|UC-STEP-001|API-XXX|$.customerId|CTX-001|Customer.id|○|Entry Input由来|
+|BIND-002|UC-STEP-002|API-XXX|$.customerId|CTX-001|Customer.id|○|前段Context利用|
+
+---
+
+## 7.4 Context Update Policy
+
+|Context ID|更新可否|更新条件|競合時処理|備考|
+|----------|--------|--------|----------|----|
+|CTX-001|不可|－|Fail|検索キー|
+|CTX-002|可|後続APIで再取得時|Overwrite / Warn|業務情報|
+
+---
+
+# 8. Alternative Flow
+
+|Alt Flow ID|発生条件|分岐元Step|処理内容|終了条件|備考|
+|-----------|--------|----------|--------|--------|----|
+|ALT-001|（記載）|UC-STEP-XXX|（記載）|（記載）|（記載）|
+
+---
+
+# 9. Exception Flow
+
+|Exception ID|発生条件|対象Step|期待処理|後続処理|重要度|
+|------------|--------|--------|--------|--------|------|
+|EX-001|HTTP 400|API-XXX|業務エラー|Stop|High|
+|EX-002|HTTP 401|API-XXX|認証エラー|Stop|Critical|
+|EX-003|Timeout|API-XXX|Retry後Fail|Stop|High|
+|EX-004|Context未取得|UC-STEP-XXX|Fail|Stop|Critical|
+
+---
+
+# 10. Execution Policy
+
+## 10.1 UseCase実行方針
+
+|項目|設定値|備考|
+|----|------|----|
+|Stop On Error|Yes / No|（記載）|
+|Continue On Warning|Yes / No|（記載）|
+|Retry Count|（記載）|UseCase単位|
+|Timeout|（記載）秒|UseCase単位|
+|Baseline比較|Yes / No|（記載）|
+|Cleanup|Yes / No|（記載）|
+|Evidence保存|Yes|固定推奨|
+
+---
+
+## 10.2 API別実行方針
+
+|API ID|Retry|Timeout|失敗時処理|Evidence|備考|
+|------|-----|-------|----------|--------|----|
+|API-XXX|（記載）|（記載）秒|Stop / Continue|Yes|（記載）|
+
+---
+
+# 11. Business Check
+
+## 11.1 業務結果確認
+
+|Check ID|対象|確認内容|期待結果|重要度|
+|--------|----|--------|--------|------|
+|BC-001|（記載）|（記載）|（記載）|High|
+
+---
+
+## 11.2 Context確認
+
+|Check ID|Context ID|確認内容|期待結果|重要度|
+|--------|----------|--------|--------|------|
+|CTX-CHK-001|CTX-001|存在確認|Not Empty|High|
+|CTX-CHK-002|CTX-002|取得確認|Exists|High|
+
+---
+
+# 12. Expected Result
+
+## 12.1 正常系期待結果
+
+|項目|期待結果|
+|----|--------|
+|UseCase結果|PASS|
+|最終Step|（記載）|
+|業務結果|（記載）|
+|API結果|全API正常終了|
+|Context結果|必須Context取得済み|
+|Report結果|Daily SummaryにPASS表示|
+
+---
+
+## 12.2 異常系期待結果
+
+|条件|期待結果|Result|
+|----|--------|------|
+|（記載）|（記載）|FAIL / WARN|
+
+---
+
+# 13. Evidence
+
+|Evidence ID|保存対象|保存内容|保存先|備考|
+|-----------|--------|--------|--------|----|
+|EVD-001|Request|Header / Body|runs/{runId}/raw/|秘匿情報Mask|
+|EVD-002|Response|Header / Body|runs/{runId}/raw/|秘匿情報Mask|
+|EVD-003|Context|Context Snapshot|runs/{runId}/snapshot/|UseCase単位|
+|EVD-004|Diff|Diff Result|runs/{runId}/diff/|Baseline比較時|
+|EVD-005|Log|Execution Log|runs/{runId}/logs/|調査用|
+
+---
+
+# 14. Traceability
+
+## 14.1 UseCase Trace Matrix
+
+|Business ID|Flow ID|UseCase ID|Step ID|API ID|Context ID|Verification ID|TestCase ID|
+|-----------|-------|----------|-------|------|----------|---------------|-----------|
+|BUS-XXX|BF-XXX|UC-XXX|UC-STEP-XXX|API-XXX|CTX-XXX|VF-XXX|TC-XXX|
+
+---
+
+## 14.2 参照資料
+
+|No|資料ID|資料名|版数|備考|
+|--|------|------|----|----|
+|1|BA-XXX|（記載）|（記載）|（記載）|
+|2|API-XXX|（記載）|（記載）|（記載）|
+
+---
+
+# Appendix A. 記入例
+
+## A.1 文書管理
+
+|項目|内容|
+|----|----|
+|文書ID|UC-001|
+|文書名称|顧客情報照会 UseCase設計書|
+|UseCase ID|UC-001|
+|UseCase名称|顧客情報照会正常系|
+|対象システム|CRMシステム|
+|対象業務|顧客情報照会業務|
+|関連Business ID|BUS-001|
+|関連BA ID|BA-001|
+|関連API|API-001, API-002, API-003|
+|版数|1.0.0|
+|状態|Approved|
+|作成者|UseCase設計担当|
+|レビューア|アーキテクト|
+|承認者|プロジェクト責任者|
+|作成日|2026-07-03|
+|更新日|2026-07-03|
+
+---
+
+## A.2 UseCase概要
+
+### UseCase目的
+
+顧客番号を入力し、顧客存在確認、顧客基本情報取得、契約情報取得を順に実行し、顧客情報照会業務が正常に成立することを確認する。
+
+---
+
+### UseCase分類
+
+|項目|内容|
+|----|----|
+|UseCase種別|正常系 / 日次回帰|
+|実行頻度|Daily|
+|実行対象環境|STG|
+|重要度|High|
+|Baseline比較|Yes|
+|自動実行対象|Yes|
+
+---
+
+## A.3 Entry Input
+
+|Input ID|項目名|論理名|Type|必須|設定値例|設定元|Context ID|備考|
+|--------|------|------|----|----|--------|------|----------|----|
+|IN-001|customerId|顧客番号|String|○|100001|Test Data|CTX-001|Entry API入力|
+
+---
+
+## A.4 Main Flow
+
+|Step ID|Flow ID|API ID|処理名|入力|出力|次Step|備考|
+|-------|-------|------|------|----|----|------|----|
+|UC-STEP-001|BF-002|API-001|顧客存在確認|Customer.id|exists|UC-STEP-002|存在確認|
+|UC-STEP-002|BF-004|API-002|顧客基本情報取得|Customer.id|Customer|UC-STEP-003|顧客取得|
+|UC-STEP-003|BF-005|API-003|契約情報取得|Customer.id|Contract.list|UC-STEP-004|契約取得|
+|UC-STEP-004|BF-006|－|業務結果確認|Customer, Contract.list|Result|END|最終確認|
+
+---
+
+## A.5 API実行順序
+
+```mermaid id="psyhxj"
+sequenceDiagram
+
+participant Runner
+participant API001
+participant API002
+participant API003
+
+Runner->>API001: exists(customerId)
+API001-->>Runner: exists=true
+
+Runner->>API002: getCustomer(customerId)
+API002-->>Runner: Customer
+
+Runner->>API003: getContracts(customerId)
+API003-->>Runner: Contract.list
+```
+
+## 第 146 轮
+
+### 你
+
+继续
+
+### ChatGPT
+
+:::writing{variant="document" id="29584"}
+## A.6 API実行一覧
+
+|Order|API ID|実行条件|Request生成元|Response利用|失敗時処理|
+|-----|------|--------|-------------|-------------|----------|
+|1|API-001|Entry Input が存在すること|Test Data / CTX-001|exists 判定|Stop|
+|2|API-002|API-001 が正常終了し、exists=true であること|CTX-001|Customer 抽出|Stop|
+|3|API-003|API-002 が正常終了し、Customer が取得済みであること|CTX-001|Contract.list 抽出|Stop|
+
+---
+
+## A.7 Context Mapping
+
+### Context一覧
+
+|Context ID|Context名|Type|Scope|Producer|Consumer|必須|備考|
+|----------|---------|----|-----|--------|--------|----|----|
+|CTX-001|Customer.id|String|UseCase|Entry Input|API-001, API-002, API-003|○|顧客番号|
+|CTX-002|Customer|Object|UseCase|API-002|Verification / Report|○|顧客基本情報|
+|CTX-003|Contract.list|Array|UseCase|API-003|Verification / Report|－|契約一覧|
+
+---
+
+### Extract Mapping
+
+|Mapping ID|Step ID|API ID|Response JSONPath|Context ID|Context名|必須|未取得時処理|
+|----------|-------|------|-----------------|----------|---------|----|------------|
+|MAP-001|UC-STEP-001|API-001|$.customerId|CTX-001|Customer.id|○|Fail|
+|MAP-002|UC-STEP-002|API-002|$.customer|CTX-002|Customer|○|Fail|
+|MAP-003|UC-STEP-003|API-003|$.contracts|CTX-003|Contract.list|－|Warn|
+
+---
+
+### Request Binding
+
+|Binding ID|Step ID|API ID|Request JSONPath|Context ID|Context名|必須|備考|
+|----------|-------|------|----------------|----------|---------|----|----|
+|BIND-001|UC-STEP-001|API-001|$.customerId|CTX-001|Customer.id|○|Entry Input由来|
+|BIND-002|UC-STEP-002|API-002|$.customerId|CTX-001|Customer.id|○|前段Context利用|
+|BIND-003|UC-STEP-003|API-003|$.customerId|CTX-001|Customer.id|○|前段Context利用|
+
+---
+
+### Context Update Policy
+
+|Context ID|更新可否|更新条件|競合時処理|備考|
+|----------|--------|--------|----------|----|
+|CTX-001|不可|－|Fail|検索キーのため不変|
+|CTX-002|可|API-002 実行時|Overwrite|顧客基本情報|
+|CTX-003|可|API-003 実行時|Overwrite|契約一覧|
+
+---
+
+## A.8 Alternative Flow
+
+|Alt Flow ID|発生条件|分岐元Step|処理内容|終了条件|備考|
+|-----------|--------|----------|--------|--------|----|
+|ALT-001|契約0件|UC-STEP-003|Contract.list を空配列として扱う|UC-STEP-004|業務上許容するか要確認|
+
+---
+
+## A.9 Exception Flow
+
+|Exception ID|発生条件|対象Step|期待処理|後続処理|重要度|
+|------------|--------|--------|--------|--------|------|
+|EX-001|API-001 HTTP 400|UC-STEP-001|Request不正としてFail|Stop|High|
+|EX-002|API-001 exists=false|UC-STEP-001|業務エラーとしてFailまたはWarn|Stop|High|
+|EX-003|API-002 HTTP 500|UC-STEP-002|システムエラーとしてFail|Stop|Critical|
+|EX-004|API-003 Timeout|UC-STEP-003|Retry後Fail|Stop|High|
+|EX-005|必須Context未取得|任意Step|Context ErrorとしてFail|Stop|Critical|
+
+---
+
+## A.10 Execution Policy
+
+### UseCase実行方針
+
+|項目|設定値|備考|
+|----|------|----|
+|Stop On Error|Yes|異常時は後続APIを実行しない|
+|Continue On Warning|Yes|契約0件など業務許容ケース|
+|Retry Count|2|API障害時|
+|Timeout|30秒|UseCase単位|
+|Baseline比較|Yes|前回承認済Baselineと比較|
+|Cleanup|No|参照系UseCaseのため不要|
+|Evidence保存|Yes|Request / Response / Context / Diff を保存|
+
+---
+
+### API別実行方針
+
+|API ID|Retry|Timeout|失敗時処理|Evidence|備考|
+|------|-----|-------|----------|--------|----|
+|API-001|2|10秒|Stop|Yes|Entry API|
+|API-002|2|10秒|Stop|Yes|顧客取得|
+|API-003|2|15秒|Stop|Yes|契約取得|
+
+---
+
+## A.11 Business Check
+
+### 業務結果確認
+
+|Check ID|対象|確認内容|期待結果|重要度|
+|--------|----|--------|--------|------|
+|BC-001|UseCase結果|全APIが正常終了すること|PASS|High|
+|BC-002|顧客情報|Customer が取得できること|Exists|High|
+|BC-003|契約情報|Contract.list が取得できること|Exists または Empty許容|Medium|
+|BC-004|業務結果|顧客情報照会が成立すること|Success|High|
+
+---
+
+### Context確認
+
+|Check ID|Context ID|確認内容|期待結果|重要度|
+|--------|----------|--------|--------|------|
+|CTX-CHK-001|CTX-001|顧客番号が存在すること|Not Empty|High|
+|CTX-CHK-002|CTX-001|全APIで同一顧客番号を利用すること|Equals|High|
+|CTX-CHK-003|CTX-002|顧客基本情報が取得済みであること|Exists|High|
+|CTX-CHK-004|CTX-003|契約一覧が取得済みであること|Exists / Empty許容|Medium|
+
+---
+
+## A.12 Expected Result
+
+### 正常系期待結果
+
+|項目|期待結果|
+|----|--------|
+|UseCase結果|PASS|
+|最終Step|UC-STEP-004|
+|業務結果|顧客情報照会成功|
+|API結果|API-001, API-002, API-003 が正常終了|
+|Context結果|CTX-001, CTX-002 が取得済み|
+|Report結果|Daily Summary に PASS と表示|
+
+---
+
+### 異常系期待結果
+
+|条件|期待結果|Result|
+|----|--------|------|
+|customerId 未設定|Request不正としてFail|FAIL|
+|顧客不存在|業務エラーとして終了|FAIL / WARN|
+|API-002 障害|システムエラーとして終了|FAIL|
+|API-003 Timeout|Retry後Fail|FAIL|
+|Contract.list 0件|業務仕様により判定|WARN / PASS|
+
+---
+
+## A.13 Evidence
+
+|Evidence ID|保存対象|保存内容|保存先|備考|
+|-----------|--------|--------|--------|----|
+|EVD-001|Request|Header / Body|runs/{runId}/raw/|秘匿情報Mask|
+|EVD-002|Response|Header / Body|runs/{runId}/raw/|秘匿情報Mask|
+|EVD-003|Context|Context Snapshot|runs/{runId}/snapshot/|UseCase単位|
+|EVD-004|Diff|Diff Result|runs/{runId}/diff/|Baseline比較時|
+|EVD-005|Log|Execution Log|runs/{runId}/logs/|調査用|
+|EVD-006|Report|UseCase Report|runs/{runId}/reports/|確認用|
+
+---
+
+## A.14 Traceability
+
+### UseCase Trace Matrix
+
+|Business ID|Flow ID|UseCase ID|Step ID|API ID|Context ID|Verification ID|TestCase ID|
+|-----------|-------|----------|-------|------|----------|---------------|-----------|
+|BUS-001|BF-002|UC-001|UC-STEP-001|API-001|CTX-001|VF-001|TC-001|
+|BUS-001|BF-004|UC-001|UC-STEP-002|API-002|CTX-001, CTX-002|VF-002|TC-002|
+|BUS-001|BF-005|UC-001|UC-STEP-003|API-003|CTX-001, CTX-003|VF-003|TC-003|
+|BUS-001|BF-006|UC-001|UC-STEP-004|－|CTX-002, CTX-003|VF-004|TC-004|
+
+---
+
+### 参照資料
+
+|No|資料ID|資料名|版数|備考|
+|--|------|------|----|----|
+|1|BA-001|顧客情報照会業務 現行業務分析書|1.0.0|業務分析|
+|2|API-001|Customer Exists API設計書|1.0.0|存在確認|
+|3|API-002|Customer Detail API設計書|1.0.0|顧客取得|
+|4|API-003|Contract List API設計書|1.0.0|契約取得|
+:::
+
+`UseCase_Template.md v1.0` 完成。
+
+现在三份核心模板已经形成链路：
+
+```text
+BA_Template.md
+  ↓
+API_Template.md
+  ↓
+UseCase_Template.md
+```
+
+下一份是最关键的执行规格：
+
+```text
+Verification_Specification_Template.md
+```
+
+它负责定义：
+- API単体検証
+- UseCase連携検証
+- Request/Response字段检查
+- Baseline Diff
+- Compare Policy
+- Test Data
+- Pass / Warn / Fail 判定
+- Daily Summary / Evidence 输出规则
+
+## 第 147 轮
+
+### 你
+
+讲个极端的例子 假设几个usecase里只有一个或少数不一样 需要单独一个usecase设计书吗
+
+### ChatGPT
+
+这是一个非常好的问题，而且这是**日本项目里经常遇到的问题**。
+
+我的答案是：
+
+> **不要机械地"一个场景一个 UseCase 文档"。应该按照"业务价值（Business Capability）"来划分，而不是按照测试场景划分。**
+
+例如：
+
+## 情况一：只是输入不同（不用拆）
+
+假设：
+
+UC-001 顧客情報照会
+
+只有 Test Data 不一样。
+
+```text
+Case1
+customerId=100001
+
+Case2
+customerId=100002
+
+Case3
+customerId=999999
+```
+
+Flow 完全一样。
+
+API 完全一样。
+
+Context 完全一样。
+
+**不要新建 UseCase。**
+
+UseCase 还是：
+
+```text
+UC-001
+```
+
+Verification 里面：
+
+```text
+TC-001
+TC-002
+TC-003
+```
+
+即可。
+
+---
+
+## 情况二：只有一个判断不同（一般也不用拆）
+
+例如：
+
+```text
+API001
+
+↓
+
+exists=true
+
+↓
+
+API002
+```
+
+另一种：
+
+```text
+API001
+
+↓
+
+exists=false
+
+↓
+
+结束
+```
+
+只有一处分支。
+
+建议：
+
+还是
+
+```text
+UC-001
+```
+
+里面：
+
+```text
+Main Flow
+
+Alternative Flow
+
+Exception Flow
+```
+
+描述。
+
+不用再建：
+
+```text
+UC-002
+```
+
+---
+
+## 情况三：流程明显不同（应该拆）
+
+例如：
+
+顾客查询：
+
+```text
+API001
+
+↓
+
+API002
+
+↓
+
+API003
+```
+
+而：
+
+顾客注册：
+
+```text
+API010
+
+↓
+
+API011
+
+↓
+
+API012
+
+↓
+
+API013
+```
+
+业务完全不同。
+
+应该：
+
+```text
+UC-001
+
+Customer Search
+
+UC-002
+
+Customer Register
+```
+
+---
+
+## 情况四：只有最后一个 API 不一样（这是你说的极端情况）
+
+例如：
+
+95% 一样。
+
+```text
+API001
+
+↓
+
+API002
+
+↓
+
+API003
+```
+
+最后：
+
+A：
+
+```text
+API004
+```
+
+B：
+
+```text
+API005
+```
+
+很多公司会：
+
+```text
+UC001
+
+Search
+
+UC002
+
+Search2
+```
+
+我认为：
+
+**不好。**
+
+---
+
+我建议：
+
+UseCase：
+
+还是：
+
+```text
+UC001
+```
+
+Flow：
+
+```text
+STEP1
+
+STEP2
+
+STEP3
+
+STEP4
+```
+
+STEP4：
+
+```
+Rule01
+
+↓
+
+API004
+
+Rule02
+
+↓
+
+API005
+```
+
+即可。
+
+Verification：
+
+再拆：
+
+```text
+TC001
+
+API004
+
+TC002
+
+API005
+```
+
+---
+
+## 我建议增加一个层
+
+其实我们现在缺一个东西。
+
+不是：
+
+UseCase。
+
+而是：
+
+### Scenario（シナリオ）
+
+例如：
+
+```text
+UC001
+
+↓
+
+Scenario01
+
+正常
+
+↓
+
+Scenario02
+
+顾客不存在
+
+↓
+
+Scenario03
+
+VIP顾客
+
+↓
+
+Scenario04
+
+契约0件
+```
+
+UseCase：
+
+只有一个。
+
+Scenario：
+
+很多。
+
+Verification：
+
+对应：
+
+很多 TestCase。
+
+---
+
+## 我认为我们整个结构应该变成
+
+```text
+Business
+
+↓
+
+UseCase
+
+↓
+
+Scenario
+
+↓
+
+Verification
+
+↓
+
+TestCase
+```
+
+这里的 **Scenario** 不是新文档，而是 **UseCase 设计书中的一个章节**。
+
+例如：
+
+```text
+UC-001
+    ├── SC-001 正常系
+    ├── SC-002 顧客不存在
+    ├── SC-003 契約0件
+    ├── SC-004 API004ルート
+    └── SC-005 API005ルート
+```
+
+然后：
+
+每个 Scenario 关联：
+
+```text
+Verification
+
+↓
+
+TC
+```
+
+---
+
+## 针对你的 E6 API 项目，我建议采用下面的原则（冻结）
+
+| 差异 | 是否新建 UseCase | 建议 |
+|------|------------------|------|
+| 只有测试数据不同 | ❌ | 同一 UseCase，不同 TestCase |
+| 只有参数不同 | ❌ | 同一 UseCase，不同 Scenario |
+| 只有最后一个 API 不同 | ❌ | 同一 UseCase，不同 Scenario |
+| 少量业务分支 | ❌ | Main Flow + Alternative Flow + Scenario |
+| 整个业务目标不同 | ✅ | 新建 UseCase |
+| Actor 不同且业务职责不同 | ✅ | 新建 UseCase |
+| API 调用链完全不同 | ✅ | 新建 UseCase |
+
+**这样文档数量不会爆炸，同时 AI 也更容易理解。**
+
+我甚至建议后面的 `UseCase_Template.md` 增加一个正式章节：
+
+```text
+6. Scenario一覧
+
+SC-001 正常系
+SC-002 顧客不存在
+SC-003 契約0件
+SC-004 API004ルート
+SC-005 API005ルート
+```
+
+这样一个 UseCase 就能覆盖几十个验证场景，而不会因为一点点差异就复制出大量几乎相同的设计书。这种方式在维护性和 AI 自动生成方面都会更好。
+
+## 第 148 轮
+
+### 你
+
+目前use case设计书还需要改吗
+
+### ChatGPT
+
+需要**小改**，不是推翻。
+
+现在 `UseCase_Template.md v1.0` 基本成立，但应该补一个正式章节：
+
+```text
+6. Scenario一覧
+```
+
+位置建议放在 **Main Flow 后、API Execution Chain 前**。
+
+因为：
+
+```text
+UseCase = 业务能力 / 主流程
+Scenario = 同一UseCase下的不同分支、条件、数据模式
+TestCase = 具体测试数据和期待结果
+```
+
+建议调整为：
+
+```text
+5. Main Flow
+6. Scenario一覧   ← 新增
+7. API Execution Chain
+8. Context Mapping
+...
+```
+
+新增表：
+
+```markdown
+# 6. Scenario一覧
+
+|Scenario ID|Scenario名称|分類|差分内容|対象Flow|対象API|期待結果|TestCase ID|
+|-----------|-------------|----|--------|--------|-------|--------|-----------|
+|SC-001|正常系|Normal|標準ルート|BF-001〜BF-006|API-001〜API-003|PASS|TC-001|
+|SC-002|顧客不存在|Alternative|API-001でexists=false|BF-002|API-001|業務エラー|TC-002|
+|SC-003|契約0件|Alternative|API-003で0件返却|BF-005|API-003|WARN/PASS|TC-003|
+```
+
+然后后面的编号顺延即可。
+
+结论：
+
+```text
+UseCase_Template.md v1.1
+= v1.0 + Scenario一覧
+```
+
+不用重写。
+
+## 第 149 轮
+
+### 你
+
+好的
+
+### ChatGPT
+
+很好，这个调整我认为是**最后一个需要补充的结构**。
+
+而且它不是新增概念，而是把我们前面讨论的思想真正落地。
+
+---
+
+# 我建议正式冻结整个设计链
+
+## ① BA（Business Analysis）
+
+回答：
+
+> **业务是什么？**
+
+输出：
+
+```text
+Business
+Flow
+Decision
+API Relation
+Verification Scope
+```
+
+---
+
+## ② API Design
+
+回答：
+
+> **API长什么样？**
+
+输出：
+
+```text
+Request
+
+Response
+
+Header
+
+Context
+
+Business Rule
+
+Verification Metadata
+```
+
+---
+
+## ③ UseCase Design
+
+回答：
+
+> **业务如何执行？**
+
+输出：
+
+```text
+Entry
+
+Main Flow
+
+Scenario
+
+Context Flow
+
+Execution Chain
+
+Evidence
+```
+
+注意：
+
+以后：
+
+Scenario。
+
+正式成为：
+
+UseCase下面一级。
+
+例如：
+
+```text
+UC001
+
+├── SC001 Normal
+
+├── SC002 Customer Not Found
+
+├── SC003 Contract Empty
+
+├── SC004 API Timeout
+
+├── SC005 Permission Error
+```
+
+这样：
+
+Verification。
+
+不用重复分析。
+
+---
+
+# 然后真正最重要的来了。
+
+## 第四份
+
+不是：
+
+Test Case。
+
+而是：
+
+# Verification Specification
+
+这份。
+
+以后。
+
+整个项目。
+
+最厚。
+
+也是：
+
+AI生成最多的一份。
+
+---
+
+它不是测试书。
+
+它是：
+
+**Verification Design。**
+
+例如：
+
+它里面应该包括：
+
+```text
+Verification Target
+
+↓
+
+Verification Policy
+
+↓
+
+Compare Policy
+
+↓
+
+Test Scenario
+
+↓
+
+Test Case
+
+↓
+
+Test Data
+
+↓
+
+Execution Rule
+
+↓
+
+Evidence Rule
+
+↓
+
+Pass Rule
+
+↓
+
+Report Rule
+```
+
+注意。
+
+Test Case。
+
+只是：
+
+其中一章。
+
+很多日本项目。
+
+测试书：
+
+只有：
+
+Test Case。
+
+我认为：
+
+不够。
+
+---
+
+# 为什么？
+
+例如：
+
+Response：
+
+```json
+customerName
+```
+
+为什么：
+
+比较？
+
+为什么：
+
+Ignore？
+
+为什么：
+
+Tolerance？
+
+这些。
+
+不是：
+
+Test Case。
+
+这是：
+
+Verification Policy。
+
+---
+
+所以：
+
+真正工业化：
+
+应该：
+
+先有：
+
+```text
+Verification Policy
+```
+
+再：
+
+自动：
+
+生成：
+
+```text
+Test Case
+```
+
+---
+
+# 我认为我们的整个Repository
+
+现在已经真正形成了。
+
+```text
+Business
+
+↓
+
+BA
+
+↓
+
+API
+
+↓
+
+UseCase
+
+↓
+
+Verification
+
+↓
+
+Execution
+
+↓
+
+Evidence
+
+↓
+
+Report
+```
+
+这条链。
+
+已经闭环。
+
+以后：
+
+AI。
+
+只需要：
+
+沿着：
+
+这一条链。
+
+一直生成。
+
+---
+
+## 我作为架构师，现在给这个项目一个评价
+
+说实话。
+
+**现在和我们一开始相比，已经完全不是一个层级了。**
+
+最开始：
+
+更像：
+
+```text
+API测试工具
+```
+
+现在：
+
+已经变成：
+
+```text
+Specification Driven Verification Platform
+```
+
+也就是：
+
+**规格驱动验证平台。**
+
+这是日本很多大型项目一直想做但没有真正做到的事情。
+
+---
+
+# 所以我建议
+
+从下一份开始。
+
+我们不要叫：
+
+```text
+Test Specification
+```
+
+正式改名：
+
+```text
+Verification Specification
+```
+
+因为：
+
+它不只是：
+
+测试。
+
+它定义：
+
+> **系统如何证明（Verify）规格是正确实现的。**
+
+这是一个更高层次的概念，也和 BA、API、UseCase 的定位完全一致。
+
+**我建议这就是我们第四份核心文档的正式名称，并以它作为整个 E6 API 验证平台的核心设计文档。**
+
+## 第 150 轮
+
+### 你
+
+usecase加了新的 给出最新的版本
+
+### ChatGPT
+
+可以，而且这次我不给你局部修改。
+
+我直接给你 **UseCase Design v2 Freeze**（冻结版）。
+
+这是基于我们前面所有讨论（尤其是 **Scenario**）整理后的最终目录。我认为这一版已经足够支撑你的 E6 API Verification Platform，后续不再改结构。
+
+---
+
+# UseCase設計書（Freeze v2）
+
+```text
+UseCase設計書
+
+1. 文書情報
+    1.1 文書管理
+    1.2 改訂履歴
+    1.3 関連成果物
+
+2. UseCase概要
+    2.1 UseCase目的
+    2.2 UseCase概要
+    2.3 UseCase分類
+    2.4 対象Business
+    2.5 対象API
+    2.6 対象Flow
+
+3. Actor / Trigger / Condition
+    3.1 Actor
+    3.2 Trigger
+    3.3 Pre Condition
+    3.4 Post Condition
+
+4. Entry Input
+    4.1 Entry Input一覧
+    4.2 Test Data参照
+    4.3 初期Context
+
+5. Main Flow
+    5.1 UseCase Flow
+    5.2 Main Flow一覧
+    5.3 Business Step一覧
+
+6. Scenario一覧      ★新增
+    6.1 Scenario一覧
+    6.2 Scenario Flow
+    6.3 Scenario Matrix
+    6.4 Scenario Selection Rule
+
+7. API Execution Chain
+    7.1 API呼出順序
+    7.2 API実行一覧
+    7.3 API実行条件
+    7.4 API Skip Rule
+
+8. Context Mapping
+    8.1 Context一覧
+    8.2 Extract Mapping
+    8.3 Request Binding
+    8.4 Context Update Policy
+    8.5 Context Lifetime
+
+9. Alternative Flow
+
+10. Exception Flow
+
+11. Execution Policy
+    11.1 UseCase実行方針
+    11.2 API別実行方針
+    11.3 Retry Policy
+    11.4 Timeout Policy
+
+12. Business Check
+    12.1 業務結果確認
+    12.2 Context確認
+    12.3 API実行確認
+
+13. Expected Result
+    13.1 正常系期待結果
+    13.2 異常系期待結果
+    13.3 Scenario別期待結果
+
+14. Evidence
+    14.1 保存対象
+    14.2 保存場所
+    14.3 Snapshot Policy
+
+15. Traceability
+    15.1 Business Trace Matrix
+    15.2 API Trace Matrix
+    15.3 Context Trace Matrix
+    15.4 Verification Trace Matrix
+
+Appendix A. 記入例
+Appendix B. Mermaid一覧
+Appendix C. Context一覧
+```
+
+---
+
+# 新增的 Scenario 章节（核心）
+
+这一章是这次最大的升级。
+
+## 6.1 Scenario一覧
+
+|Scenario ID|Scenario名称|分類|差分内容|対象Flow|対象API|Verification|TestCase|
+|-----------|-----------|------|---------|---------|--------|-------------|----------|
+|SC-001|正常系|Normal|なし|BF001〜BF006|API001〜003|VF001|TC001|
+|SC-002|顧客不存在|Alternative|API001結果|BF002|API001|VF002|TC002|
+|SC-003|契約0件|Alternative|API003結果|BF005|API003|VF003|TC003|
+|SC-004|API Timeout|Exception|Timeout|BF004|API002|VF004|TC004|
+
+---
+
+## 6.2 Scenario Flow
+
+每个 Scenario 可以有自己的 Mermaid。
+
+例如：
+
+```mermaid
+flowchart TD
+
+SC001
+
+↓
+
+API001
+
+↓
+
+API002
+
+↓
+
+API003
+```
+
+SC002：
+
+```mermaid
+flowchart TD
+
+SC002
+
+↓
+
+API001
+
+↓
+
+Error
+```
+
+不用复制整个 UseCase。
+
+---
+
+## 6.3 Scenario Matrix
+
+这是 AI 最喜欢的结构。
+
+|Step|SC001|SC002|SC003|SC004|
+|----|:----:|:----:|:----:|:----:|
+|API001|○|○|○|○|
+|API002|○|－|○|Timeout|
+|API003|○|－|○|－|
+|Expected|PASS|Business Error|PASS|FAIL|
+
+一张表就能看出所有 Scenario 的差异。
+
+---
+
+## 6.4 Scenario Selection Rule
+
+这是自动执行时使用的。
+
+|Rule ID|条件|Scenario|
+|--------|----|----------|
+|SR001|Normal|SC001|
+|SR002|exists=false|SC002|
+|SR003|Contract=0|SC003|
+|SR004|Timeout|SC004|
+
+以后 Runner 可以根据条件自动选择 Scenario。
+
+---
+
+# 我建议再增加一个小优化（这是最后一个）
+
+在 **API Execution Chain** 中增加：
+
+```text
+7.4 API Skip Rule
+```
+
+例如：
+
+|Rule|条件|Skip API|
+|----|----|---------|
+|SKIP001|exists=false|API002、API003|
+|SKIP002|認証失敗|全部|
+
+这样：
+
+以后：
+
+Execution Engine
+
+不用：
+
+写代码。
+
+直接：
+
+读：
+
+Spec。
+
+---
+
+# 我对这份 UseCase 的评价
+
+现在。
+
+我认为：
+
+已经不是：
+
+普通：
+
+UseCase。
+
+而是：
+
+**Executable UseCase（可执行 UseCase）**。
+
+这是最大的区别。
+
+普通日本项目：
+
+UseCase：
+
+只能：
+
+人看。
+
+这一版：
+
+```text
+人
+
+AI
+
+Execution Engine
+
+Verification Engine
+
+Review Tool
+
+全部能直接利用
+```
+
+**因此，我建议将这一版正式冻结为 `UseCase_Template v2.0`，后续只允许补充字段说明和示例，不再调整章节结构。**
