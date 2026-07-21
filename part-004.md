@@ -1,10 +1,10 @@
 # API流程验证设计
 
 - 来源: https://chatgpt.com/c/6a30db25-a6bc-83e8-ba19-4bc5fc0a5e28
-- 导出时间: 2026-07-16T11:54:32+09:00
-- 分片: 4/4
-- 总消息数: 413
-- 总轮数: 196
+- 导出时间: 2026-07-21T18:12:56+09:00
+- 分片: 4/6
+- 总消息数: 551
+- 总轮数: 254
 
 ## 第 151 轮
 
@@ -20646,3 +20646,4030 @@ API単体テスト仕様書_Template.md
 ```
 
 它负责把一个 API 的输入必填、类型、长度、固定值、Enum、边界值、异常响应等展开成独立 TestCase。
+
+## 第 197 轮
+
+### 你
+
+继续
+
+### ChatGPT
+
+放置位置：
+
+```text
+system/06_verification_assets/api_test_spec/API単体テスト仕様書_Template.md
+```
+
+:::writing{variant="document" id="64127"}
+---
+title: API単体テスト仕様書テンプレート
+document_id: API-TEST-SPEC-TEMPLATE
+version: 1.0.0
+status: Template
+document_type: API Test Specification
+system_name: E6 API Verification Platform
+phase: Verification Test Design
+author:
+reviewer:
+approver:
+created:
+updated:
+---
+
+# API単体テスト仕様書
+
+---
+
+# 1. 文書情報
+
+## 1.1 文書管理
+
+|項目|内容|
+|---|---|
+|文書ID|API-TEST-XXX|
+|文書名称|〇〇API 単体テスト仕様書|
+|対象API ID|API-XXX|
+|対象API名称|（記載）|
+|関連API分析書|API-ANL-XXX|
+|関連API設計書|API-XXX|
+|関連Verification ID|VER-XXX|
+|対象環境|ENV-XXX|
+|版数|1.0.0|
+|状態|Draft / Review / Approved / Released|
+|作成者|（記載）|
+|レビューア|（記載）|
+|承認者|（記載）|
+|作成日|YYYY-MM-DD|
+|更新日|YYYY-MM-DD|
+
+---
+
+## 1.2 改訂履歴
+
+|版数|日付|担当|変更内容|
+|---|---|---|---|
+|1.0.0|YYYY-MM-DD|（記載）|初版作成|
+
+---
+
+## 1.3 関連資料
+
+|資料ID|資料名|配置先|参照目的|
+|---|---|---|---|
+|API-ANL-XXX|API分析書|system/01_business/02_E6_API分析/|現行API情報|
+|API-XXX|API設計書|system/03_api_design/|Request / Response契約|
+|VER-XXX|Verification仕様書|system/06_verification_assets/|検証方針|
+|MST-API-001|E6_API_Master|system/02_master/|API基本情報|
+|MST-CTX-001|Context_Master|system/02_master/|Context定義|
+|MST-CMP-POL-001|Compare_Policy_Master|system/02_master/|比較Policy|
+|SYS-SNP-001|Snapshot設計書|system/05_framework/|Evidence保存|
+|SYS-LOG-001|ログ・例外設計書|system/05_framework/|Error / Log方針|
+
+---
+
+# 2. テスト概要
+
+## 2.1 テスト目的
+
+本仕様書は、対象APIについて、API設計書に定義されたRequest、Response、Header、HTTP Status、Error、Context、固定値、Enum、境界値が期待どおりであることを確認する。
+
+---
+
+## 2.2 テスト対象
+
+|分類|対象|実施有無|
+|---|---|---|
+|Endpoint|Path、Method、Protocol|Yes / No|
+|Header|必須Header、固定値、認証|Yes / No|
+|Request|必須、型、長さ、Pattern、Enum、固定値|Yes / No|
+|Response|HTTP Status、必須、型、固定値、Enum|Yes / No|
+|入力値一致|RequestとResponseの値一致|Yes / No|
+|Context|Input / Output Context|Yes / No|
+|Error|4xx、5xx、Timeout、認証Error|Yes / No|
+|Boundary|Min、Max、件数、桁数|Yes / No|
+|Dynamic Field|Exists、Type Only、Ignore|Yes / No|
+|Performance|Response Time、Timeout|Yes / No|
+
+---
+
+## 2.3 テスト対象外
+
+|対象外|理由|備考|
+|---|---|---|
+|業務全体のAPI連携|UseCaseテスト仕様書で確認する| |
+|画面操作|API単体テスト対象外| |
+|大量負荷|性能試験で別途確認する| |
+
+---
+
+# 3. API基本情報
+
+|項目|内容|
+|---|---|
+|API ID|API-XXX|
+|API名称|（記載）|
+|HTTP Method|GET / POST / PUT / DELETE|
+|Path|（記載）|
+|Content-Type|application/json|
+|認証方式|Bearer Token / API Key / Basic / mTLS|
+|Timeout|（記載）秒|
+|Retry|（記載）回|
+|正常HTTP Status|200 / 201 / 204|
+|重要度|Critical / High / Medium / Low|
+
+---
+
+# 4. テスト観点一覧
+
+|観点ID|分類|観点|対象|期待結果|
+|---|---|---|---|---|
+|TV-001|Interface|HTTP Methodが正しいこと|Method|期待Methodで実行される|
+|TV-002|Header|必須Headerが存在すること|Header|正常受付される|
+|TV-003|Request|必須項目が設定されること|Request Field|正常受付される|
+|TV-004|Request|型が正しいこと|Request Field|正常受付される|
+|TV-005|Request|最小長・最大長を満たすこと|Request Field|境界値結果が期待どおり|
+|TV-006|Request|Patternを満たすこと|Request Field|正常または400|
+|TV-007|Request|Enum内であること|Request Field|正常または400|
+|TV-008|Response|必須項目が存在すること|Response Field|PASS|
+|TV-009|Response|型が設計どおりであること|Response Field|PASS|
+|TV-010|Response|固定値が期待値と一致すること|Response Field|PASS|
+|TV-011|Response|Enum外値が返らないこと|Response Field|PASS|
+|TV-012|Response|入力値と一致すること|Response Field|PASS|
+|TV-013|Context|Output Contextを抽出できること|Context|PASS|
+|TV-014|Error|必須不足時に期待Errorとなること|Error Response|PASS|
+|TV-015|Security|認証不正時に401 / 403となること|Auth|PASS|
+
+---
+
+# 5. TestCase一覧
+
+|TestCase ID|分類|TestCase名称|対象項目|入力Pattern|期待HTTP Status|期待Result|自動実行|TestData ID|
+|---|---|---|---|---|---|---|---|---|
+|API-TC-XXX|Normal / Boundary / Error / Security|（記載）|$.xxx|（記載）|200 / 400 / 401 / 500|PASS / FAIL|Yes / No|TD-XXX|
+
+---
+
+# 6. 正常系テスト
+
+## 6.1 正常系TestCase
+
+|TestCase ID|TestCase名称|入力条件|期待HTTP Status|期待Response|期待Result|
+|---|---|---|---|---|---|
+|API-TC-001|標準正常系|全必須項目を正常値で設定|200|API設計書どおり|PASS|
+
+---
+
+## 6.2 正常系Request
+
+```json
+{
+  "xxx": "value"
+}
+```
+
+---
+
+## 6.3 正常系期待Response
+
+```json
+{
+  "resultCode": "0"
+}
+```
+
+---
+
+# 7. Request Headerテスト
+
+|TestCase ID|Header名|入力Pattern|設定値|期待HTTP Status|期待Error|期待Result|
+|---|---|---|---|---|---|---|
+|API-TC-H-001|Content-Type|正常|application/json|200|－|PASS|
+|API-TC-H-002|Content-Type|未設定|－|400 / 415|（記載）|PASS|
+|API-TC-H-003|Authorization|正常|Bearer Token|200|－|PASS|
+|API-TC-H-004|Authorization|未設定|－|401|（記載）|PASS|
+|API-TC-H-005|Authorization|不正|Invalid Token|401 / 403|（記載）|PASS|
+
+---
+
+# 8. Request項目テスト
+
+## 8.1 項目別テストMatrix
+
+|JSONPath|必須|Type|Null|Empty|Min|Max|Pattern|Enum|固定値|Default|
+|---|---:|---|---|---|---:|---:|---|---|---|---|
+|$.xxx|○ / －|String|可 / 不可|可 / 不可|1|20|（記載）|（記載）|（記載）|（記載）|
+
+---
+
+## 8.2 必須項目テスト
+
+|TestCase ID|対象JSONPath|入力Pattern|入力値|期待HTTP Status|期待Error Code|期待Result|
+|---|---|---|---|---|---|---|
+|API-TC-REQ-001|$.xxx|正常|（記載）|200|－|PASS|
+|API-TC-REQ-002|$.xxx|項目未設定|項目なし|400|（記載）|PASS|
+|API-TC-REQ-003|$.xxx|Null|null|400 / 200|（設計どおり）|PASS|
+|API-TC-REQ-004|$.xxx|空文字|""|400 / 200|（設計どおり）|PASS|
+
+---
+
+## 8.3 Typeテスト
+
+|TestCase ID|対象JSONPath|期待Type|入力Type|入力値|期待HTTP Status|期待Result|
+|---|---|---|---|---|---|---|
+|API-TC-TYPE-001|$.xxx|String|String|"123"|200|PASS|
+|API-TC-TYPE-002|$.xxx|String|Number|123|400|PASS|
+|API-TC-TYPE-003|$.xxx|String|Boolean|true|400|PASS|
+|API-TC-TYPE-004|$.xxx|String|Object|{}|400|PASS|
+|API-TC-TYPE-005|$.xxx|String|Array|[]|400|PASS|
+
+---
+
+## 8.4 Length境界値テスト
+
+|TestCase ID|対象JSONPath|条件|入力長|期待HTTP Status|期待Result|
+|---|---|---|---:|---|---|
+|API-TC-LEN-001|$.xxx|Min未満|Min-1|400|PASS|
+|API-TC-LEN-002|$.xxx|Min|Min|200|PASS|
+|API-TC-LEN-003|$.xxx|Min+1|Min+1|200|PASS|
+|API-TC-LEN-004|$.xxx|Max-1|Max-1|200|PASS|
+|API-TC-LEN-005|$.xxx|Max|Max|200|PASS|
+|API-TC-LEN-006|$.xxx|Max超過|Max+1|400|PASS|
+
+---
+
+## 8.5 Patternテスト
+
+|TestCase ID|対象JSONPath|Pattern|入力値|一致|期待HTTP Status|期待Result|
+|---|---|---|---|---:|---|---|
+|API-TC-PAT-001|$.xxx|（記載）|正常値|Yes|200|PASS|
+|API-TC-PAT-002|$.xxx|（記載）|不正値|No|400|PASS|
+|API-TC-PAT-003|$.xxx|（記載）|全角文字|No / Yes|設計どおり|PASS|
+|API-TC-PAT-004|$.xxx|（記載）|特殊文字|No / Yes|設計どおり|PASS|
+
+---
+
+## 8.6 Enumテスト
+
+|TestCase ID|対象JSONPath|許容値|入力値|期待HTTP Status|期待Result|
+|---|---|---|---|---|---|
+|API-TC-ENUM-001|$.xxx|A,B,C|A|200|PASS|
+|API-TC-ENUM-002|$.xxx|A,B,C|B|200|PASS|
+|API-TC-ENUM-003|$.xxx|A,B,C|C|200|PASS|
+|API-TC-ENUM-004|$.xxx|A,B,C|D|400|PASS|
+|API-TC-ENUM-005|$.xxx|A,B,C|小文字a|400 / 200|設計どおり|
+
+---
+
+## 8.7 固定値テスト
+
+|TestCase ID|対象JSONPath|期待固定値|入力値|期待HTTP Status|期待Result|
+|---|---|---|---|---|---|
+|API-TC-FIX-001|$.xxx|FIXED|FIXED|200|PASS|
+|API-TC-FIX-002|$.xxx|FIXED|OTHER|400|PASS|
+|API-TC-FIX-003|$.xxx|FIXED|未設定|400 / Default|設計どおり|
+
+---
+
+## 8.8 Default値テスト
+
+|TestCase ID|対象JSONPath|Default値|入力状態|期待処理|期待Result|
+|---|---|---|---|---|---|
+|API-TC-DEF-001|$.xxx|DEFAULT|項目未設定|DEFAULTが利用される|PASS|
+|API-TC-DEF-002|$.xxx|DEFAULT|値指定|指定値が優先される|PASS|
+
+---
+
+# 9. Response項目テスト
+
+## 9.1 Response項目Matrix
+
+|JSONPath|必須|Type|Null|Min|Max|Pattern|Enum|固定値|入力値一致|Dynamic|
+|---|---:|---|---|---:|---:|---|---|---|---|---:|
+|$.xxx|○ / －|String|可 / 不可|1|20|（記載）|（記載）|（記載）|Request $.xxx|Yes / No|
+
+---
+
+## 9.2 必須・存在確認
+
+|TestCase ID|対象JSONPath|検証方式|期待値|重要度|不一致時Result|
+|---|---|---|---|---|---|
+|API-TC-RES-001|$.xxx|Exists|存在すること|High|FAIL|
+
+---
+
+## 9.3 Type確認
+
+|TestCase ID|対象JSONPath|期待Type|実際Type|期待Result|
+|---|---|---|---|---|
+|API-TC-RES-002|$.xxx|String|Runtime取得|PASS|
+
+---
+
+## 9.4 固定値確認
+
+|TestCase ID|対象JSONPath|期待固定値|適用条件|期待Result|
+|---|---|---|---|---|
+|API-TC-RES-003|$.resultCode|0|正常終了時|PASS|
+
+---
+
+## 9.5 Enum確認
+
+|TestCase ID|対象JSONPath|許容値|期待Result|
+|---|---|---|---|
+|API-TC-RES-004|$.status|ACTIVE, INACTIVE|PASS|
+
+---
+
+## 9.6 入力値一致確認
+
+|TestCase ID|Response JSONPath|Request JSONPath|比較方式|期待Result|
+|---|---|---|---|---|
+|API-TC-RES-005|$.customerId|$.customerId|Equals|PASS|
+
+---
+
+## 9.7 Dynamic Field確認
+
+|TestCase ID|JSONPath|Check方式|Compare Policy|期待Result|
+|---|---|---|---|---|
+|API-TC-DYN-001|$.traceId|Exists / Type Only|CMP-POL-001|PASS|
+|API-TC-DYN-002|$.updatedAt|Tolerance / Ignore|CMP-POL-002|PASS / IGNORED|
+
+---
+
+# 10. Contextテスト
+
+## 10.1 Input Context
+
+|TestCase ID|Context ID|Request JSONPath|設定値|期待Result|
+|---|---|---|---|---|
+|API-TC-CTX-001|CTX-XXX|$.xxx|Context値と一致|PASS|
+
+---
+
+## 10.2 Output Context
+
+|TestCase ID|Response JSONPath|Context ID|期待Type|期待Result|
+|---|---|---|---|---|
+|API-TC-CTX-002|$.xxx|CTX-XXX|String / Object / Array|PASS|
+
+---
+
+## 10.3 Context異常
+
+|TestCase ID|条件|期待処理|期待Result|
+|---|---|---|---|
+|API-TC-CTX-003|必須Context未設定|API実行前停止|ERROR|
+|API-TC-CTX-004|Context型不一致|API実行前停止|ERROR|
+|API-TC-CTX-005|Output Context抽出失敗|Scenario方針に従う|ERROR / WARN|
+
+---
+
+# 11. Error Responseテスト
+
+## 11.1 Error TestCase一覧
+
+|TestCase ID|発生条件|期待HTTP Status|期待Error Code|期待Message方式|期待Result|
+|---|---|---|---|---|---|
+|API-TC-ERR-001|必須項目未設定|400|（記載）|Contains / Regex|PASS|
+|API-TC-ERR-002|認証情報未設定|401|（記載）|Contains / Regex|PASS|
+|API-TC-ERR-003|権限不足|403|（記載）|Contains / Regex|PASS|
+|API-TC-ERR-004|対象Dataなし|404 / 200|（業務仕様）|Equals / Contains|PASS|
+|API-TC-ERR-005|内部Error|500|（記載）|Contains / Regex|PASS|
+|API-TC-ERR-006|Timeout|－|TIMEOUT|－|PASS|
+
+---
+
+## 11.2 Error Response項目
+
+|JSONPath|必須|Type|検証方式|期待仕様|
+|---|---:|---|---|---|
+|$.error.code|○|String|Equals / Enum|（記載）|
+|$.error.message|○|String|Contains / Regex|（記載）|
+|$.traceId|－|String|Exists / Ignore|Dynamic|
+
+---
+
+# 12. HTTP Statusテスト
+
+|TestCase ID|条件|期待HTTP Status|期待Result|
+|---|---|---|---|
+|API-TC-HTTP-001|正常Request|200|PASS|
+|API-TC-HTTP-002|登録成功|201|PASS|
+|API-TC-HTTP-003|Bodyなし正常終了|204|PASS|
+|API-TC-HTTP-004|Request不正|400|PASS|
+|API-TC-HTTP-005|認証不正|401|PASS|
+|API-TC-HTTP-006|権限不足|403|PASS|
+|API-TC-HTTP-007|対象なし|404 / 200|設計どおり|
+|API-TC-HTTP-008|Server Error|500|PASS|
+
+---
+
+# 13. Timeout・Retryテスト
+
+|TestCase ID|条件|Timeout設定|期待Retry回数|期待最終Result|Evidence|
+|---|---|---:|---:|---|---|
+|API-TC-TIME-001|応答がTimeout以内|10秒|0|PASS|Execution Snapshot|
+|API-TC-TIME-002|1回目Timeout、2回目成功|10秒|1|PASS / WARN|Retry Log|
+|API-TC-TIME-003|全回Timeout|10秒|2|FAIL / ERROR|Error Snapshot|
+|API-TC-TIME-004|HTTP 400|10秒|0|FAIL|Execution Snapshot|
+|API-TC-TIME-005|HTTP 503|10秒|設定回数|FAIL / PASS|Retry Log|
+
+---
+
+# 14. Performance確認
+
+|TestCase ID|観点|基準|期待Result|
+|---|---|---|---|
+|API-TC-PERF-001|Response Time|（記載）ms以内|PASS / WARN|
+|API-TC-PERF-002|Timeout|設定秒数以内|PASS|
+|API-TC-PERF-003|Response Size|（記載）KB以内|PASS / WARN|
+
+---
+
+# 15. Securityテスト
+
+|TestCase ID|観点|入力 / 条件|期待結果|
+|---|---|---|---|
+|API-TC-SEC-001|Token未設定|Authorizationなし|401|
+|API-TC-SEC-002|Token不正|Invalid Token|401 / 403|
+|API-TC-SEC-003|権限不足|権限なしToken|403|
+|API-TC-SEC-004|Secret Mask|Request Snapshot確認|SecretがMaskされる|
+|API-TC-SEC-005|個人情報Mask|Response Snapshot確認|対象項目がMaskされる|
+
+---
+
+# 16. TestData一覧
+
+|TestData ID|TestCase ID|名称|入力内容|配置先|状態|
+|---|---|---|---|---|---|
+|TD-XXX|API-TC-XXX|（記載）|（記載）|system/06_verification_assets/test_data/API-XXX/|Active|
+
+---
+
+# 17. TestCase詳細テンプレート
+
+## 17.1 基本情報
+
+|項目|内容|
+|---|---|
+|TestCase ID|API-TC-XXX|
+|TestCase名称|（記載）|
+|対象API|API-XXX|
+|分類|Normal / Boundary / Error / Security|
+|TestData ID|TD-XXX|
+|重要度|Critical / High / Medium / Low|
+|自動実行|Yes / No|
+
+---
+
+## 17.2 前提条件
+
+|No|前提条件|確認方法|未成立時処理|
+|---:|---|---|---|
+|1|（記載）|（記載）|BLOCKED / ERROR|
+
+---
+
+## 17.3 入力
+
+```json
+{
+  "xxx": "value"
+}
+```
+
+---
+
+## 17.4 実行手順
+
+|Step No|処理|入力|期待結果|
+|---:|---|---|---|
+|1|API Request生成|TestData|Request生成成功|
+|2|API実行|Request|Response取得|
+|3|Response検証|Response|期待仕様と一致|
+|4|Snapshot確認|Evidence|保存成功|
+
+---
+
+## 17.5 期待結果
+
+|対象|期待結果|
+|---|---|
+|HTTP Status|（記載）|
+|Response Body|（記載）|
+|Context|（記載）|
+|Execution Result|PASS / WARN / FAIL|
+|Evidence|Request / Response / Context / Log|
+
+---
+
+# 18. Result判定
+
+|条件|TestCase Result|
+|---|---|
+|全Check PASS|PASS|
+|WARNのみ|WARN|
+|1件以上FAIL|FAIL|
+|実行基盤Error|ERROR|
+|前提条件未成立|BLOCKED|
+|条件により対象外|SKIP|
+
+---
+
+# 19. Evidence
+
+|Evidence ID|対象|保存内容|保存先|
+|---|---|---|---|
+|EVD-API-XXX|Request|Request Snapshot|outputs/runs/{runId}/raw/|
+|EVD-API-XXX|Response|Response Snapshot|outputs/runs/{runId}/raw/|
+|EVD-API-XXX|Context|Context Snapshot|outputs/runs/{runId}/snapshot/|
+|EVD-API-XXX|Execution|Execution Snapshot|outputs/runs/{runId}/snapshot/|
+|EVD-API-XXX|Error|Error Snapshot / Log|outputs/runs/{runId}/logs/|
+
+---
+
+# 20. Coverage
+
+## 20.1 Request Coverage
+
+|対象項目数|テスト済項目数|未テスト項目数|Coverage率|
+|---:|---:|---:|---:|
+|0|0|0|0%|
+
+---
+
+## 20.2 Response Coverage
+
+|対象項目数|テスト済項目数|未テスト項目数|Coverage率|
+|---:|---:|---:|---:|
+|0|0|0|0%|
+
+---
+
+## 20.3 Error Coverage
+
+|Error Pattern数|テスト済数|未テスト数|Coverage率|
+|---:|---:|---:|---:|
+|0|0|0|0%|
+
+---
+
+# 21. Traceability
+
+|API ID|API設計書|Verification ID|TestCase ID|TestData ID|Check ID|Evidence ID|
+|---|---|---|---|---|---|---|
+|API-XXX|API-XXX|VER-XXX|API-TC-XXX|TD-XXX|CHK-XXX|EVD-API-XXX|
+
+---
+
+# 22. Review観点
+
+|観点|確認内容|
+|---|---|
+|API設計整合|Request / Response定義と一致しているか|
+|必須Coverage|全必須項目に未設定・Null・Emptyテストがあるか|
+|型Coverage|型不一致Patternが定義されているか|
+|境界値Coverage|Min-1、Min、Max、Max+1が確認されているか|
+|固定値Coverage|正常固定値と不正固定値が確認されているか|
+|Enum Coverage|全許容値と許容外値が確認されているか|
+|Response Coverage|必須、型、固定値、入力値一致が確認されているか|
+|Error Coverage|400、401、403、404、500、Timeoutが整理されているか|
+|Context|Input / Output Contextが確認されているか|
+|Evidence|各TestCaseの証跡が保存されるか|
+|Mask|Secret・個人情報がMaskされるか|
+
+---
+
+# Appendix A. 記入例：API-001 Customer Exists API
+
+## A.1 API基本情報
+
+|項目|内容|
+|---|---|
+|文書ID|API-TEST-001|
+|対象API ID|API-001|
+|対象API名称|Customer Exists API|
+|HTTP Method|POST|
+|Path|/v1/customers/exists|
+|正常HTTP Status|200|
+|重要度|High|
+
+---
+
+## A.2 Request項目
+
+|JSONPath|Type|必須|Null|Empty|Min|Max|Pattern|
+|---|---|---:|---|---|---:|---:|---|
+|$.customerId|String|○|不可|不可|1|20|^[0-9]+$|
+
+---
+
+## A.3 Response項目
+
+|JSONPath|Type|必須|固定値|Enum|入力値一致|Dynamic|
+|---|---|---:|---|---|---|---:|
+|$.resultCode|String|○|0|0,1|－|No|
+|$.exists|Boolean|○|－|true,false|－|No|
+|$.customerId|String|○|－|－|Request $.customerId|No|
+|$.traceId|String|－|－|－|－|Yes|
+
+---
+
+## A.4 TestCase一覧
+
+|TestCase ID|分類|TestCase名称|入力|期待Status|期待Result|
+|---|---|---|---|---|---|
+|API-TC-001|Normal|正常顧客番号|10000001|200|PASS|
+|API-TC-002|Boundary|1桁顧客番号|1|200|PASS|
+|API-TC-003|Boundary|20桁顧客番号|12345678901234567890|200|PASS|
+|API-TC-004|Boundary|21桁顧客番号|123456789012345678901|400|PASS|
+|API-TC-005|Error|customerId未設定|項目なし|400|PASS|
+|API-TC-006|Error|customerId Null|null|400|PASS|
+|API-TC-007|Error|customerId空文字|""|400|PASS|
+|API-TC-008|Error|英字混在|ABC001|400|PASS|
+|API-TC-009|Security|Authorization未設定|正常Body|401|PASS|
+|API-TC-010|Security|Authorization不正|正常Body|401 / 403|PASS|
+
+---
+
+## A.5 正常系期待Response
+
+```json
+{
+  "resultCode": "0",
+  "exists": true,
+  "customerId": "10000001",
+  "traceId": "dynamic-value"
+}
+```
+
+---
+
+## A.6 Response Check
+
+|Check ID|JSONPath|Check Type|期待値|重要度|
+|---|---|---|---|---|
+|CHK-API001-001|$.resultCode|Fixed|0|High|
+|CHK-API001-002|$.exists|Type / Enum|Boolean / true,false|High|
+|CHK-API001-003|$.customerId|Input Match|Request $.customerId|High|
+|CHK-API001-004|$.traceId|Exists / Type Only|String|Low|
+
+---
+
+## A.7 TestCase詳細例
+
+### API-TC-004：customerId最大長超過
+
+|項目|内容|
+|---|---|
+|TestCase ID|API-TC-004|
+|分類|Boundary|
+|対象項目|$.customerId|
+|入力値|123456789012345678901|
+|入力長|21|
+|最大長|20|
+|期待HTTP Status|400|
+|期待Error Code|INVALID_CUSTOMER_ID|
+|期待Result|PASS|
+
+Request：
+
+```json
+{
+  "customerId": "123456789012345678901"
+}
+```
+
+期待Error Response：
+
+```json
+{
+  "error": {
+    "code": "INVALID_CUSTOMER_ID",
+    "message": "customerId length is invalid."
+  },
+  "traceId": "dynamic-value"
+}
+```
+
+---
+
+## A.8 Traceability例
+
+|API ID|API設計書|Verification ID|TestCase ID|TestData ID|Check ID|Evidence ID|
+|---|---|---|---|---|---|---|
+|API-001|API-001|VER-001|API-TC-001〜API-TC-010|TD-API001-001〜010|CHK-API001-001〜004|EVD-API-001|
+
+:::
+
+下一步应制作：
+
+```text
+system/06_verification_assets/usecase_test_spec/
+UseCaseテスト仕様書_Template.md
+```
+
+它负责验证多个 API 按业务路径顺序执行、分岐、Skip、Context 传递和最终业务结果。
+
+## 第 198 轮
+
+### 你
+
+继续
+
+### ChatGPT
+
+放置位置：
+
+```text
+system/06_verification_assets/usecase_test_spec/UseCaseテスト仕様書_Template.md
+```
+
+:::writing{variant="document" id="47381"}
+---
+title: UseCaseテスト仕様書テンプレート
+document_id: USECASE-TEST-SPEC-TEMPLATE
+version: 1.0.0
+status: Template
+document_type: UseCase Test Specification
+system_name: E6 API Verification Platform
+phase: Verification Test Design
+author:
+reviewer:
+approver:
+created:
+updated:
+---
+
+# UseCaseテスト仕様書
+
+---
+
+# 1. 文書情報
+
+## 1.1 文書管理
+
+|項目|内容|
+|---|---|
+|文書ID|UC-TEST-XXX|
+|文書名称|〇〇UseCase テスト仕様書|
+|対象UseCase ID|UC-XXX|
+|対象UseCase名称|（記載）|
+|対象Business ID|BUS-XXX|
+|対象Scenario|SC-XXX|
+|対象API|API-XXX|
+|関連BA|BA-XXX|
+|関連BAシナリオ一覧|BA-XXX_〇〇業務_シナリオ一覧.md|
+|関連UseCase設計書|UC-XXX|
+|関連Verification ID|VER-XXX|
+|対象環境|ENV-XXX|
+|版数|1.0.0|
+|状態|Draft / Review / Approved / Released|
+|作成者|（記載）|
+|レビューア|（記載）|
+|承認者|（記載）|
+|作成日|YYYY-MM-DD|
+|更新日|YYYY-MM-DD|
+
+---
+
+## 1.2 改訂履歴
+
+|版数|日付|担当|変更内容|
+|---|---|---|---|
+|1.0.0|YYYY-MM-DD|（記載）|初版作成|
+
+---
+
+## 1.3 関連資料
+
+|資料ID|資料名|配置先|参照目的|
+|---|---|---|---|
+|BA-XXX|現行業務分析書|system/01_business/01_業務分析/|業務Flow、処理条件|
+|BA-SC-XXX|BA分析書シナリオ一覧|system/01_business/01_業務分析/|API呼出経路、分岐|
+|UC-XXX|UseCase設計書|system/04_usecase_design/|UseCase実行仕様|
+|VER-XXX|Verification仕様書|system/06_verification_assets/|検証項目|
+|EXEC-XXX|Execution仕様書|system/06_verification_assets/execution_spec/|実行定義|
+|MST-SC-001|Scenario_Master|system/02_master/|Scenario定義|
+|MST-API-UC-SC-001|API_UseCase_Scenario対応表|system/02_master/|API順序、Skip条件|
+|MST-CTX-001|Context_Master|system/02_master/|Context定義|
+|MST-CMP-POL-001|Compare_Policy_Master|system/02_master/|比較Policy|
+
+---
+
+# 2. テスト概要
+
+## 2.1 テスト目的
+
+本仕様書は、対象UseCaseについて、複数APIが業務定義どおりの順序、分岐、Skip条件、Context連携で実行され、Scenarioごとの業務結果、Verification結果、Snapshot、Diff、Reportが期待どおりとなることを確認する。
+
+---
+
+## 2.2 テスト対象
+
+|分類|対象|実施有無|
+|---|---|---|
+|UseCase開始条件|Entry Input、前提条件|Yes / No|
+|API実行順序|Scenario別API Chain|Yes / No|
+|分岐|API Response、処理Flgによる分岐|Yes / No|
+|Skip|後続APIのSkip条件|Yes / No|
+|Context|API間データ引継ぎ|Yes / No|
+|Retry / Timeout|障害時制御|Yes / No|
+|Business Result|業務結果、終了条件|Yes / No|
+|Scenario Result|PASS / WARN / FAIL / ERROR|Yes / No|
+|Baseline Diff|CurrentとBaseline比較|Yes / No|
+|Evidence|Request、Response、Context、Execution|Yes / No|
+|Report|Daily Summary、Diff Report|Yes / No|
+
+---
+
+## 2.3 テスト対象外
+
+|対象外|理由|備考|
+|---|---|---|
+|API単項目の全境界値|API単体テスト仕様書で確認する| |
+|大量負荷|性能試験で別途実施する| |
+|画面操作|API UseCase検証対象外| |
+
+---
+
+# 3. UseCase基本情報
+
+|項目|内容|
+|---|---|
+|UseCase ID|UC-XXX|
+|UseCase名称|（記載）|
+|Business ID|BUS-XXX|
+|開始条件|（記載）|
+|終了条件|（記載）|
+|開始API|API-XXX|
+|標準終了API|API-XXX|
+|対象Scenario数|（記載）|
+|対象API数|（記載）|
+|実行方式|Sequential / Parallel|
+|日次実行対象|Yes / No|
+|重要度|Critical / High / Medium / Low|
+
+---
+
+# 4. Scenario一覧
+
+|Scenario ID|Scenario名称|分類|対象Path ID|開始API|終了API|処理Flg|期待Business Result|期待Scenario Result|TestCase ID|
+|---|---|---|---|---|---|---|---|---|---|
+|SC-XXX|（記載）|Normal / Alternative / Exception / Boundary / Regression|PATH-XXX|API-XXX|API-XXX|（記載）|（記載）|PASS / WARN / FAIL / ERROR|UC-TC-XXX|
+
+---
+
+# 5. Scenario Matrix
+
+|API / Scenario|SC-XXX|SC-XXX|SC-XXX|
+|---|:---:|:---:|:---:|
+|API-XXX|Run / Skip / Error|Run / Skip / Error|Run / Skip / Error|
+|API-XXX|Run / Skip / Error|Run / Skip / Error|Run / Skip / Error|
+|開始API|API-XXX|API-XXX|API-XXX|
+|終了API|API-XXX|API-XXX|API-XXX|
+|期待Result|PASS / WARN / FAIL|PASS / WARN / FAIL|PASS / WARN / FAIL|
+
+---
+
+# 6. TestCase一覧
+
+|TestCase ID|Scenario ID|TestCase名称|分類|TestData ID|開始API|終了API|期待Result|自動実行|
+|---|---|---|---|---|---|---|---|---|
+|UC-TC-XXX|SC-XXX|（記載）|Normal / Alternative / Exception / Boundary / Regression|TD-XXX|API-XXX|API-XXX|PASS / WARN / FAIL / ERROR|Yes / No|
+
+---
+
+# 7. TestData
+
+## 7.1 TestData一覧
+
+|TestData ID|Scenario ID|名称|Entry Input|前提Data|期待Result|配置先|状態|
+|---|---|---|---|---|---|---|---|
+|TD-XXX|SC-XXX|（記載）|（記載）|（記載）|PASS / WARN / FAIL|system/06_verification_assets/test_data/UC-XXX/|Active|
+
+---
+
+## 7.2 Entry Input
+
+|TestData ID|項目名|JSONPath|Type|値|Context ID|必須|Mask|
+|---|---|---|---|---|---|---:|---:|
+|TD-XXX|（記載）|$.entryInput.xxx|String / Number / Boolean|（記載）|CTX-XXX|○ / －|Yes / No|
+
+---
+
+## 7.3 前提条件
+
+|Precondition ID|TestData ID|前提条件|確認方法|未成立時Result|
+|---|---|---|---|---|
+|PRE-XXX|TD-XXX|（記載）|API / DB / 手動確認|BLOCKED / ERROR|
+
+---
+
+## 7.4 後処理
+
+|Cleanup ID|TestData ID|処理内容|対象Data / API|失敗時Result|
+|---|---|---|---|---|
+|CLEAN-XXX|TD-XXX|Cleanup / Restore / なし|（記載）|WARN / ERROR|
+
+---
+
+# 8. API実行順序テスト
+
+## 8.1 Scenario別期待順序
+
+|TestCase ID|Scenario ID|期待API順序|期待開始API|期待終了API|不一致時Result|
+|---|---|---|---|---|---|
+|UC-TC-XXX|SC-XXX|API-001 → API-002 → API-003|API-001|API-003|FAIL|
+
+---
+
+## 8.2 実行順序Check
+
+|Check ID|TestCase ID|確認対象|実際値取得元|期待値|不一致時Result|
+|---|---|---|---|---|---|
+|CHK-UC-FLOW-XXX|UC-TC-XXX|API実行順序|Execution Snapshot|（記載）|FAIL|
+|CHK-UC-START-XXX|UC-TC-XXX|開始API|Execution Snapshot|API-XXX|FAIL|
+|CHK-UC-END-XXX|UC-TC-XXX|終了API|Execution Snapshot|API-XXX|FAIL|
+
+---
+
+# 9. 分岐テスト
+
+## 9.1 分岐条件一覧
+
+|Branch ID|対象Step / API|判定項目|条件式|成立時遷移|不成立時遷移|対象Scenario|
+|---|---|---|---|---|---|---|
+|BRANCH-XXX|API-XXX|$.xxx / CTX-XXX|（記載）|UC-STEP-XXX|END / UC-STEP-XXX|SC-XXX|
+
+---
+
+## 9.2 分岐Check
+
+|Check ID|TestCase ID|判定条件|期待分岐先|実際値取得元|不一致時Result|
+|---|---|---|---|---|---|
+|CHK-UC-BRANCH-XXX|UC-TC-XXX|（記載）|UC-STEP-XXX / END|Execution Snapshot / Context Snapshot|FAIL|
+
+---
+
+## 9.3 処理Flg Check
+
+|Check ID|処理Flg|設定条件|期待値|対象Scenario|不一致時Result|
+|---|---|---|---|---|---|
+|CHK-UC-FLG-XXX|（記載）|（記載）|（記載）|SC-XXX|FAIL|
+
+---
+
+# 10. Skipテスト
+
+## 10.1 Skip Rule一覧
+
+|Skip Rule ID|対象Scenario|条件式|Skip対象API|期待Status|期待後続処理|
+|---|---|---|---|---|---|
+|SKIP-XXX|SC-XXX|（記載）|API-XXX|SKIP|CONTINUE / END / FAIL|
+
+---
+
+## 10.2 Skip Check
+
+|Check ID|TestCase ID|Skip対象API|期待Status|Skip理由|不一致時Result|
+|---|---|---|---|---|---|
+|CHK-UC-SKIP-XXX|UC-TC-XXX|API-XXX|SKIP|（記載）|FAIL|
+
+---
+
+## 10.3 想定外Skip
+
+|条件|Result|
+|---|---|
+|必須APIがSkip|FAIL|
+|Skip条件不成立なのにSkip|FAIL|
+|期待Skipが実行された|FAIL|
+|Skip理由が記録されていない|WARN / FAIL|
+
+---
+
+# 11. Context連携テスト
+
+## 11.1 Context Flow
+
+|Context ID|Context名|Producer|Consumer|生成Step|利用Step|対象Scenario|
+|---|---|---|---|---|---|---|
+|CTX-XXX|（記載）|Entry Input / API-XXX|API-XXX / Branch / Report|UC-STEP-XXX|UC-STEP-XXX|SC-XXX|
+
+---
+
+## 11.2 Context生成Check
+
+|Check ID|Context ID|Producer|Response JSONPath|期待Type|必須|未生成時Result|
+|---|---|---|---|---|---:|---|
+|CHK-UC-CTX-GEN-XXX|CTX-XXX|API-XXX|$.xxx|String / Object / Array|○ / －|ERROR / FAIL|
+
+---
+
+## 11.3 Context Binding Check
+
+|Check ID|Context ID|Consumer API|Request JSONPath|比較方式|不一致時Result|
+|---|---|---|---|---|---|
+|CHK-UC-CTX-BIND-XXX|CTX-XXX|API-XXX|$.xxx|Equals|FAIL|
+
+---
+
+## 11.4 Context Lifetime Check
+
+|Check ID|Context ID|期待Scope|生成タイミング|破棄タイミング|不一致時Result|
+|---|---|---|---|---|---|
+|CHK-UC-CTX-LIFE-XXX|CTX-XXX|Run / UseCase / Scenario|（記載）|（記載）|ERROR|
+
+---
+
+# 12. Request / Response連携テスト
+
+## 12.1 前段Response・後段Request対応
+
+|Mapping ID|前段API|Response JSONPath|Context ID|後段API|Request JSONPath|変換|期待Result|
+|---|---|---|---|---|---|---|---|
+|MAP-XXX|API-XXX|$.xxx|CTX-XXX|API-XXX|$.xxx|なし / Format / Cast|PASS|
+
+---
+
+## 12.2 Mapping Check
+
+|Check ID|Mapping ID|比較方式|期待値|不一致時Result|
+|---|---|---|---|---|
+|CHK-UC-MAP-XXX|MAP-XXX|Equals / Normalize / Transform|前段値と後段値が一致|FAIL|
+
+---
+
+# 13. Business Resultテスト
+
+## 13.1 業務結果一覧
+
+|Business Check ID|Scenario ID|条件式|期待Business Result|期待Scenario Result|重要度|
+|---|---|---|---|---|---|
+|BCHK-XXX|SC-XXX|（記載）|（記載）|PASS / WARN / FAIL|High / Medium / Low|
+
+---
+
+## 13.2 業務結果Check
+
+|Check ID|TestCase ID|対象Context / Response|期待値|不一致時Result|
+|---|---|---|---|---|
+|CHK-UC-BIZ-XXX|UC-TC-XXX|CTX-XXX / $.xxx|（記載）|FAIL / WARN|
+
+---
+
+## 13.3 終了条件Check
+
+|Check ID|Scenario ID|終了条件|期待終了API|期待Result|不一致時Result|
+|---|---|---|---|---|---|
+|CHK-UC-ENDCOND-XXX|SC-XXX|（記載）|API-XXX|PASS / WARN / FAIL|FAIL|
+
+---
+
+# 14. Error・Exceptionテスト
+
+## 14.1 Error Scenario一覧
+
+|TestCase ID|Scenario ID|発生箇所|発生条件|期待Exception|期待停止範囲|期待Result|
+|---|---|---|---|---|---|---|
+|UC-TC-ERR-XXX|SC-XXX|API-XXX|Timeout / 4xx / 5xx / Context Error|TimeoutException / ApiException / ContextException|STOP_STEP / STOP_SCENARIO / STOP_USECASE|FAIL / ERROR|
+
+---
+
+## 14.2 Retry Check
+
+|Check ID|API ID|発生条件|期待Retry回数|Retry後期待動作|不一致時Result|
+|---|---|---|---:|---|---|
+|CHK-UC-RETRY-XXX|API-XXX|Timeout|2|成功時継続、失敗時停止|FAIL|
+
+---
+
+## 14.3 Stop / Continue Check
+
+|Check ID|発生条件|期待制御|後続API|期待Status|不一致時Result|
+|---|---|---|---|---|---|
+|CHK-UC-CTRL-XXX|API-XXX Error|STOP_SCENARIO / CONTINUE|API-XXX|SKIP / Run|FAIL|
+
+---
+
+# 15. Baseline Diffテスト
+
+## 15.1 Diff対象
+
+|Diff ID|Scenario ID|対象API / Context|対象Path|Compare Policy|重要度|不一致時Result|
+|---|---|---|---|---|---|---|
+|DIFF-UC-XXX|SC-XXX|API-XXX / CTX-XXX|$.xxx|CMP-POL-XXX|High / Medium / Low|FAIL / WARN|
+
+---
+
+## 15.2 Dynamic除外
+
+|対象|Policy ID|期待Result|
+|---|---|---|
+|$.traceId|CMP-POL-001|IGNORED|
+|Runtime.runId|CMP-POL-001|IGNORED|
+
+---
+
+## 15.3 Collection Diff
+
+|Check ID|対象JSONPath|比較方式|Key|順序考慮|期待Result|
+|---|---|---|---|---|---|
+|CHK-UC-COL-XXX|$.items[]|Key Match / Count Only|itemId|Yes / No|PASS / WARN / FAIL|
+
+---
+
+# 16. Evidenceテスト
+
+## 16.1 Evidence一覧
+
+|Evidence ID|TestCase ID|対象|必須|保存先|
+|---|---|---|---:|---|
+|EVD-UC-XXX|UC-TC-XXX|Request Snapshot|○|raw/|
+|EVD-UC-XXX|UC-TC-XXX|Response Snapshot|○|raw/|
+|EVD-UC-XXX|UC-TC-XXX|Context Snapshot|○|snapshot/|
+|EVD-UC-XXX|UC-TC-XXX|Execution Snapshot|○|snapshot/|
+|EVD-UC-XXX|UC-TC-XXX|Diff Result|○|diff/|
+|EVD-UC-XXX|UC-TC-XXX|Runtime Log|○|logs/|
+
+---
+
+## 16.2 Evidence Check
+
+|Check ID|TestCase ID|確認内容|不一致時Result|
+|---|---|---|---|
+|CHK-UC-EVD-XXX|UC-TC-XXX|必要Snapshotがすべて保存されていること|ERROR|
+|CHK-UC-EVD-XXX|UC-TC-XXX|Evidence Indexから各Snapshotへ辿れること|WARN / ERROR|
+|CHK-UC-EVD-XXX|UC-TC-XXX|秘匿情報がMaskされていること|ERROR|
+
+---
+
+# 17. Reportテスト
+
+## 17.1 Report反映Check
+
+|Check ID|Report|確認内容|期待値|不一致時Result|
+|---|---|---|---|---|
+|CHK-UC-RPT-XXX|Daily Summary|UseCase Resultが反映されること|実結果と一致|ERROR|
+|CHK-UC-RPT-XXX|Diff Report|差分内容が反映されること|Diff Resultと一致|ERROR|
+|CHK-UC-RPT-XXX|Evidence Report|Evidence Linkが有効であること|Link有効|WARN / ERROR|
+|CHK-UC-RPT-XXX|Execution Report|実行順序・Skipが反映されること|Execution Snapshotと一致|ERROR|
+
+---
+
+# 18. TestCase詳細テンプレート
+
+## 18.1 基本情報
+
+|項目|内容|
+|---|---|
+|TestCase ID|UC-TC-XXX|
+|TestCase名称|（記載）|
+|対象UseCase|UC-XXX|
+|対象Scenario|SC-XXX|
+|対象Path|PATH-XXX|
+|TestData ID|TD-XXX|
+|開始API|API-XXX|
+|終了API|API-XXX|
+|期待Result|PASS / WARN / FAIL / ERROR|
+|重要度|Critical / High / Medium / Low|
+|自動実行|Yes / No|
+
+---
+
+## 18.2 前提条件
+
+|No|前提条件|確認方法|未成立時処理|
+|---:|---|---|---|
+|1|（記載）|（記載）|BLOCKED / ERROR|
+
+---
+
+## 18.3 Entry Input
+
+```json
+{
+  "xxx": "value"
+}
+```
+
+---
+
+## 18.4 実行手順
+
+|Step No|Step ID|処理|対象API|入力Context|期待出力Context|期待Status|
+|---:|---|---|---|---|---|---|
+|1|UC-STEP-XXX|（記載）|API-XXX|CTX-XXX|CTX-XXX|PASS / SKIP / FAIL|
+
+---
+
+## 18.5 期待結果
+
+|対象|期待結果|
+|---|---|
+|API順序|（記載）|
+|開始API|API-XXX|
+|終了API|API-XXX|
+|Skip API|（記載）|
+|Context|（記載）|
+|Business Result|（記載）|
+|Scenario Result|PASS / WARN / FAIL / ERROR|
+|Evidence|必要Snapshotが保存されること|
+|Report|期待Resultが反映されること|
+
+---
+
+# 19. Result判定
+
+## 19.1 Check単位
+
+|条件|Result|
+|---|---|
+|期待どおり|PASS|
+|確認対象差分|WARN|
+|期待不一致|FAIL|
+|実行不能|ERROR|
+|前提条件未成立|BLOCKED|
+|条件付き未実行|SKIP|
+
+---
+
+## 19.2 TestCase単位
+
+|条件|TestCase Result|
+|---|---|
+|ERRORあり|ERROR|
+|FAILあり|FAIL|
+|WARNのみ|WARN|
+|全Check PASS|PASS|
+|前提未成立|BLOCKED|
+|全対象が期待Skip|PASS / SKIP|
+
+---
+
+## 19.3 UseCase単位
+
+|条件|UseCase Result|
+|---|---|
+|TestCase ERRORあり|ERROR|
+|TestCase FAILあり|FAIL|
+|TestCase WARNあり|WARN|
+|全TestCase PASS|PASS|
+|全TestCase BLOCKED|BLOCKED|
+
+---
+
+# 20. Coverage
+
+## 20.1 Scenario Coverage
+
+|Scenario総数|テスト済数|未テスト数|Coverage率|
+|---:|---:|---:|---:|
+|0|0|0|0%|
+
+---
+
+## 20.2 API Path Coverage
+
+|Path総数|テスト済数|未テスト数|Coverage率|
+|---:|---:|---:|---:|
+|0|0|0|0%|
+
+---
+
+## 20.3 Branch Coverage
+
+|Branch総数|成立側実施数|不成立側実施数|未実施数|Coverage率|
+|---:|---:|---:|---:|---:|
+|0|0|0|0|0%|
+
+---
+
+## 20.4 Context Coverage
+
+|Context総数|生成確認済|利用確認済|未確認|Coverage率|
+|---:|---:|---:|---:|---:|
+|0|0|0|0|0%|
+
+---
+
+## 20.5 Error Coverage
+
+|Error Scenario数|実施済数|未実施数|Coverage率|
+|---:|---:|---:|---:|
+|0|0|0|0%|
+
+---
+
+# 21. Traceability
+
+|Business ID|BA ID|Path ID|UseCase ID|Scenario ID|TestCase ID|TestData ID|Step ID|API ID|Context ID|Verification ID|Execution ID|Evidence ID|
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+|BUS-XXX|BA-XXX|PATH-XXX|UC-XXX|SC-XXX|UC-TC-XXX|TD-XXX|UC-STEP-XXX|API-XXX|CTX-XXX|VER-XXX|EXEC-XXX|EVD-UC-XXX|
+
+---
+
+# 22. Review観点
+
+|観点|確認内容|
+|---|---|
+|BA Path整合|BAシナリオ一覧の全PathがTestCase化されているか|
+|Scenario Coverage|全ScenarioがTestCaseに対応しているか|
+|API順序|Scenario別API順序がUseCase設計書と一致しているか|
+|分岐Coverage|各Branchの成立・不成立が確認されているか|
+|Skip Coverage|全Skip Ruleが確認されているか|
+|Context Coverage|Producer、Consumer、Bindingが確認されているか|
+|Error Coverage|Timeout、4xx、5xx、Context Errorが確認されているか|
+|Business Result|業務結果とScenario Resultの関係が明確か|
+|Evidence|実行結果を判断できる証跡が残るか|
+|Report|UseCase結果がReportへ正しく反映されるか|
+|Traceability|BAからEvidenceまで追跡可能か|
+
+---
+
+# Appendix A. 記入例：UC-001 顧客情報照会
+
+## A.1 UseCase基本情報
+
+|項目|内容|
+|---|---|
+|文書ID|UC-TEST-001|
+|対象UseCase ID|UC-001|
+|対象UseCase名称|顧客情報照会|
+|Business ID|BUS-001|
+|開始API|API-001|
+|標準終了API|API-003|
+|対象Scenario数|4|
+|対象API数|3|
+|実行方式|Sequential|
+|重要度|High|
+
+---
+
+## A.2 Scenario一覧
+
+|Scenario ID|Scenario名称|分類|Path ID|開始API|終了API|期待Business Result|期待Result|TestCase ID|
+|---|---|---|---|---|---|---|---|---|
+|SC-001|正常系|Normal|PATH-001|API-001|API-003|顧客・契約情報取得成功|PASS|UC-TC-001|
+|SC-002|顧客不存在|Alternative|PATH-002|API-001|API-001|顧客不存在|WARN / FAIL|UC-TC-002|
+|SC-003|契約0件|Alternative|PATH-003|API-001|API-003|契約0件|PASS / WARN|UC-TC-003|
+|SC-004|API-002 Timeout|Exception|PATH-004|API-001|API-002|顧客詳細取得失敗|FAIL|UC-TC-004|
+
+---
+
+## A.3 Scenario Matrix
+
+|API / Scenario|SC-001|SC-002|SC-003|SC-004|
+|---|:---:|:---:|:---:|:---:|
+|API-001 Customer Exists API|Run|Run|Run|Run|
+|API-002 Customer Detail API|Run|Skip|Run|Run / Error|
+|API-003 Contract List API|Run|Skip|Run|Skip|
+|開始API|API-001|API-001|API-001|API-001|
+|終了API|API-003|API-001|API-003|API-002|
+|期待Result|PASS|WARN / FAIL|PASS / WARN|FAIL|
+
+---
+
+## A.4 TestCase一覧
+
+|TestCase ID|Scenario ID|TestCase名称|TestData ID|開始API|終了API|期待Result|
+|---|---|---|---|---|---|---|
+|UC-TC-001|SC-001|顧客情報照会正常系|TD-001|API-001|API-003|PASS|
+|UC-TC-002|SC-002|顧客不存在経路|TD-002|API-001|API-001|WARN / FAIL|
+|UC-TC-003|SC-003|契約0件経路|TD-003|API-001|API-003|PASS / WARN|
+|UC-TC-004|SC-004|顧客詳細API Timeout|TD-004|API-001|API-002|FAIL|
+
+---
+
+## A.5 正常系API順序Check
+
+|Check ID|TestCase ID|期待API順序|期待開始API|期待終了API|
+|---|---|---|---|---|
+|CHK-UC-FLOW-001|UC-TC-001|API-001 → API-002 → API-003|API-001|API-003|
+
+---
+
+## A.6 顧客不存在Skip Check
+
+|Check ID|条件|Skip対象API|期待Status|
+|---|---|---|---|
+|CHK-UC-SKIP-001|CTX-002 = false|API-002, API-003|SKIP|
+
+---
+
+## A.7 Context Flow
+
+|Context ID|Context名|Producer|Consumer|
+|---|---|---|---|
+|CTX-001|Customer.id|Entry Input|API-001, API-002, API-003|
+|CTX-002|Customer.exists|API-001|Branch / Skip Rule|
+|CTX-003|Customer|API-002|Verification / Report|
+|CTX-004|Contract.list|API-003|Verification / Report|
+
+---
+
+## A.8 Request / Response Mapping
+
+|Mapping ID|前段|Response|Context|後段|Request|
+|---|---|---|---|---|---|
+|MAP-001|Entry Input|customerId|CTX-001|API-001|$.customerId|
+|MAP-002|API-001|$.customerId|CTX-001|API-002|$.customerId|
+|MAP-003|API-001|$.customerId|CTX-001|API-003|$.customerId|
+|MAP-004|API-001|$.exists|CTX-002|Branch|exists判定|
+
+---
+
+## A.9 Business Result Check
+
+|Check ID|Scenario ID|条件|期待Business Result|期待Result|
+|---|---|---|---|---|
+|CHK-UC-BIZ-001|SC-001|CTX-002=true かつ CTX-004.size>0|顧客・契約情報取得成功|PASS|
+|CHK-UC-BIZ-002|SC-002|CTX-002=false|顧客不存在|WARN / FAIL|
+|CHK-UC-BIZ-003|SC-003|CTX-002=true かつ CTX-004.size=0|契約0件|PASS / WARN|
+|CHK-UC-BIZ-004|SC-004|API-002 Timeout|顧客詳細取得失敗|FAIL|
+
+---
+
+## A.10 Traceability例
+
+|Business ID|BA ID|Path ID|UseCase ID|Scenario ID|TestCase ID|TestData ID|API ID|Context ID|Verification ID|Execution ID|Evidence ID|
+|---|---|---|---|---|---|---|---|---|---|---|---|
+|BUS-001|BA-001|PATH-001|UC-001|SC-001|UC-TC-001|TD-001|API-001〜API-003|CTX-001〜CTX-004|VER-001|EXEC-001|EVD-UC-001|
+|BUS-001|BA-001|PATH-002|UC-001|SC-002|UC-TC-002|TD-002|API-001|CTX-001, CTX-002|VER-001|EXEC-002|EVD-UC-002|
+|BUS-001|BA-001|PATH-003|UC-001|SC-003|UC-TC-003|TD-003|API-001〜API-003|CTX-001〜CTX-004|VER-001|EXEC-003|EVD-UC-003|
+|BUS-001|BA-001|PATH-004|UC-001|SC-004|UC-TC-004|TD-004|API-001, API-002|CTX-001, CTX-002|VER-001|EXEC-004|EVD-UC-004|
+
+:::
+
+下一步应制作：
+
+```text
+system/06_verification_assets/test_data/
+TestData設計書.md
+TestData_Template.json
+```
+
+这一部分会定义 TestData ID、Scenario 对应关系、前提数据、Entry Input、期待值、有效期限、Mask、清理和数据占用规则。
+
+## 第 199 轮
+
+### 你
+
+继续
+
+### ChatGPT
+
+放置位置：
+
+```text
+system/06_verification_assets/test_data/
+├── TestData設計書.md
+└── TestData_Template.json
+```
+
+:::writing{variant="document" id="58241"}
+---
+title: TestData設計書
+document_id: SYS-TD-001
+version: 1.0.0
+status: Template
+document_type: Verification Asset Design
+system_name: E6 API Verification Platform
+phase: Verification Test Design
+author:
+reviewer:
+approver:
+created:
+updated:
+---
+
+# TestData設計書
+
+---
+
+# 1. 文書情報
+
+## 1.1 文書管理
+
+|項目|内容|
+|---|---|
+|文書ID|SYS-TD-001|
+|文書名称|TestData設計書|
+|対象範囲|API単体TestData / UseCase TestData / Scenario TestData / 前提Data / Cleanup|
+|版数|1.0.0|
+|状態|Draft / Review / Approved / Released|
+|作成者| |
+|レビューア| |
+|承認者| |
+|作成日|YYYY-MM-DD|
+|更新日|YYYY-MM-DD|
+
+---
+
+## 1.2 改訂履歴
+
+|版数|日付|担当|変更内容|
+|---|---|---|---|
+|1.0.0|YYYY-MM-DD| |初版作成|
+
+---
+
+## 1.3 関連資料
+
+|資料ID|資料名|配置先|参照目的|
+|---|---|---|---|
+|API-TEST-XXX|API単体テスト仕様書|system/06_verification_assets/api_test_spec/|API単体TestCase|
+|UC-TEST-XXX|UseCaseテスト仕様書|system/06_verification_assets/usecase_test_spec/|UseCase TestCase|
+|VER-XXX|Verification仕様書|system/06_verification_assets/|期待結果、Check定義|
+|EXEC-XXX|Execution仕様書|system/06_verification_assets/execution_spec/|Runtime実行定義|
+|MST-SC-001|Scenario_Master|system/02_master/|Scenario定義|
+|MST-CTX-001|Context_Master|system/02_master/|Context定義|
+|SYS-IO-001|ファイル入出力設計書|system/05_framework/|File配置・形式|
+|SYS-ENV-001|環境設計書|system/05_framework/|環境制約|
+|SYS-LOG-001|ログ・例外設計書|system/05_framework/|Mask、Error方針|
+
+---
+
+# 2. TestData目的
+
+TestDataは、API単体テストおよびUseCaseテストに必要な入力値、前提状態、期待結果、Context初期値、Cleanup情報を管理する。
+
+本設計書では以下を定義する。
+
+|目的|内容|
+|---|---|
+|Scenario再現|Scenarioごとの業務状態を再現する|
+|入力値管理|Entry Input、API Request値を管理する|
+|期待値管理|HTTP Status、Response、Context、Business Resultを管理する|
+|前提Data管理|実行前に必要な顧客、契約、状態を管理する|
+|排他管理|同一Dataの同時利用を防止する|
+|有効期限管理|TestDataの利用可能期間を管理する|
+|Cleanup管理|登録・更新・削除系TestDataを元の状態へ戻す|
+|再現性確保|同じTestDataで同じScenarioを再実行可能にする|
+
+---
+
+# 3. TestData分類
+
+|分類|説明|例|
+|---|---|---|
+|API Normal Data|API単体正常系Data|正常な顧客番号|
+|API Boundary Data|最小、最大、境界値Data|20桁顧客番号|
+|API Error Data|必須不足、不正値Data|Null、空文字|
+|UseCase Normal Data|業務正常経路Data|顧客あり・契約あり|
+|UseCase Alternative Data|業務分岐経路Data|顧客不存在、契約0件|
+|UseCase Exception Data|障害系Data|Timeout誘発条件|
+|Security Data|認証・権限確認Data|無効Token|
+|Update Data|登録・更新・削除確認Data|専用更新対象Data|
+|Generated Data|Runtime生成Data|runId、timestamp|
+|Reference Data|共通参照Data|固定Code、Enum|
+
+---
+
+# 4. TestData配置
+
+## 4.1 ディレクトリ構成
+
+```text
+system/06_verification_assets/test_data/
+
+├── common/
+│   ├── reference_data.json
+│   └── common_auth_data.json
+│
+├── API-001/
+│   ├── TD-API001-001_normal.json
+│   ├── TD-API001-002_required_missing.json
+│   └── TD-API001-003_max_length.json
+│
+├── UC-001/
+│   ├── TD-001_SC-001_normal.json
+│   ├── TD-002_SC-002_customer_not_found.json
+│   ├── TD-003_SC-003_contract_empty.json
+│   └── TD-004_SC-004_timeout.json
+│
+└── schema/
+    ├── testdata.schema.json
+    ├── api-testdata.schema.json
+    └── usecase-testdata.schema.json
+```
+
+---
+
+## 4.2 配置ルール
+
+|TestData種別|配置先|
+|---|---|
+|共通Data|test_data/common/|
+|API単体Data|test_data/{apiId}/|
+|UseCase Data|test_data/{useCaseId}/|
+|Schema|test_data/schema/|
+|生成途中Data|outputs/runs/{runId}/tmp/|
+|実行時展開Data|outputs/runs/{runId}/snapshot/|
+
+---
+
+# 5. TestData ID
+
+## 5.1 ID形式
+
+### UseCase TestData
+
+```text
+TD-<3桁連番>
+```
+
+例：
+
+```text
+TD-001
+TD-002
+TD-003
+```
+
+### API単体TestData
+
+```text
+TD-<API番号>-<3桁連番>
+```
+
+例：
+
+```text
+TD-API001-001
+TD-API001-002
+```
+
+---
+
+## 5.2 IDルール
+
+|ルール|内容|
+|---|---|
+|一意性|Repository内で一意とする|
+|再利用禁止|廃止したIDを別Dataへ再利用しない|
+|欠番許可|削除・廃止による欠番を許可する|
+|Scenario対応|UseCase TestDataは原則Scenario IDを保持する|
+|TestCase対応|TestCase IDを必須保持する|
+
+---
+
+# 6. TestData基本項目
+
+|項目|必須|説明|
+|---|---:|---|
+|testDataId|○|TestData ID|
+|name|○|TestData名称|
+|description|○|利用目的|
+|dataType|○|API / USECASE / COMMON|
+|businessId|条件付き|Business ID|
+|useCaseId|条件付き|UseCase ID|
+|scenarioId|条件付き|Scenario ID|
+|apiId|条件付き|API ID|
+|testCaseIds|○|対応TestCase|
+|environment|○|利用可能環境|
+|status|○|Active / Reserved / Deprecated / Invalid|
+|entryInput|条件付き|UseCase開始入力|
+|requestOverrides|－|API Request上書き|
+|initialContext|－|初期Context|
+|preconditions|－|前提条件|
+|expected|○|期待結果|
+|cleanup|－|後処理|
+|masking|－|Mask対象|
+|reservation|－|Data占用情報|
+|validity|－|有効期間|
+|metadata|○|作成・更新・Version情報|
+
+---
+
+# 7. TestData JSON基本構造
+
+```json
+{
+  "testDataId": "TD-XXX",
+  "name": "TestData名称",
+  "description": "TestDataの利用目的",
+  "dataType": "USECASE",
+  "businessId": "BUS-XXX",
+  "useCaseId": "UC-XXX",
+  "scenarioId": "SC-XXX",
+  "apiId": null,
+  "testCaseIds": [
+    "UC-TC-XXX"
+  ],
+  "environment": {
+    "allowed": [
+      "STG"
+    ],
+    "denied": [
+      "PROD-LIKE"
+    ]
+  },
+  "status": "Active",
+  "entryInput": {},
+  "requestOverrides": {},
+  "initialContext": {},
+  "preconditions": [],
+  "expected": {},
+  "cleanup": {},
+  "masking": {},
+  "reservation": {},
+  "validity": {},
+  "metadata": {}
+}
+```
+
+---
+
+# 8. Entry Input設計
+
+## 8.1 Entry Input項目
+
+|項目|説明|
+|---|---|
+|name|入力項目名|
+|value|入力値|
+|type|型|
+|required|必須か|
+|contextId|変換先Context|
+|mask|Mask対象か|
+|source|STATIC / GENERATED / ENVIRONMENT / SECRET|
+
+---
+
+## 8.2 Entry Input例
+
+```json
+{
+  "entryInput": {
+    "customerId": {
+      "value": "10000001",
+      "type": "String",
+      "required": true,
+      "contextId": "CTX-001",
+      "mask": true,
+      "source": "STATIC"
+    }
+  }
+}
+```
+
+---
+
+# 9. Request Override設計
+
+Request Overrideは、API設計書やContext Bindingで生成されるRequestをTestCase目的で上書きする場合に利用する。
+
+通常のUseCase正常系では原則利用しない。
+
+---
+
+## 9.1 Request Override項目
+
+|項目|説明|
+|---|---|
+|apiId|対象API|
+|target|Request JSONPath / Header / Parameter|
+|operation|SET / REMOVE / NULL / EMPTY|
+|value|設定値|
+|type|設定型|
+|purpose|上書き理由|
+
+---
+
+## 9.2 Request Override例
+
+```json
+{
+  "requestOverrides": {
+    "API-001": [
+      {
+        "target": "$.customerId",
+        "operation": "REMOVE",
+        "value": null,
+        "type": "String",
+        "purpose": "必須項目未設定確認"
+      }
+    ]
+  }
+}
+```
+
+---
+
+# 10. Initial Context設計
+
+## 10.1 用途
+
+Initial Contextは、UseCase開始前またはScenario開始前にRuntimeへ設定するContextである。
+
+通常はEntry Inputから生成するが、特殊なScenarioでは明示設定を許可する。
+
+---
+
+## 10.2 Initial Context例
+
+```json
+{
+  "initialContext": {
+    "CTX-001": {
+      "contextName": "Customer.id",
+      "type": "String",
+      "value": "10000001",
+      "mask": true
+    },
+    "CTX-RUN-TEST-001": {
+      "contextName": "Test.timeoutMode",
+      "type": "Boolean",
+      "value": false,
+      "mask": false
+    }
+  }
+}
+```
+
+---
+
+# 11. 前提条件設計
+
+## 11.1 前提条件分類
+
+|分類|説明|
+|---|---|
+|DATA_EXISTS|対象Dataが存在する|
+|DATA_NOT_EXISTS|対象Dataが存在しない|
+|DATA_STATUS|対象Dataが特定Statusである|
+|API_AVAILABLE|対象APIが利用可能|
+|AUTH_AVAILABLE|認証情報が利用可能|
+|ENVIRONMENT|指定環境である|
+|TIME_CONDITION|指定時間帯・日付条件|
+|CUSTOM|個別確認|
+
+---
+
+## 11.2 前提条件項目
+
+|項目|説明|
+|---|---|
+|preconditionId|前提条件ID|
+|type|前提条件分類|
+|description|条件説明|
+|checkMethod|API / DB / FILE / MANUAL / SCRIPT|
+|checkTarget|確認対象|
+|expected|期待状態|
+|required|必須か|
+|failureResult|BLOCKED / ERROR / WARN|
+|evidenceRequired|Evidence要否|
+
+---
+
+## 11.3 前提条件例
+
+```json
+{
+  "preconditions": [
+    {
+      "preconditionId": "PRE-TD-001",
+      "type": "DATA_EXISTS",
+      "description": "顧客10000001が存在すること",
+      "checkMethod": "API",
+      "checkTarget": "API-001",
+      "expected": {
+        "$.exists": true
+      },
+      "required": true,
+      "failureResult": "BLOCKED",
+      "evidenceRequired": true
+    }
+  ]
+}
+```
+
+---
+
+# 12. 期待結果設計
+
+## 12.1 Expected基本項目
+
+|項目|説明|
+|---|---|
+|executionResult|Execution全体期待結果|
+|businessResult|業務結果|
+|startApi|開始API|
+|endApi|終了API|
+|executedApis|実行対象API|
+|skippedApis|Skip対象API|
+|httpStatus|API別期待Status|
+|responseChecks|Response期待値|
+|contextChecks|Context期待値|
+|diffResult|Diff期待結果|
+|reportResult|Report期待結果|
+
+---
+
+## 12.2 Expected例
+
+```json
+{
+  "expected": {
+    "executionResult": "PASS",
+    "businessResult": "CUSTOMER_AND_CONTRACT_FOUND",
+    "startApi": "API-001",
+    "endApi": "API-003",
+    "executedApis": [
+      "API-001",
+      "API-002",
+      "API-003"
+    ],
+    "skippedApis": [],
+    "httpStatus": {
+      "API-001": 200,
+      "API-002": 200,
+      "API-003": 200
+    },
+    "responseChecks": {
+      "API-001": [
+        {
+          "target": "$.resultCode",
+          "type": "FIXED",
+          "expected": "0"
+        },
+        {
+          "target": "$.exists",
+          "type": "EQUALS",
+          "expected": true
+        }
+      ]
+    },
+    "contextChecks": [
+      {
+        "contextId": "CTX-002",
+        "type": "EQUALS",
+        "expected": true
+      }
+    ],
+    "diffResult": "PASS",
+    "reportResult": "PASS"
+  }
+}
+```
+
+---
+
+# 13. API別期待値
+
+## 13.1 API期待値構造
+
+```json
+{
+  "expected": {
+    "apis": {
+      "API-001": {
+        "executionStatus": "PASS",
+        "httpStatus": 200,
+        "response": {
+          "$.resultCode": {
+            "checkType": "FIXED",
+            "expected": "0"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+---
+
+## 13.2 API期待Status
+
+|Status|説明|
+|---|---|
+|PASS|API実行・検証成功|
+|WARN|許容差分あり|
+|FAIL|期待不一致|
+|ERROR|実行不能|
+|SKIP|条件により未実行|
+
+---
+
+# 14. Context期待値
+
+## 14.1 Context Check項目
+
+|項目|説明|
+|---|---|
+|contextId|対象Context|
+|checkType|EXISTS / EQUALS / TYPE / SIZE / NOT_EMPTY|
+|expected|期待値|
+|severity|重要度|
+|failureResult|不一致時Result|
+
+---
+
+## 14.2 Context期待値例
+
+```json
+{
+  "expected": {
+    "contextChecks": [
+      {
+        "contextId": "CTX-001",
+        "checkType": "EQUALS",
+        "expected": "10000001",
+        "severity": "HIGH",
+        "failureResult": "FAIL"
+      },
+      {
+        "contextId": "CTX-004",
+        "checkType": "SIZE_GREATER_THAN",
+        "expected": 0,
+        "severity": "HIGH",
+        "failureResult": "FAIL"
+      }
+    ]
+  }
+}
+```
+
+---
+
+# 15. Error期待値
+
+## 15.1 Error Expected構造
+
+```json
+{
+  "expected": {
+    "executionResult": "FAIL",
+    "error": {
+      "apiId": "API-002",
+      "exceptionType": "TimeoutException",
+      "errorCode": "TIMEOUT",
+      "retryCount": 2,
+      "continuePolicy": "STOP_SCENARIO"
+    }
+  }
+}
+```
+
+---
+
+# 16. Cleanup設計
+
+## 16.1 Cleanup分類
+
+|分類|説明|
+|---|---|
+|NONE|後処理なし|
+|DELETE_CREATED_DATA|作成Dataを削除|
+|RESTORE_UPDATED_DATA|更新前状態へ戻す|
+|RELEASE_RESERVATION|Data占用を解除|
+|DELETE_TEMP_FILE|一時File削除|
+|CUSTOM_SCRIPT|個別Script実行|
+
+---
+
+## 16.2 Cleanup項目
+
+|項目|説明|
+|---|---|
+|required|Cleanup必須か|
+|type|Cleanup分類|
+|target|対象Data / API|
+|executionTiming|SCENARIO_END / USECASE_END / RUN_END|
+|continueOnFailure|Cleanup失敗時に継続するか|
+|failureResult|WARN / ERROR|
+|evidenceRequired|Evidence要否|
+
+---
+
+## 16.3 Cleanup例
+
+```json
+{
+  "cleanup": {
+    "required": true,
+    "actions": [
+      {
+        "cleanupId": "CLEAN-TD-001",
+        "type": "DELETE_CREATED_DATA",
+        "target": {
+          "apiId": "API-DELETE-001",
+          "contextId": "CTX-CREATED-ID"
+        },
+        "executionTiming": "SCENARIO_END",
+        "continueOnFailure": false,
+        "failureResult": "ERROR",
+        "evidenceRequired": true
+      }
+    ]
+  }
+}
+```
+
+---
+
+# 17. Mask設計
+
+## 17.1 Mask項目
+
+|項目|説明|
+|---|---|
+|jsonPaths|Mask対象JSONPath|
+|contextIds|Mask対象Context|
+|strategy|FULL / PARTIAL / HASH|
+|visibleTailLength|末尾表示桁数|
+|applyToSnapshot|Snapshotへ適用|
+|applyToLog|Logへ適用|
+|applyToReport|Reportへ適用|
+
+---
+
+## 17.2 Mask例
+
+```json
+{
+  "masking": {
+    "jsonPaths": [
+      "$.entryInput.customerId.value"
+    ],
+    "contextIds": [
+      "CTX-001"
+    ],
+    "strategy": "PARTIAL",
+    "visibleTailLength": 4,
+    "applyToSnapshot": true,
+    "applyToLog": true,
+    "applyToReport": true
+  }
+}
+```
+
+---
+
+# 18. TestData予約・排他設計
+
+## 18.1 目的
+
+同一TestDataを複数Runが同時利用し、Data状態が競合することを防止する。
+
+---
+
+## 18.2 予約方式
+
+|方式|説明|
+|---|---|
+|NONE|予約不要|
+|FILE_LOCK|Lock Fileで制御|
+|RUNTIME_LOCK|Runtime内Lock管理|
+|EXTERNAL_LOCK|外部DB / Lock Service|
+|MANUAL_RESERVATION|手動予約|
+
+---
+
+## 18.3 Reservation項目
+
+|項目|説明|
+|---|---|
+|required|予約要否|
+|lockKey|Lock識別子|
+|mode|SHARED / EXCLUSIVE|
+|timeoutSeconds|Lock待機時間|
+|releaseTiming|SCENARIO_END / RUN_END|
+|failureResult|BLOCKED / ERROR|
+
+---
+
+## 18.4 Reservation例
+
+```json
+{
+  "reservation": {
+    "required": true,
+    "lockKey": "CUSTOMER-10000001",
+    "mode": "EXCLUSIVE",
+    "timeoutSeconds": 30,
+    "releaseTiming": "SCENARIO_END",
+    "failureResult": "BLOCKED"
+  }
+}
+```
+
+---
+
+# 19. 有効期限設計
+
+## 19.1 Validity項目
+
+|項目|説明|
+|---|---|
+|validFrom|利用開始日時|
+|validTo|利用終了日時|
+|timezone|Timezone|
+|expiredResult|BLOCKED / ERROR|
+|lastValidatedAt|最終確認日時|
+|validationIntervalDays|再確認間隔|
+
+---
+
+## 19.2 Validity例
+
+```json
+{
+  "validity": {
+    "validFrom": "2026-07-01T00:00:00+09:00",
+    "validTo": "2026-12-31T23:59:59+09:00",
+    "timezone": "Asia/Tokyo",
+    "expiredResult": "BLOCKED",
+    "lastValidatedAt": "2026-07-15T09:00:00+09:00",
+    "validationIntervalDays": 7
+  }
+}
+```
+
+---
+
+# 20. Environment制約
+
+## 20.1 Environment設定
+
+```json
+{
+  "environment": {
+    "allowed": [
+      "DEV",
+      "STG"
+    ],
+    "denied": [
+      "PROD-LIKE"
+    ],
+    "updateApiAllowed": false
+  }
+}
+```
+
+---
+
+## 20.2 環境制御
+
+|条件|処理|
+|---|---|
+|許可環境外|BLOCKED|
+|禁止環境|ERROR / BLOCKED|
+|更新API禁止環境|実行停止|
+|Environment未指定|ERROR|
+|TestData環境不一致|BLOCKED|
+
+---
+
+# 21. TestData Status
+
+|Status|意味|
+|---|---|
+|Draft|作成中|
+|Review|Review中|
+|Active|利用可能|
+|Reserved|一時予約中|
+|Blocked|前提不成立|
+|Deprecated|廃止予定|
+|Invalid|利用不可|
+|Expired|有効期限切れ|
+
+---
+
+# 22. TestData Validation
+
+## 22.1 Schema Validation
+
+|Validation ID|確認内容|失敗時Result|
+|---|---|---|
+|TD-VAL-001|testDataIdが存在する|ERROR|
+|TD-VAL-002|TestCase IDが存在する|ERROR|
+|TD-VAL-003|UseCase / Scenario / APIがMasterに存在する|ERROR|
+|TD-VAL-004|Entry Input Typeが正しい|ERROR|
+|TD-VAL-005|Context IDがMasterに存在する|ERROR|
+|TD-VAL-006|Expected Resultが許容値である|ERROR|
+|TD-VAL-007|利用環境が定義されている|ERROR|
+|TD-VAL-008|Mask対象が定義されている|WARN / ERROR|
+|TD-VAL-009|有効期限内である|BLOCKED|
+|TD-VAL-010|予約可能である|BLOCKED|
+
+---
+
+## 22.2 実行前Validation
+
+```text
+1. JSON Schema確認
+2. ID整合性確認
+3. Environment確認
+4. Status確認
+5. Validity確認
+6. Reservation取得
+7. Precondition確認
+8. Entry Input生成
+9. Initial Context生成
+10. Execution開始
+```
+
+---
+
+# 23. TestData生成方式
+
+## 23.1 生成方式
+
+|方式|説明|
+|---|---|
+|STATIC|固定値|
+|RANDOM|ランダム生成|
+|SEQUENCE|連番生成|
+|TIMESTAMP|日時生成|
+|UUID|UUID生成|
+|ENVIRONMENT|環境変数から取得|
+|SECRET|Secretから取得|
+|API_LOOKUP|前処理APIから取得|
+|SCRIPT|Scriptで生成|
+
+---
+
+## 23.2 Generated Value例
+
+```json
+{
+  "entryInput": {
+    "requestId": {
+      "source": "UUID",
+      "type": "String",
+      "required": true
+    },
+    "executionDate": {
+      "source": "TIMESTAMP",
+      "format": "yyyy-MM-dd",
+      "timezone": "Asia/Tokyo",
+      "type": "String",
+      "required": true
+    }
+  }
+}
+```
+
+---
+
+# 24. TestData変更管理
+
+|変更内容|Version更新|
+|---|---|
+|説明・備考修正|PATCH|
+|期待値変更|MINOR|
+|Entry Input変更|MINOR|
+|Scenario変更|MAJOR|
+|TestCase対応変更|MAJOR|
+|前提Data変更|MINOR / MAJOR|
+|環境制約変更|MINOR|
+
+---
+
+## 24.1 Metadata
+
+```json
+{
+  "metadata": {
+    "version": "1.0.0",
+    "status": "Active",
+    "createdBy": "test-designer",
+    "createdAt": "2026-07-15T10:00:00+09:00",
+    "updatedBy": "test-designer",
+    "updatedAt": "2026-07-15T10:00:00+09:00",
+    "sourceDocuments": [
+      "UC-TEST-001",
+      "VER-001",
+      "EXEC-001"
+    ]
+  }
+}
+```
+
+---
+
+# 25. TestData Evidence
+
+|Evidence|内容|
+|---|---|
+|Precondition Evidence|実行前状態|
+|Entry Input Snapshot|実際に利用した入力|
+|Generated Value Snapshot|生成値|
+|Reservation Evidence|Lock取得・解放|
+|Cleanup Evidence|後処理結果|
+|Validation Result|Schema・前提確認結果|
+
+---
+
+# 26. Error処理
+
+|Error ID|発生条件|Result|処理|
+|---|---|---|---|
+|TD-ERR-001|TestData Fileなし|ERROR|Scenario停止|
+|TD-ERR-002|JSON Parse失敗|ERROR|Scenario停止|
+|TD-ERR-003|Schema不一致|ERROR|Scenario停止|
+|TD-ERR-004|有効期限切れ|BLOCKED|実行しない|
+|TD-ERR-005|前提条件不成立|BLOCKED|実行しない|
+|TD-ERR-006|予約取得失敗|BLOCKED|実行しない|
+|TD-ERR-007|Environment不一致|BLOCKED|実行しない|
+|TD-ERR-008|Cleanup失敗|WARN / ERROR|方針に従う|
+|TD-ERR-009|Mask設定不備|ERROR|保存・実行停止|
+|TD-ERR-010|期待値不整合|ERROR|Spec修正対象|
+
+---
+
+# 27. Traceability
+
+|TestData ID|Business ID|UseCase ID|Scenario ID|API ID|TestCase ID|Verification ID|Execution ID|Context ID|
+|---|---|---|---|---|---|---|---|---|
+|TD-XXX|BUS-XXX|UC-XXX|SC-XXX|API-XXX|UC-TC-XXX / API-TC-XXX|VER-XXX|EXEC-XXX|CTX-XXX|
+
+---
+
+# 28. Review観点
+
+|観点|確認内容|
+|---|---|
+|Scenario整合|対象Scenarioを再現できるDataか|
+|TestCase整合|TestCaseの入力・期待結果と一致するか|
+|前提条件|実行前状態が明確か|
+|Entry Input|型、必須、Context対応が明確か|
+|期待結果|API、Context、Business Resultが明確か|
+|Environment|利用可能環境が制限されているか|
+|有効期限|利用可能期間が設定されているか|
+|排他|更新系や共有Dataの競合を防止できるか|
+|Cleanup|後処理が定義されているか|
+|Mask|個人情報・Secretが保護されているか|
+|再現性|同じDataで再実行可能か|
+|Traceability|TestCase、Scenario、Executionへ追跡可能か|
+
+---
+
+# Appendix A. 記入例：TD-001 正常顧客
+
+```json
+{
+  "testDataId": "TD-001",
+  "name": "顧客情報照会正常系",
+  "description": "顧客が存在し、1件以上の有効契約を保持する正常系TestData",
+  "dataType": "USECASE",
+  "businessId": "BUS-001",
+  "useCaseId": "UC-001",
+  "scenarioId": "SC-001",
+  "apiId": null,
+  "testCaseIds": [
+    "UC-TC-001"
+  ],
+  "environment": {
+    "allowed": [
+      "STG"
+    ],
+    "denied": [
+      "PROD-LIKE"
+    ],
+    "updateApiAllowed": false
+  },
+  "status": "Active",
+  "entryInput": {
+    "customerId": {
+      "value": "10000001",
+      "type": "String",
+      "required": true,
+      "contextId": "CTX-001",
+      "mask": true,
+      "source": "STATIC"
+    }
+  },
+  "requestOverrides": {},
+  "initialContext": {},
+  "preconditions": [
+    {
+      "preconditionId": "PRE-TD-001",
+      "type": "DATA_EXISTS",
+      "description": "顧客10000001が存在すること",
+      "checkMethod": "API",
+      "checkTarget": "API-001",
+      "expected": {
+        "$.exists": true
+      },
+      "required": true,
+      "failureResult": "BLOCKED",
+      "evidenceRequired": true
+    },
+    {
+      "preconditionId": "PRE-TD-002",
+      "type": "DATA_STATUS",
+      "description": "顧客10000001が1件以上の有効契約を保持すること",
+      "checkMethod": "API",
+      "checkTarget": "API-003",
+      "expected": {
+        "$.contracts.length": {
+          "operator": "GREATER_THAN",
+          "value": 0
+        }
+      },
+      "required": true,
+      "failureResult": "BLOCKED",
+      "evidenceRequired": true
+    }
+  ],
+  "expected": {
+    "executionResult": "PASS",
+    "businessResult": "CUSTOMER_AND_CONTRACT_FOUND",
+    "startApi": "API-001",
+    "endApi": "API-003",
+    "executedApis": [
+      "API-001",
+      "API-002",
+      "API-003"
+    ],
+    "skippedApis": [],
+    "httpStatus": {
+      "API-001": 200,
+      "API-002": 200,
+      "API-003": 200
+    },
+    "responseChecks": {
+      "API-001": [
+        {
+          "target": "$.resultCode",
+          "checkType": "FIXED",
+          "expected": "0"
+        },
+        {
+          "target": "$.exists",
+          "checkType": "EQUALS",
+          "expected": true
+        }
+      ]
+    },
+    "contextChecks": [
+      {
+        "contextId": "CTX-001",
+        "checkType": "EQUALS",
+        "expected": "10000001",
+        "severity": "HIGH",
+        "failureResult": "FAIL"
+      },
+      {
+        "contextId": "CTX-002",
+        "checkType": "EQUALS",
+        "expected": true,
+        "severity": "HIGH",
+        "failureResult": "FAIL"
+      },
+      {
+        "contextId": "CTX-004",
+        "checkType": "SIZE_GREATER_THAN",
+        "expected": 0,
+        "severity": "HIGH",
+        "failureResult": "FAIL"
+      }
+    ],
+    "diffResult": "PASS",
+    "reportResult": "PASS"
+  },
+  "cleanup": {
+    "required": false,
+    "actions": []
+  },
+  "masking": {
+    "jsonPaths": [
+      "$.entryInput.customerId.value"
+    ],
+    "contextIds": [
+      "CTX-001"
+    ],
+    "strategy": "PARTIAL",
+    "visibleTailLength": 4,
+    "applyToSnapshot": true,
+    "applyToLog": true,
+    "applyToReport": true
+  },
+  "reservation": {
+    "required": false,
+    "lockKey": "CUSTOMER-10000001",
+    "mode": "SHARED",
+    "timeoutSeconds": 30,
+    "releaseTiming": "SCENARIO_END",
+    "failureResult": "BLOCKED"
+  },
+  "validity": {
+    "validFrom": "2026-07-01T00:00:00+09:00",
+    "validTo": "2026-12-31T23:59:59+09:00",
+    "timezone": "Asia/Tokyo",
+    "expiredResult": "BLOCKED",
+    "lastValidatedAt": "2026-07-15T09:00:00+09:00",
+    "validationIntervalDays": 7
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "status": "Active",
+    "createdBy": "test-designer",
+    "createdAt": "2026-07-15T10:00:00+09:00",
+    "updatedBy": "test-designer",
+    "updatedAt": "2026-07-15T10:00:00+09:00",
+    "sourceDocuments": [
+      "UC-TEST-001",
+      "VER-001",
+      "EXEC-001"
+    ]
+  }
+}
+```
+
+---
+
+# Appendix B. 記入例：TD-002 顧客不存在
+
+```json
+{
+  "testDataId": "TD-002",
+  "name": "顧客不存在",
+  "description": "顧客存在確認APIでexists=falseとなり、後続APIがSkipされるTestData",
+  "dataType": "USECASE",
+  "businessId": "BUS-001",
+  "useCaseId": "UC-001",
+  "scenarioId": "SC-002",
+  "apiId": null,
+  "testCaseIds": [
+    "UC-TC-002"
+  ],
+  "environment": {
+    "allowed": [
+      "STG"
+    ],
+    "denied": [
+      "PROD-LIKE"
+    ],
+    "updateApiAllowed": false
+  },
+  "status": "Active",
+  "entryInput": {
+    "customerId": {
+      "value": "99999999",
+      "type": "String",
+      "required": true,
+      "contextId": "CTX-001",
+      "mask": true,
+      "source": "STATIC"
+    }
+  },
+  "requestOverrides": {},
+  "initialContext": {},
+  "preconditions": [
+    {
+      "preconditionId": "PRE-TD-003",
+      "type": "DATA_NOT_EXISTS",
+      "description": "顧客99999999が存在しないこと",
+      "checkMethod": "API",
+      "checkTarget": "API-001",
+      "expected": {
+        "$.exists": false
+      },
+      "required": true,
+      "failureResult": "BLOCKED",
+      "evidenceRequired": true
+    }
+  ],
+  "expected": {
+    "executionResult": "WARN",
+    "businessResult": "CUSTOMER_NOT_FOUND",
+    "startApi": "API-001",
+    "endApi": "API-001",
+    "executedApis": [
+      "API-001"
+    ],
+    "skippedApis": [
+      "API-002",
+      "API-003"
+    ],
+    "httpStatus": {
+      "API-001": 200
+    },
+    "responseChecks": {
+      "API-001": [
+        {
+          "target": "$.exists",
+          "checkType": "EQUALS",
+          "expected": false
+        }
+      ]
+    },
+    "contextChecks": [
+      {
+        "contextId": "CTX-002",
+        "checkType": "EQUALS",
+        "expected": false,
+        "severity": "HIGH",
+        "failureResult": "FAIL"
+      }
+    ],
+    "diffResult": "PASS",
+    "reportResult": "WARN"
+  },
+  "cleanup": {
+    "required": false,
+    "actions": []
+  },
+  "masking": {
+    "jsonPaths": [
+      "$.entryInput.customerId.value"
+    ],
+    "contextIds": [
+      "CTX-001"
+    ],
+    "strategy": "PARTIAL",
+    "visibleTailLength": 4,
+    "applyToSnapshot": true,
+    "applyToLog": true,
+    "applyToReport": true
+  },
+  "reservation": {
+    "required": false
+  },
+  "validity": {
+    "validFrom": "2026-07-01T00:00:00+09:00",
+    "validTo": "2026-12-31T23:59:59+09:00",
+    "timezone": "Asia/Tokyo",
+    "expiredResult": "BLOCKED"
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "status": "Active",
+    "createdBy": "test-designer",
+    "createdAt": "2026-07-15T10:00:00+09:00",
+    "updatedBy": "test-designer",
+    "updatedAt": "2026-07-15T10:00:00+09:00",
+    "sourceDocuments": [
+      "UC-TEST-001",
+      "VER-001",
+      "EXEC-002"
+    ]
+  }
+}
+```
+
+:::
+
+:::writing{variant="standard" id="90637"}
+{
+  "testDataId": "TD-XXX",
+  "name": "TestData名称",
+  "description": "TestDataの利用目的",
+  "dataType": "API | USECASE | COMMON",
+  "businessId": "BUS-XXX",
+  "useCaseId": "UC-XXX",
+  "scenarioId": "SC-XXX",
+  "apiId": "API-XXX",
+  "testCaseIds": [
+    "UC-TC-XXX"
+  ],
+  "environment": {
+    "allowed": [
+      "STG"
+    ],
+    "denied": [],
+    "updateApiAllowed": false
+  },
+  "status": "Draft",
+  "entryInput": {
+    "inputName": {
+      "value": "value",
+      "type": "String",
+      "required": true,
+      "contextId": "CTX-XXX",
+      "mask": false,
+      "source": "STATIC"
+    }
+  },
+  "requestOverrides": {
+    "API-XXX": [
+      {
+        "target": "$.xxx",
+        "operation": "SET",
+        "value": "value",
+        "type": "String",
+        "purpose": "Test purpose"
+      }
+    ]
+  },
+  "initialContext": {
+    "CTX-XXX": {
+      "contextName": "Domain.property",
+      "type": "String",
+      "value": "value",
+      "mask": false
+    }
+  },
+  "preconditions": [
+    {
+      "preconditionId": "PRE-TD-XXX",
+      "type": "DATA_EXISTS",
+      "description": "前提条件",
+      "checkMethod": "API",
+      "checkTarget": "API-XXX",
+      "expected": {},
+      "required": true,
+      "failureResult": "BLOCKED",
+      "evidenceRequired": true
+    }
+  ],
+  "expected": {
+    "executionResult": "PASS",
+    "businessResult": "EXPECTED_BUSINESS_RESULT",
+    "startApi": "API-XXX",
+    "endApi": "API-XXX",
+    "executedApis": [
+      "API-XXX"
+    ],
+    "skippedApis": [],
+    "httpStatus": {
+      "API-XXX": 200
+    },
+    "responseChecks": {
+      "API-XXX": [
+        {
+          "target": "$.xxx",
+          "checkType": "EQUALS",
+          "expected": "value"
+        }
+      ]
+    },
+    "contextChecks": [
+      {
+        "contextId": "CTX-XXX",
+        "checkType": "EQUALS",
+        "expected": "value",
+        "severity": "HIGH",
+        "failureResult": "FAIL"
+      }
+    ],
+    "diffResult": "PASS",
+    "reportResult": "PASS"
+  },
+  "cleanup": {
+    "required": false,
+    "actions": []
+  },
+  "masking": {
+    "jsonPaths": [],
+    "contextIds": [],
+    "strategy": "FULL",
+    "visibleTailLength": 0,
+    "applyToSnapshot": true,
+    "applyToLog": true,
+    "applyToReport": true
+  },
+  "reservation": {
+    "required": false,
+    "lockKey": null,
+    "mode": "SHARED",
+    "timeoutSeconds": 30,
+    "releaseTiming": "SCENARIO_END",
+    "failureResult": "BLOCKED"
+  },
+  "validity": {
+    "validFrom": "YYYY-MM-DDTHH:mm:ss+09:00",
+    "validTo": "YYYY-MM-DDTHH:mm:ss+09:00",
+    "timezone": "Asia/Tokyo",
+    "expiredResult": "BLOCKED",
+    "lastValidatedAt": null,
+    "validationIntervalDays": 7
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "status": "Draft",
+    "createdBy": "",
+    "createdAt": "",
+    "updatedBy": "",
+    "updatedAt": "",
+    "sourceDocuments": []
+  }
+}
+:::
+
+下一步应制作 `06_verification_assets/reports/` 下的三份正式模板：
+
+```text
+DailySummary_Template.md
+DiffReport_Template.md
+EvidenceReport_Template.md
+```
+
+## 第 200 轮
+
+### 你
+
+继续
+
+### ChatGPT
+
+下面继续完成 `06_verification_assets/reports/` 下的三份正式模板：Daily Summary、Diff Report、Evidence Report。
+
+### ChatGPT
+
+放置位置：
+
+```text
+system/06_verification_assets/reports/
+├── DailySummary_Template.md
+├── DiffReport_Template.md
+└── EvidenceReport_Template.md
+```
+
+:::writing{variant="document" id="31847"}
+---
+title: Daily Summary Report Template
+document_id: RPT-DAILY-TEMPLATE
+version: 1.0.0
+status: Template
+document_type: Verification Report
+system_name: E6 API Verification Platform
+author:
+reviewer:
+approver:
+created:
+updated:
+---
+
+# Daily Summary Report
+
+---
+
+# 1. Report情報
+
+|項目|内容|
+|---|---|
+|Report ID|RPT-DAILY-XXX|
+|Run ID|RUN-YYYYMMDD-HHMMSS-XXX|
+|実行日|YYYY-MM-DD|
+|対象環境|ENV-XXX|
+|実行方式|Daily / Manual / Retry|
+|Runtime Version|x.x.x|
+|Spec Version|x.x.x|
+|Baseline ID|BASE-XXX / なし|
+|開始日時|YYYY-MM-DDTHH:mm:ss+09:00|
+|終了日時|YYYY-MM-DDTHH:mm:ss+09:00|
+|実行時間|00:00:00|
+|総合Result|PASS / WARN / FAIL / ERROR / BLOCKED|
+|作成日時|YYYY-MM-DDTHH:mm:ss+09:00|
+
+---
+
+# 2. 総合サマリー
+
+## 2.1 Result Summary
+
+|Result|件数|説明|
+|---|---:|---|
+|PASS|0|期待どおり完了|
+|WARN|0|確認が必要な差分または結果|
+|FAIL|0|期待不一致|
+|ERROR|0|実行基盤、Spec、環境等の異常|
+|BLOCKED|0|前提条件未成立|
+|SKIP|0|条件により未実行|
+|合計|0|対象Scenario総数|
+
+---
+
+## 2.2 総合判定理由
+
+|判定項目|内容|
+|---|---|
+|最終Result|PASS / WARN / FAIL / ERROR / BLOCKED|
+|判定理由|（記載）|
+|重大差分有無|あり / なし|
+|実行異常有無|あり / なし|
+|業務確認要否|要 / 不要|
+|Baseline更新可否|可 / 条件付き可 / 不可|
+|再実行要否|要 / 不要|
+
+---
+
+# 3. 実行対象
+
+## 3.1 UseCase一覧
+
+|No|UseCase ID|UseCase名称|Scenario数|対象API数|Result|開始日時|終了日時|Evidence|
+|---:|---|---|---:|---:|---|---|---|---|
+|1|UC-XXX|（記載）|0|0|PASS / WARN / FAIL / ERROR|（記載）|（記載）|EvidenceReport.md#xxx|
+
+---
+
+## 3.2 Scenario一覧
+
+|No|UseCase ID|Scenario ID|Scenario名称|分類|開始API|終了API|実行API数|Skip API数|Result|備考|
+|---:|---|---|---|---|---|---|---:|---:|---|---|
+|1|UC-XXX|SC-XXX|（記載）|Normal / Alternative / Exception|API-XXX|API-XXX|0|0|PASS / WARN / FAIL / ERROR| |
+
+---
+
+# 4. UseCase別結果
+
+## 4.1 UseCase Result Summary
+
+|UseCase ID|UseCase名称|PASS|WARN|FAIL|ERROR|BLOCKED|SKIP|総合Result|
+|---|---|---:|---:|---:|---:|---:|---:|---|
+|UC-XXX|（記載）|0|0|0|0|0|0|PASS / WARN / FAIL / ERROR|
+
+---
+
+## 4.2 UseCase詳細
+
+### UC-XXX：〇〇
+
+|項目|内容|
+|---|---|
+|UseCase ID|UC-XXX|
+|対象Business|BUS-XXX|
+|Scenario数|0|
+|API数|0|
+|Result|PASS / WARN / FAIL / ERROR|
+|主な結果|（記載）|
+|主な差分|（記載）|
+|Evidence|（記載）|
+
+Scenario結果：
+
+|Scenario ID|Scenario名称|期待Result|実際Result|差分件数|実行API|Skip API|備考|
+|---|---|---|---|---:|---|---|---|
+|SC-XXX|（記載）|PASS|PASS|0|API-XXX|－| |
+
+---
+
+# 5. API実行結果
+
+|API ID|API名称|実行回数|PASS|WARN|FAIL|ERROR|SKIP|平均応答時間|最大応答時間|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+|API-XXX|（記載）|0|0|0|0|0|0|0ms|0ms|
+
+---
+
+# 6. Critical / High差分
+
+CriticalまたはHighの差分を表示する。
+
+差分がない場合は、`該当なし` と記載する。
+
+|No|Severity|UseCase ID|Scenario ID|API ID|対象|Diff Type|Baseline|Current|Result|Evidence|
+|---:|---|---|---|---|---|---|---|---|---|---|
+|1|Critical / High|UC-XXX|SC-XXX|API-XXX|$.xxx / CTX-XXX|VALUE_CHANGED|（記載）|（記載）|FAIL|（記載）|
+
+---
+
+# 7. WARN一覧
+
+|No|分類|UseCase ID|Scenario ID|API ID|内容|業務影響|確認担当|状態|
+|---:|---|---|---|---|---|---|---|---|
+|1|Diff / Business / TestData / Performance|UC-XXX|SC-XXX|API-XXX|（記載）|あり / なし / 未確認|（記載）|Open / Confirmed / Closed|
+
+---
+
+# 8. FAIL一覧
+
+|No|分類|UseCase ID|Scenario ID|API ID|Check ID|内容|停止範囲|Evidence|
+|---:|---|---|---|---|---|---|---|---|
+|1|Response / Context / Business / Flow|UC-XXX|SC-XXX|API-XXX|CHK-XXX|（記載）|Step / Scenario / UseCase|（記載）|
+
+---
+
+# 9. ERROR一覧
+
+|No|Error ID|Exception分類|UseCase ID|Scenario ID|API ID|Message|停止範囲|再実行可否|Log|
+|---:|---|---|---|---|---|---|---|---|---|
+|1|ERR-XXX|Spec / Config / Context / API / System|UC-XXX|SC-XXX|API-XXX|（記載）|STOP_RUN / STOP_SCENARIO|可 / 不可|（記載）|
+
+---
+
+# 10. BLOCKED一覧
+
+|No|UseCase ID|Scenario ID|TestData ID|前提条件|未成立理由|対応方針|再確認予定|
+|---:|---|---|---|---|---|---|---|
+|1|UC-XXX|SC-XXX|TD-XXX|（記載）|（記載）|（記載）|YYYY-MM-DD|
+
+---
+
+# 11. Skip結果
+
+|No|UseCase ID|Scenario ID|API ID|Skip Rule ID|Skip理由|期待Skip|判定|
+|---:|---|---|---|---|---|---:|---|
+|1|UC-XXX|SC-XXX|API-XXX|SKIP-XXX|（記載）|Yes / No|PASS / FAIL|
+
+---
+
+# 12. Baseline比較結果
+
+## 12.1 Baseline情報
+
+|項目|内容|
+|---|---|
+|Baseline ID|BASE-XXX|
+|Source Run ID|RUN-XXX|
+|Baseline種別|Approved / Previous Success / Initial|
+|承認者|（記載）|
+|承認日時|（記載）|
+|比較対象|Run / UseCase / Scenario / API|
+
+---
+
+## 12.2 Diff Summary
+
+|Severity|PASS|WARN|FAIL|IGNORED|合計|
+|---|---:|---:|---:|---:|---:|
+|Critical|0|0|0|0|0|
+|High|0|0|0|0|0|
+|Medium|0|0|0|0|0|
+|Low|0|0|0|0|0|
+|Info|0|0|0|0|0|
+|合計|0|0|0|0|0|
+
+---
+
+# 13. Performance Summary
+
+|API ID|実行回数|平均|最小|最大|基準|Result|
+|---|---:|---:|---:|---:|---:|---|
+|API-XXX|0|0ms|0ms|0ms|0ms以内|PASS / WARN / FAIL|
+
+---
+
+# 14. Evidence Summary
+
+|Evidence分類|生成件数|不足件数|Result|保存先|
+|---|---:|---:|---|---|
+|Request Snapshot|0|0|PASS / ERROR|raw/|
+|Response Snapshot|0|0|PASS / ERROR|raw/|
+|Context Snapshot|0|0|PASS / ERROR|snapshot/|
+|Execution Snapshot|0|0|PASS / ERROR|snapshot/|
+|Diff Result|0|0|PASS / ERROR|diff/|
+|Log|0|0|PASS / ERROR|logs/|
+
+---
+
+# 15. 確認・承認事項
+
+|No|分類|確認内容|担当|期限|状態|回答・判断|
+|---:|---|---|---|---|---|---|
+|1|Business / API / Baseline / TestData|（記載）|（記載）|YYYY-MM-DD|Open / Closed|（記載）|
+
+---
+
+# 16. Baseline更新判定
+
+|確認項目|判定|
+|---|---|
+|Run ResultがPASSまたは承認可能なWARNか|Yes / No|
+|Critical / High差分が承認済みか|Yes / No|
+|Evidenceが完全か|Yes / No|
+|Mask漏れがないか|Yes / No|
+|TestDataが有効か|Yes / No|
+|業務担当確認が完了したか|Yes / No|
+|Baseline更新可否|可 / 条件付き可 / 不可|
+
+---
+
+# 17. 再実行情報
+
+|項目|内容|
+|---|---|
+|再実行要否|要 / 不要|
+|再実行対象|Run / UseCase / Scenario / Failed Only|
+|対象ID|（記載）|
+|再実行理由|（記載）|
+|修正対象|Spec / Config / TestData / Environment / API|
+|元Run ID|RUN-XXX|
+
+---
+
+# 18. Reportリンク
+
+|Report|Path|
+|---|---|
+|Diff Report|outputs/runs/{runId}/reports/DiffReport.md|
+|Evidence Report|outputs/runs/{runId}/reports/EvidenceReport.md|
+|Execution Report|outputs/runs/{runId}/reports/ExecutionReport.md|
+|Error Report|outputs/runs/{runId}/reports/ErrorReport.md|
+|Runtime Log|outputs/runs/{runId}/logs/runtime.log|
+
+---
+
+# Appendix A. 記入例
+
+## A.1 Run Summary
+
+|項目|内容|
+|---|---|
+|Report ID|RPT-DAILY-20260715-001|
+|Run ID|RUN-20260715-090000-001|
+|実行日|2026-07-15|
+|対象環境|ENV-STG|
+|実行方式|Daily|
+|Baseline ID|BASE-20260714-001|
+|総合Result|WARN|
+
+---
+
+## A.2 Result Summary
+
+|Result|件数|
+|---|---:|
+|PASS|2|
+|WARN|1|
+|FAIL|0|
+|ERROR|0|
+|BLOCKED|0|
+|SKIP|3|
+|合計|3|
+
+---
+
+## A.3 UseCase結果
+
+|UseCase ID|UseCase名称|Scenario数|Result|備考|
+|---|---|---:|---|---|
+|UC-001|顧客情報照会|3|WARN|契約0件Scenario確認要|
+
+---
+
+## A.4 Scenario結果
+
+|Scenario ID|Scenario名称|開始API|終了API|実行API|Skip API|Result|
+|---|---|---|---|---|---|---|
+|SC-001|正常系|API-001|API-003|API-001, API-002, API-003|－|PASS|
+|SC-002|顧客不存在|API-001|API-001|API-001|API-002, API-003|PASS|
+|SC-003|契約0件|API-001|API-003|API-001, API-002, API-003|－|WARN|
+
+---
+
+## A.5 WARN
+
+|No|分類|Scenario ID|内容|業務影響|状態|
+|---:|---|---|---|---|---|
+|1|Business|SC-003|契約件数がBaselineの2件から0件へ変更|未確認|Open|
+
+---
+
+## A.6 Baseline更新判定
+
+|確認項目|判定|
+|---|---|
+|Critical / High差分なし|Yes|
+|Medium差分確認完了|No|
+|Evidence完全|Yes|
+|Baseline更新可否|条件付き可|
+:::
+
+:::writing{variant="document" id="76492"}
+---
+title: Diff Report Template
+document_id: RPT-DIFF-TEMPLATE
+version: 1.0.0
+status: Template
+document_type: Verification Report
+system_name: E6 API Verification Platform
+author:
+reviewer:
+approver:
+created:
+updated:
+---
+
+# Diff Report
+
+---
+
+# 1. Report情報
+
+|項目|内容|
+|---|---|
+|Report ID|RPT-DIFF-XXX|
+|Run ID|RUN-XXX|
+|Baseline ID|BASE-XXX|
+|Baseline Source Run ID|RUN-XXX|
+|対象環境|ENV-XXX|
+|比較開始日時|YYYY-MM-DDTHH:mm:ss+09:00|
+|比較終了日時|YYYY-MM-DDTHH:mm:ss+09:00|
+|Diff Result|PASS / WARN / FAIL / ERROR|
+|Compare Policy Version|x.x.x|
+|作成日時|YYYY-MM-DDTHH:mm:ss+09:00|
+
+---
+
+# 2. Diff概要
+
+|項目|内容|
+|---|---|
+|Current Run|RUN-XXX|
+|Baseline|BASE-XXX|
+|比較対象UseCase数|0|
+|比較対象Scenario数|0|
+|比較対象API数|0|
+|比較対象Field数|0|
+|差分件数|0|
+|Ignored件数|0|
+|総合Result|PASS / WARN / FAIL / ERROR|
+
+---
+
+# 3. Severity別集計
+
+|Severity|PASS|WARN|FAIL|IGNORED|ERROR|合計|
+|---|---:|---:|---:|---:|---:|---:|
+|Critical|0|0|0|0|0|0|
+|High|0|0|0|0|0|0|
+|Medium|0|0|0|0|0|0|
+|Low|0|0|0|0|0|0|
+|Info|0|0|0|0|0|0|
+|合計|0|0|0|0|0|0|
+
+---
+
+# 4. Diff Type別集計
+
+|Diff Type|件数|FAIL|WARN|IGNORED|
+|---|---:|---:|---:|---:|
+|MISSING_FIELD|0|0|0|0|
+|NEW_FIELD|0|0|0|0|
+|TYPE_CHANGED|0|0|0|0|
+|VALUE_CHANGED|0|0|0|0|
+|FIXED_VALUE_CHANGED|0|0|0|0|
+|ENUM_OUT_OF_RANGE|0|0|0|0|
+|NULL_CHANGED|0|0|0|0|
+|ITEM_ADDED|0|0|0|0|
+|ITEM_REMOVED|0|0|0|0|
+|ITEM_CHANGED|0|0|0|0|
+|ORDER_CHANGED|0|0|0|0|
+|COUNT_CHANGED|0|0|0|0|
+
+---
+
+# 5. Critical / High Diff
+
+|No|Severity|UseCase ID|Scenario ID|API ID|対象種別|対象Path|Diff Type|Baseline|Current|Policy|Result|Evidence|
+|---:|---|---|---|---|---|---|---|---|---|---|---|---|
+|1|Critical / High|UC-XXX|SC-XXX|API-XXX|Response / Context / Business|$.xxx / CTX-XXX|VALUE_CHANGED|（記載）|（記載）|Equals|FAIL|（記載）|
+
+---
+
+# 6. 全Diff一覧
+
+|No|UseCase ID|Scenario ID|Step ID|API ID|対象種別|JSONPath / Context ID|Diff Type|Baseline Value|Current Value|Normalize|Compare Policy|Severity|Result|Message|
+|---:|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+|1|UC-XXX|SC-XXX|UC-STEP-XXX|API-XXX|Response / Context|$.xxx|VALUE_CHANGED|（記載）|（記載）|NORM-XXX|CMP-POL-XXX|High|FAIL|（記載）|
+
+---
+
+# 7. UseCase別Diff
+
+## 7.1 UseCase Summary
+
+|UseCase ID|UseCase名称|Scenario数|Diff件数|WARN|FAIL|IGNORED|Result|
+|---|---|---:|---:|---:|---:|---:|---|
+|UC-XXX|（記載）|0|0|0|0|0|PASS / WARN / FAIL|
+
+---
+
+## 7.2 UseCase詳細
+
+### UC-XXX：〇〇
+
+|項目|内容|
+|---|---|
+|UseCase ID|UC-XXX|
+|Result|PASS / WARN / FAIL|
+|対象Scenario|SC-XXX|
+|Diff件数|0|
+|主な差分|（記載）|
+
+|Scenario ID|API ID|対象|Diff Type|Severity|Result|Evidence|
+|---|---|---|---|---|---|---|
+|SC-XXX|API-XXX|$.xxx|VALUE_CHANGED|High|FAIL|（記載）|
+
+---
+
+# 8. Scenario別Diff
+
+|Scenario ID|Scenario名称|Expected Result|Current Result|API Diff件数|Context Diff件数|Business Diff件数|Result|
+|---|---|---|---|---:|---:|---:|---|
+|SC-XXX|（記載）|PASS|PASS / WARN / FAIL|0|0|0|PASS / WARN / FAIL|
+
+---
+
+# 9. API別Diff
+
+|API ID|API名称|Response Diff|Context Diff|Execution Diff|WARN|FAIL|IGNORED|Result|
+|---|---|---:|---:|---:|---:|---:|---:|---|
+|API-XXX|（記載）|0|0|0|0|0|0|PASS / WARN / FAIL|
+
+---
+
+# 10. Response Diff
+
+|No|UseCase ID|Scenario ID|API ID|JSONPath|Diff Type|Baseline|Current|Type|Policy|Severity|Result|
+|---:|---|---|---|---|---|---|---|---|---|---|---|
+|1|UC-XXX|SC-XXX|API-XXX|$.xxx|VALUE_CHANGED|（記載）|（記載）|String|Equals|High|FAIL|
+
+---
+
+# 11. Context Diff
+
+|No|UseCase ID|Scenario ID|Context ID|Context名|Diff Type|Producer|Baseline|Current|Policy|Severity|Result|
+|---:|---|---|---|---|---|---|---|---|---|---|---|
+|1|UC-XXX|SC-XXX|CTX-XXX|Domain.property|VALUE_CHANGED|API-XXX|（記載）|（記載）|Equals|High|FAIL|
+
+---
+
+# 12. Execution Diff
+
+|No|Scenario ID|比較項目|Baseline|Current|Diff Type|Severity|Result|
+|---:|---|---|---|---|---|---|---|
+|1|SC-XXX|API実行順序|API-001→API-002|API-001→API-003|ORDER_CHANGED|High|FAIL|
+|2|SC-XXX|終了API|API-003|API-002|VALUE_CHANGED|High|FAIL|
+|3|SC-XXX|Skip API|API-003|なし|VALUE_CHANGED|High|FAIL|
+
+---
+
+# 13. Business Result Diff
+
+|No|Scenario ID|比較項目|Baseline|Current|Severity|Result|備考|
+|---:|---|---|---|---|---|---|---|
+|1|SC-XXX|Business Result|（記載）|（記載）|High|FAIL| |
+
+---
+
+# 14. Collection Diff
+
+## 14.1 Collection Summary
+
+|対象JSONPath|比較方式|Key|Baseline件数|Current件数|Added|Removed|Changed|Result|
+|---|---|---|---:|---:|---:|---:|---:|---|
+|$.items[]|Key Match|itemId|0|0|0|0|0|PASS / WARN / FAIL|
+
+---
+
+## 14.2 Added Item
+
+|Key|Current Value|Severity|Result|
+|---|---|---|---|
+|（記載）|（記載）|Medium|WARN|
+
+---
+
+## 14.3 Removed Item
+
+|Key|Baseline Value|Severity|Result|
+|---|---|---|---|
+|（記載）|（記載）|High|FAIL|
+
+---
+
+## 14.4 Changed Item
+
+|Key|Field|Baseline|Current|Policy|Severity|Result|
+|---|---|---|---|---|---|---|
+|（記載）|status|ACTIVE|INACTIVE|Equals|High|FAIL|
+
+---
+
+# 15. New Field一覧
+
+|No|UseCase ID|Scenario ID|API ID|JSONPath|Current Value|Type|Severity|Result|確認要否|
+|---:|---|---|---|---|---|---|---|---|---|
+|1|UC-XXX|SC-XXX|API-XXX|$.newField|（記載）|String|Medium|WARN|要 / 不要|
+
+---
+
+# 16. Missing Field一覧
+
+|No|UseCase ID|Scenario ID|API ID|JSONPath|必須|Baseline Value|Severity|Result|
+|---:|---|---|---|---|---:|---|---|---|
+|1|UC-XXX|SC-XXX|API-XXX|$.requiredField|Yes|（記載）|High|FAIL|
+
+---
+
+# 17. Type変更一覧
+
+|No|UseCase ID|Scenario ID|API ID|JSONPath|Baseline Type|Current Type|Severity|Result|
+|---:|---|---|---|---|---|---|---|---|
+|1|UC-XXX|SC-XXX|API-XXX|$.xxx|String|Number|High|FAIL|
+
+---
+
+# 18. 固定値・Enum差分
+
+|No|API ID|JSONPath|Check Type|期待値|Current|Severity|Result|
+|---:|---|---|---|---|---|---|---|
+|1|API-XXX|$.resultCode|Fixed|0|1|High|FAIL|
+|2|API-XXX|$.status|Enum|ACTIVE, INACTIVE|UNKNOWN|High|FAIL|
+
+---
+
+# 19. Ignored Diff
+
+|No|UseCase ID|Scenario ID|API ID|JSONPath|Baseline|Current|Policy ID|Ignore理由|
+|---:|---|---|---|---|---|---|---|---|
+|1|UC-XXX|SC-XXX|API-XXX|$.traceId|abc|xyz|CMP-POL-001|実行毎に採番|
+
+---
+
+# 20. Tolerance結果
+
+|No|対象|Baseline|Current|Tolerance|差分|Result|
+|---:|---|---|---|---|---|---|
+|1|$.updatedAt|（記載）|（記載）|±3秒|2秒|PASS|
+|2|$.amount|100.00|100.02|±0.01|0.02|FAIL|
+
+---
+
+# 21. Normalize結果
+
+|No|対象|Baseline Original|Current Original|Normalize Rule|Normalized Baseline|Normalized Current|Result|
+|---:|---|---|---|---|---|---|---|
+|1|$.name|` abc `|`abc`|Trim|abc|abc|PASS|
+
+---
+
+# 22. Compare Policy適用状況
+
+|Policy ID|Policy名称|適用件数|PASS|WARN|FAIL|IGNORED|
+|---|---|---:|---:|---:|---:|---:|
+|CMP-POL-XXX|（記載）|0|0|0|0|0|
+
+---
+
+# 23. Baseline Candidate
+
+|UseCase ID|Scenario ID|API ID|Current Snapshot|Candidate Result|承認要否|備考|
+|---|---|---|---|---|---|---|
+|UC-XXX|SC-XXX|API-XXX|（記載）|Candidate / Not Candidate|要 / 不要| |
+
+---
+
+# 24. 確認事項
+
+|No|Severity|差分内容|業務影響|確認担当|期限|状態|判断|
+|---:|---|---|---|---|---|---|---|
+|1|Medium|（記載）|未確認|（記載）|YYYY-MM-DD|Open| |
+
+---
+
+# 25. Evidenceリンク
+
+|No|UseCase ID|Scenario ID|API ID|Diff Snapshot|Response Snapshot|Context Snapshot|Execution Snapshot|
+|---:|---|---|---|---|---|---|---|
+|1|UC-XXX|SC-XXX|API-XXX|（記載）|（記載）|（記載）|（記載）|
+
+---
+
+# Appendix A. 記入例
+
+## A.1 Diff Summary
+
+|項目|内容|
+|---|---|
+|Run ID|RUN-20260715-090000-001|
+|Baseline ID|BASE-20260714-001|
+|Diff Result|WARN|
+|差分件数|2|
+|Ignored件数|1|
+
+---
+
+## A.2 Diff Detail
+
+|UseCase ID|Scenario ID|API ID|対象|Baseline|Current|Policy|Severity|Result|
+|---|---|---|---|---|---|---|---|---|
+|UC-001|SC-001|API-001|$.traceId|abc|xyz|CMP-POL-001|Low|IGNORED|
+|UC-001|SC-003|API-003|$.contracts.length|2|0|Equals|Medium|WARN|
+
+---
+
+## A.3 Collection Diff
+
+|対象|Key|Baseline|Current|Result|
+|---|---|---|---|---|
+|$.contracts[]|contractId=C-001|ACTIVE|なし|WARN|
+|$.contracts[]|contractId=C-002|ACTIVE|なし|WARN|
+:::
+
+:::writing{variant="document" id="90516"}
+---
+title: Evidence Report Template
+document_id: RPT-EVIDENCE-TEMPLATE
+version: 1.0.0
+status: Template
+document_type: Verification Report
+system_name: E6 API Verification Platform
+author:
+reviewer:
+approver:
+created:
+updated:
+---
+
+# Evidence Report
+
+---
+
+# 1. Report情報
+
+|項目|内容|
+|---|---|
+|Report ID|RPT-EVD-XXX|
+|Run ID|RUN-XXX|
+|対象環境|ENV-XXX|
+|対象Business|BUS-XXX|
+|対象UseCase|UC-XXX|
+|対象Scenario|SC-XXX|
+|実行日時|YYYY-MM-DDTHH:mm:ss+09:00|
+|総合Result|PASS / WARN / FAIL / ERROR|
+|Evidence Root|outputs/runs/{runId}/|
+|作成日時|YYYY-MM-DDTHH:mm:ss+09:00|
+
+---
+
+# 2. Evidence概要
+
+|Evidence分類|期待件数|生成件数|不足件数|Mask確認|Result|
+|---|---:|---:|---:|---|---|
+|Run Snapshot|1|0|0|済 / 未|PASS / ERROR|
+|UseCase Snapshot|0|0|0|済 / 未|PASS / ERROR|
+|Scenario Snapshot|0|0|0|済 / 未|PASS / ERROR|
+|Request Snapshot|0|0|0|済 / 未|PASS / ERROR|
+|Response Snapshot|0|0|0|済 / 未|PASS / ERROR|
+|Context Snapshot|0|0|0|済 / 未|PASS / ERROR|
+|Execution Snapshot|0|0|0|済 / 未|PASS / ERROR|
+|Diff Snapshot|0|0|0|済 / 未|PASS / ERROR|
+|Error Snapshot|0|0|0|済 / 未|PASS / ERROR|
+|Log|0|0|0|済 / 未|PASS / ERROR|
+
+---
+
+# 3. Evidence Directory
+
+```text
+outputs/runs/{runId}/
+
+├── run-info.json
+├── raw/
+├── snapshot/
+├── diff/
+├── evidence/
+├── reports/
+├── logs/
+└── tmp/
+```
+
+---
+
+# 4. Run Evidence
+
+|Evidence ID|対象|File Path|生成日時|Size|Hash|Result|
+|---|---|---|---|---:|---|---|
+|EVD-RUN-XXX|Run Snapshot|run-info.json|（記載）|0KB|SHA-256|PASS / ERROR|
+
+---
+
+# 5. UseCase Evidence
+
+|UseCase ID|UseCase名称|Result|UseCase Snapshot|Scenario数|Evidence完全性|
+|---|---|---|---|---:|---|
+|UC-XXX|（記載）|PASS / WARN / FAIL / ERROR|（記載）|0|Complete / Partial / Missing|
+
+---
+
+# 6. Scenario Evidence
+
+|Scenario ID|Scenario名称|分類|開始API|終了API|Result|Scenario Snapshot|Evidence完全性|
+|---|---|---|---|---|---|---|---|
+|SC-XXX|（記載）|Normal / Alternative / Exception|API-XXX|API-XXX|PASS / WARN / FAIL / ERROR|（記載）|Complete / Partial / Missing|
+
+---
+
+# 7. API Step Evidence Index
+
+|No|UseCase ID|Scenario ID|Step ID|API ID|Execution Status|Request|Response|Context Before|Context After|Execution|Diff|Log|
+|---:|---|---|---|---|---|---|---|---|---|---|---|---|
+|1|UC-XXX|SC-XXX|UC-STEP-XXX|API-XXX|PASS / SKIP / FAIL / ERROR|（Path）|（Path）|（Path）|（Path）|（Path）|（Path）|（Path）|
+
+---
+
+# 8. Request Evidence
+
+## 8.1 Request一覧
+
+|Evidence ID|UseCase ID|Scenario ID|Step ID|API ID|Method|Path|Snapshot Path|Mask|Result|
+|---|---|---|---|---|---|---|---|---|---|
+|EVD-REQ-XXX|UC-XXX|SC-XXX|UC-STEP-XXX|API-XXX|POST|/v1/xxx|（記載）|済 / 未|PASS / ERROR|
+
+---
+
+## 8.2 Request概要
+
+### API-XXX / UC-STEP-XXX
+
+|項目|内容|
+|---|---|
+|Method|POST|
+|URL|（Mask済みURL）|
+|Content-Type|application/json|
+|Authorization|`****`|
+|Request Snapshot|（Path）|
+|Context Binding|（記載）|
+|Result|PASS / FAIL / ERROR|
+
+Mask済みRequest：
+
+```json
+{
+  "xxx": "****"
+}
+```
+
+---
+
+# 9. Response Evidence
+
+## 9.1 Response一覧
+
+|Evidence ID|UseCase ID|Scenario ID|Step ID|API ID|HTTP Status|Elapsed|Snapshot Path|Mask|Result|
+|---|---|---|---|---|---:|---:|---|---|---|
+|EVD-RES-XXX|UC-XXX|SC-XXX|UC-STEP-XXX|API-XXX|200|0ms|（記載）|済 / 未|PASS / WARN / FAIL|
+
+---
+
+## 9.2 Response概要
+
+### API-XXX / UC-STEP-XXX
+
+|項目|内容|
+|---|---|
+|HTTP Status|200|
+|Elapsed Millis|0|
+|Content-Type|application/json|
+|Response Snapshot|（Path）|
+|Extracted Context|CTX-XXX|
+|Dynamic Fields|$.traceId|
+|Result|PASS / WARN / FAIL|
+
+Mask済みResponse：
+
+```json
+{
+  "resultCode": "0",
+  "traceId": "dynamic-value"
+}
+```
+
+---
+
+# 10. Context Evidence
+
+## 10.1 Context Snapshot一覧
+
+|Evidence ID|UseCase ID|Scenario ID|Step ID|API ID|Timing|Context数|Snapshot Path|Result|
+|---|---|---|---|---|---|---:|---|---|
+|EVD-CTX-XXX|UC-XXX|SC-XXX|UC-STEP-XXX|API-XXX|BEFORE_API / AFTER_API|0|（記載）|PASS / ERROR|
+
+---
+
+## 10.2 Context Flow
+
+|Context ID|Context名|Producer|Consumer|生成Evidence|利用Evidence|Result|
+|---|---|---|---|---|---|---|
+|CTX-XXX|Domain.property|API-XXX / Entry Input|API-XXX / Branch|（Path）|（Path）|PASS / FAIL|
+
+---
+
+## 10.3 Context値
+
+|Context ID|Type|値|Mask|生成元|利用先|
+|---|---|---|---|---|---|
+|CTX-XXX|String|****|Yes / No|API-XXX|API-XXX|
+
+---
+
+# 11. Execution Evidence
+
+|Evidence ID|Scenario ID|Step ID|API ID|Status|Started At|Ended At|Elapsed|Retry|Skip Reason|Snapshot Path|
+|---|---|---|---|---|---|---|---:|---:|---|---|
+|EVD-EXEC-XXX|SC-XXX|UC-STEP-XXX|API-XXX|PASS / SKIP / FAIL / ERROR|（記载）|（記载）|0ms|0|（記载）|（Path）|
+
+---
+
+# 12. Skip Evidence
+
+|Scenario ID|Step ID|API ID|Skip Rule ID|Skip条件|実際値|期待Skip|Result|Evidence|
+|---|---|---|---|---|---|---|---|---|
+|SC-XXX|UC-STEP-XXX|API-XXX|SKIP-XXX|（記載）|（記載）|Yes / No|PASS / FAIL|（Path）|
+
+---
+
+# 13. Retry Evidence
+
+|Scenario ID|API ID|Attempt|開始日時|終了日時|結果|Error|Request Evidence|Response / Error Evidence|
+|---|---|---:|---|---|---|---|---|---|
+|SC-XXX|API-XXX|1|（記載）|（記載）|PASS / FAIL / TIMEOUT|（記載）|（Path）|（Path）|
+
+---
+
+# 14. Diff Evidence
+
+|Evidence ID|UseCase ID|Scenario ID|API ID|Diff件数|WARN|FAIL|IGNORED|Diff Snapshot|Diff Report|
+|---|---|---|---|---:|---:|---:|---:|---|---|
+|EVD-DIFF-XXX|UC-XXX|SC-XXX|API-XXX|0|0|0|0|（Path）|（Path）|
+
+---
+
+# 15. Error Evidence
+
+|Evidence ID|Error ID|Exception分類|UseCase ID|Scenario ID|API ID|Error Snapshot|Error Log|Result|
+|---|---|---|---|---|---|---|---|---|
+|EVD-ERR-XXX|ERR-XXX|Timeout / API / Context / Spec|UC-XXX|SC-XXX|API-XXX|（Path）|（Path）|FAIL / ERROR|
+
+---
+
+# 16. TestData Evidence
+
+|TestData ID|Scenario ID|TestData File|Precondition Evidence|Reservation Evidence|Cleanup Evidence|Result|
+|---|---|---|---|---|---|---|
+|TD-XXX|SC-XXX|（Path）|（Path）|（Path）|（Path）|PASS / BLOCKED / ERROR|
+
+---
+
+# 17. Precondition Evidence
+
+|Precondition ID|TestData ID|確認方法|期待値|実際値|Evidence|Result|
+|---|---|---|---|---|---|---|
+|PRE-XXX|TD-XXX|API / DB / FILE|（記載）|（記載）|（Path）|PASS / BLOCKED / ERROR|
+
+---
+
+# 18. Cleanup Evidence
+
+|Cleanup ID|TestData ID|処理内容|実行日時|Result|Evidence|備考|
+|---|---|---|---|---|---|---|
+|CLEAN-XXX|TD-XXX|DELETE / RESTORE|（記載）|PASS / WARN / ERROR|（Path）| |
+
+---
+
+# 19. Report Evidence
+
+|Report|生成有無|Path|Size|Hash|Result|
+|---|---|---|---:|---|---|
+|Daily Summary|Yes / No|（Path）|0KB|SHA-256|PASS / ERROR|
+|Diff Report|Yes / No|（Path）|0KB|SHA-256|PASS / ERROR|
+|Evidence Report|Yes / No|（Path）|0KB|SHA-256|PASS / ERROR|
+|Execution Report|Yes / No|（Path）|0KB|SHA-256|PASS / ERROR|
+|Error Report|Yes / No|（Path）|0KB|SHA-256|PASS / ERROR|
+
+---
+
+# 20. Mask確認
+
+## 20.1 Mask対象確認
+
+|対象分類|対象Path / Header / Context|Mask方式|確認結果|備考|
+|---|---|---|---|---|
+|Authorization|Authorization Header|FULL|PASS / FAIL| |
+|顧客番号|$.customerId / CTX-001|PARTIAL|PASS / FAIL| |
+|氏名|$.customer.name|FULL|PASS / FAIL| |
+|Token|Secret|FULL|PASS / FAIL| |
+
+---
+
+## 20.2 Mask漏れ
+
+Mask漏れがない場合は、`該当なし` と記載する。
+
+|No|Evidence|対象|漏れ内容|Severity|処理|Result|
+|---:|---|---|---|---|---|---|
+|1|（Path）|$.xxx|（記載）|Critical|Report出力停止|ERROR|
+
+---
+
+# 21. Evidence完全性Check
+
+|Check ID|確認内容|期待|実際|Result|
+|---|---|---|---|---|
+|EVD-CHK-001|全実行APIにRequest Snapshotがある|Yes|Yes / No|PASS / ERROR|
+|EVD-CHK-002|全実行APIにResponseまたはError Snapshotがある|Yes|Yes / No|PASS / ERROR|
+|EVD-CHK-003|全StepにExecution Snapshotがある|Yes|Yes / No|PASS / ERROR|
+|EVD-CHK-004|全ScenarioにScenario Snapshotがある|Yes|Yes / No|PASS / ERROR|
+|EVD-CHK-005|全Diff対象にDiff Snapshotがある|Yes|Yes / No|PASS / ERROR|
+|EVD-CHK-006|Evidence Indexから各Fileへ到達できる|Yes|Yes / No|PASS / ERROR|
+|EVD-CHK-007|Mask確認済みである|Yes|Yes / No|PASS / ERROR|
+
+---
+
+# 22. File Hash
+
+|Evidence ID|File Path|Hash Algorithm|Hash Value|確認結果|
+|---|---|---|---|---|
+|EVD-XXX|（Path）|SHA-256|（Hash）|PASS / FAIL|
+
+---
+
+# 23. Evidence Retention
+
+|対象|保存期間|Archive|削除条件|
+|---|---|---|---|
+|PASS Run Evidence|（記載）|Yes / No|保存期限経過後|
+|WARN / FAIL Evidence|（記載）|Yes|課題Close後|
+|ERROR Evidence|（記載）|Yes|原因解消・承認後|
+|Approved Baseline Evidence|無期限 / 規定期間|Yes|承認制|
+
+---
+
+# 24. Traceability
+
+|Business ID|UseCase ID|Scenario ID|TestCase ID|TestData ID|Execution ID|API ID|Context ID|Check ID|Evidence ID|File Path|
+|---|---|---|---|---|---|---|---|---|---|---|
+|BUS-XXX|UC-XXX|SC-XXX|UC-TC-XXX|TD-XXX|EXEC-XXX|API-XXX|CTX-XXX|CHK-XXX|EVD-XXX|（Path）|
+
+---
+
+# 25. Evidence確認結果
+
+|確認項目|判定|
+|---|---|
+|Evidence完全性|Complete / Partial / Missing|
+|Mask確認|PASS / FAIL|
+|File Hash確認|PASS / FAIL|
+|Link確認|PASS / FAIL|
+|再現性|あり / なし|
+|監査利用可否|可 / 条件付き可 / 不可|
+|最終Result|PASS / WARN / ERROR|
+
+---
+
+# Appendix A. 記入例
+
+## A.1 Evidence Summary
+
+|項目|内容|
+|---|---|
+|Run ID|RUN-20260715-090000-001|
+|対象UseCase|UC-001|
+|対象Scenario|SC-001|
+|Result|PASS|
+|Evidence完全性|Complete|
+
+---
+
+## A.2 API Step Evidence
+
+|Step ID|API ID|Status|Request|Response|Context After|Execution|Diff|
+|---|---|---|---|---|---|---|---|
+|UC-STEP-001|API-001|PASS|raw/API-001_request.json|raw/API-001_response.json|snapshot/API-001_context_after.json|snapshot/API-001_execution.json|diff/API-001_diff.json|
+|UC-STEP-002|API-002|PASS|raw/API-002_request.json|raw/API-002_response.json|snapshot/API-002_context_after.json|snapshot/API-002_execution.json|diff/API-002_diff.json|
+|UC-STEP-003|API-003|PASS|raw/API-003_request.json|raw/API-003_response.json|snapshot/API-003_context_after.json|snapshot/API-003_execution.json|diff/API-003_diff.json|
+
+---
+
+## A.3 Mask確認
+
+|対象|Mask方式|確認結果|
+|---|---|---|
+|Authorization|FULL|PASS|
+|Customer.id|PARTIAL|PASS|
+|Customer.name|FULL|PASS|
+
+---
+
+## A.4 Evidence完全性
+
+|Check|Result|
+|---|---|
+|Request Snapshot|PASS|
+|Response Snapshot|PASS|
+|Context Snapshot|PASS|
+|Execution Snapshot|PASS|
+|Diff Snapshot|PASS|
+|Evidence Link|PASS|
+|Mask|PASS|
+:::
+
+这三份完成后，`06_verification_assets` 的核心模板链已经形成：
+
+```text
+Verification仕様書
+  ↓
+Execution仕様書
+  ↓
+API単体テスト仕様書
+  ↓
+UseCaseテスト仕様書
+  ↓
+TestData
+  ↓
+Daily Summary / Diff Report / Evidence Report
+```
