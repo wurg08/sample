@@ -1,0 +1,51 @@
+方法 1：VS Code 导出聊天 JSON
+打开 VS Code 的 Copilot Chat / Chat 面板。
+打开你要保存的那条 chat session。
+按 Ctrl+Shift+P。
+搜索并运行：Chat: Export Chat...
+保存成例如：copilot-chat.json
+
+
+可以用一个小脚本把 JSON 转成 Markdown，例如保存为 json2md.py：
+
+import json
+import sys
+
+src = sys.argv[1]
+dst = sys.argv[2]
+
+with open(src, "r", encoding="utf-8") as f:
+    data = json.load(f)
+
+def walk(x):
+    if isinstance(x, dict):
+        role = x.get("role") or x.get("speaker") or x.get("author")
+        text = x.get("content") or x.get("text") or x.get("message") or x.get("response")
+        if isinstance(text, str) and text.strip():
+            yield role or "message", text.strip()
+        for v in x.values():
+            yield from walk(v)
+    elif isinstance(x, list):
+        for item in x:
+            yield from walk(item)
+
+seen = set()
+lines = ["# VS Code Copilot Chat Export\n"]
+
+for role, text in walk(data):
+    key = (role, text)
+    if key in seen:
+        continue
+    seen.add(key)
+    lines.append(f"\n## {role}\n")
+    lines.append(text)
+    lines.append("\n")
+
+with open(dst, "w", encoding="utf-8") as f:
+    f.write("\n".join(lines))
+
+print(f"written: {dst}")
+
+
+
+
